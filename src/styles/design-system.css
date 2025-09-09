@@ -1,0 +1,389 @@
+/* ==========================================
+   DELIGHT DESK DESIGN SYSTEM
+   Stripe-Inspired Homepage Components
+   ========================================== */
+
+@layer components {
+}
+
+/* ==========================================
+   TYPOGRAPHY SCALE
+   ========================================== */
+
+/* Main Headlines */
+.ds-heading-xl {
+  @apply text-4xl md:text-5xl lg:text-6xl font-bold leading-tight;
+}
+
+.ds-heading-lg {
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold leading-tight;
+}
+
+.ds-heading-md {
+  @apply text-xl md:text-2xl font-bold leading-snug;
+}
+
+.ds-heading-sm {
+  @apply text-lg md:text-xl font-bold leading-snug;
+}
+
+/* Body Text */
+.ds-body-lg {
+  @apply text-lg md:text-xl leading-relaxed;
+}
+
+.ds-body-md {
+  @apply text-base leading-relaxed;
+}
+
+.ds-body-sm {
+  @apply text-sm leading-relaxed;
+}
+
+/* Caption/Label Text */
+.ds-caption {
+  @apply text-xs md:text-sm font-medium;
+}
+
+/* ==========================================
+   COLOR SYSTEM
+   ========================================== */
+
+/* Brand Gradients */
+.ds-gradient-primary {
+  @apply bg-gradient-to-r from-purple-500 to-pink-500;
+}
+
+.ds-gradient-primary-text {
+  @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
+}
+
+.ds-gradient-secondary {
+  @apply bg-gradient-to-r from-blue-500 to-purple-500;
+}
+
+.ds-gradient-accent {
+  @apply bg-gradient-to-r from-green-500 to-blue-500;
+}
+
+/* Surface Colors */
+.ds-surface-elevated {
+  @apply bg-white/10 backdrop-blur-xl border border-white/20;
+}
+
+.ds-surface-card {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10;
+}
+
+.ds-surface-subtle {
+  @apply bg-white/5 backdrop-blur-sm;
+}
+
+/* Text Colors */
+.ds-text-primary {
+  @apply text-white;
+}
+
+.ds-text-secondary {
+  @apply text-white/80;
+}
+
+.ds-text-muted {
+  @apply text-white/70;
+}
+
+.ds-text-subtle {
+  @apply text-white/60;
+}
+
+/* ==========================================
+   SPACING SYSTEM
+   ========================================== */
+
+/* Section Spacing */
+.ds-section-padding {
+  @apply py-24 md:py-32 px-6;
+}
+
+.ds-section-padding-sm {
+  @apply py-16 md:py-24 px-6;
+}
+
+/* Mobile-First Section Spacing - Consistent across all mobile sections */
+.ds-section-padding-mobile {
+  @apply py-16 md:py-32 px-6;
+}
+
+.ds-section-padding-desktop {
+  @apply py-16 md:py-32 px-6;
+}
+
+/* Container Sizes */
+.ds-container {
+  @apply max-w-7xl mx-auto;
+}
+
+.ds-container-sm {
+  @apply max-w-5xl mx-auto;
+}
+
+.ds-container-xs {
+  @apply max-w-3xl mx-auto;
+}
+
+/* Component Spacing */
+.ds-card-padding {
+  @apply p-6 md:p-8;
+}
+
+.ds-card-padding-sm {
+  @apply p-4 md:p-6;
+}
+
+/* ==========================================
+   COMPONENT PATTERNS
+   ========================================== */
+
+/* Section Headers */
+.ds-section-header {
+  @apply text-center mb-16;
+}
+
+.ds-section-badge {
+  @apply inline-flex items-center space-x-2 backdrop-blur-xl rounded-full px-6 py-3 mb-8 border font-medium;
+}
+
+/* Cards */
+.ds-card {
+  @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 md:p-8 transition-all duration-300;
+  /* @apply ds-surface-elevated rounded-2xl ds-card-padding transition-all duration-300; */
+}
+
+.ds-card-hover {
+  @apply hover:scale-105;
+  /* @apply hover:scale-105 hover:border-opacity-50; */
+}
+
+.ds-card-glow {
+  @apply relative;
+}
+
+.ds-card-glow::before {
+  @apply absolute inset-0 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300 pointer-events-none;
+  content: "";
+}
+
+/* Icon Containers */
+.ds-icon-lg {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center;
+}
+
+.ds-icon-md {
+  @apply w-12 h-12 rounded-xl flex items-center justify-center;
+}
+
+.ds-icon-sm {
+  @apply w-8 h-8 rounded-lg flex items-center justify-center;
+}
+
+/* Buttons */
+.ds-button-primary {
+  @apply bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300;
+  /* @apply ds-gradient-primary hover:from-purple-600 hover:to-pink-600 text-white font-semibold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300; */
+}
+
+.ds-button-lg {
+  @apply text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 h-auto;
+}
+
+/* ==========================================
+   ANIMATION UTILITIES
+   ========================================== */
+
+/* Fade In Animations */
+.ds-fade-in {
+  @apply opacity-0 translate-y-4;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.ds-fade-in-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.ds-fade-in-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.ds-fade-in-delay-3 {
+  animation-delay: 0.3s;
+}
+
+.ds-fade-in-delay-4 {
+  animation-delay: 0.4s;
+}
+
+.ds-fade-in-delay-5 {
+  animation-delay: 0.5s;
+}
+
+/* Scale In Animations */
+.ds-scale-in {
+  @apply opacity-0 scale-95;
+  animation: scaleIn 0.6s ease-out forwards;
+}
+
+.ds-scale-in-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.ds-scale-in-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.ds-scale-in-delay-3 {
+  animation-delay: 0.3s;
+}
+
+/* Shimmer Effect */
+.ds-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.ds-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 3s infinite;
+}
+
+/* Float Animation */
+.ds-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ==========================================
+   KEYFRAME ANIMATIONS
+   ========================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE GRID SYSTEM
+   ========================================== */
+
+.ds-grid-1 {
+  @apply grid grid-cols-1;
+}
+
+.ds-grid-2 {
+  @apply grid grid-cols-1 md:grid-cols-2;
+}
+
+.ds-grid-3 {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+}
+
+.ds-grid-4 {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4;
+}
+
+.ds-grid-gap {
+  @apply gap-6 md:gap-8;
+}
+
+.ds-grid-gap-sm {
+  @apply gap-4 md:gap-6;
+}
+
+/* ==========================================
+   UTILITY CLASSES
+   ========================================== */
+
+/* Glassmorphism */
+.ds-glass {
+  @apply backdrop-blur-xl bg-white/10 border border-white/20;
+}
+
+.ds-glass-subtle {
+  @apply backdrop-blur-sm bg-white/5 border border-white/10;
+}
+
+/* Status Indicators */
+.ds-status-success {
+  @apply text-green-400 border-green-500/30 bg-green-500/20;
+}
+
+.ds-status-warning {
+  @apply text-orange-400 border-orange-500/30 bg-orange-500/20;
+}
+
+.ds-status-error {
+  @apply text-red-400 border-red-500/30 bg-red-500/20;
+}
+
+.ds-status-info {
+  @apply text-blue-400 border-blue-500/30 bg-blue-500/20;
+}
+
+/* Interactive States */
+.ds-interactive {
+  @apply transition-all duration-300 cursor-pointer;
+}
+
+.ds-interactive:hover {
+  @apply transform scale-105;
+}
+
+/* Focus States */
+.ds-focus {
+  @apply focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50;
+}
