@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar/Navbar";
-import HeroSection from "@/modules/landing/components/HeroSection";
-import SectionDivider from "@/modules/landing/components/SectionDivider";
+import HeroSection from "@/modules/landing-page/components/HeroSection";
+import SectionDivider from "@/modules/landing-page/components/SectionDivider";
 
 export default function Home() {
   return (
