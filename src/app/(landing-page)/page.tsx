@@ -1,5 +1,7 @@
 import Navbar from "@/components/Navbar/Navbar";
+import AIProcessingTimeline from "@/modules/landing-page/components/AIProcessingTimeline";
 import HeroSection from "@/modules/landing-page/components/HeroSection";
+import MissionControlHub from "@/modules/landing-page/components/MissionControlHub";
 import SectionDivider from "@/modules/landing-page/components/SectionDivider";
 
 export default function Home() {
@@ -8,6 +10,8 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <SectionDivider />
+      <AIProcessingTimeline />
+      <MissionControlHub />
     </div>
   );
 }
