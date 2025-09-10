@@ -93,6 +93,17 @@
   animation: glass-pulse 2s ease-in-out infinite;
 }
 
+/* Glass Pulse only if the screen is less than 768px */
+.dynamic-glass-pulse {
+  animation: none;
+}
+
+@media (max-width: 768px) {
+  .dynamic-glass-pulse {
+    animation: glass-pulse 2s ease-in-out infinite;
+  }
+}
+
 /* Homepage icon animations */
 @keyframes bounce-mail {
   0% {
