@@ -2,7 +2,10 @@ import Navbar from "@/components/Navbar/Navbar";
 import AIProcessingTimeline from "@/modules/landing-page/components/AIProcessingTimeline";
 import HeroSection from "@/modules/landing-page/components/HeroSection";
 import MissionControlHub from "@/modules/landing-page/components/MissionControlHub";
+import OrderChangeAutomation from "@/modules/landing-page/components/OrderChangeAutomation";
+import RapidResolution from "@/modules/landing-page/components/RapidResolution";
 import SectionDivider from "@/modules/landing-page/components/SectionDivider";
+import SelectiveAutomation from "@/modules/landing-page/components/SelectiveAutomation";
 
 export default function Home() {
   return (
@@ -12,6 +15,9 @@ export default function Home() {
       <SectionDivider />
       <AIProcessingTimeline />
       <MissionControlHub />
+      <OrderChangeAutomation />
+      <RapidResolution />
+      <SelectiveAutomation />
     </div>
   );
 }
