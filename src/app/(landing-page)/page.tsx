@@ -5,6 +5,7 @@ import MissionControlHub from "@/modules/landing-page/components/MissionControlH
 import OrderChangeAutomation from "@/modules/landing-page/components/OrderChangeAutomation";
 import RapidResolution from "@/modules/landing-page/components/RapidResolution";
 import SectionDivider from "@/modules/landing-page/components/SectionDivider";
+import SelectiveAutomation from "@/modules/landing-page/components/SelectiveAutomation";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <MissionControlHub />
       <OrderChangeAutomation />
       <RapidResolution />
+      <SelectiveAutomation />
     </div>
   );
 }
