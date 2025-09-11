@@ -41,10 +41,12 @@ const RapidResolution = () => {
   return (
     <section className="relative ds-section-padding-mobile md:ds-section-padding-desktop overflow-hidden">
       {/* Animated Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 hidden md:block">
         <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 left-20 w-80 h-80 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
+
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-purple-900/50 md:hidden"></div>
 
       <div className="relative max-w-xl md:max-w-7xl mx-auto">
         {/* Section Header */}
