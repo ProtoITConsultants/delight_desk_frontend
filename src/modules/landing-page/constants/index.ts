@@ -1,10 +1,12 @@
 import {
   Brain,
   CheckCircle,
+  Heart,
   Mail,
   RefreshCw,
   Send,
   Shield,
+  Zap,
 } from "lucide-react";
 
 // Order Change Automation - Section
@@ -68,10 +70,37 @@ const ORDER_CHANGE_CARDS = [
   },
 ];
 
+// Rapid Resolution - Section
+const RAPID_RESOLUTION_FEATURES = [
+  {
+    Icon: Brain,
+    title: "Context-Aware AI Agent Responses",
+    description:
+      "The Delight Desk Agent reads entire conversation threads, customer history, and order details to craft genuinely helpful responses.",
+    className: "bg-gradient-to-br from-purple-500 to-pink-500",
+  },
+  {
+    Icon: Zap,
+    title: "One-Click Quick Actions",
+    description:
+      "Process refunds, send tracking info, and handle complex requests with single clicks. Turn 10-minute tasks into 10-second solutions.",
+    className: "bg-gradient-to-br from-blue-500 to-purple-500",
+  },
+  {
+    Icon: Heart,
+    title: "Customers That Actually Thank You",
+    description:
+      "Instant solutions with personalized responses turn frustrated customers into advocates.",
+    className: "bg-gradient-to-br from-green-500 to-blue-500",
+  },
+];
+
 const LANDING_PAGE_CONSTANTS = {
   // Order Change Automation - Section
   ORDER_CHANGE_STEPS,
   ORDER_CHANGE_CARDS,
+  // Rapid Resolution - Section
+  RAPID_RESOLUTION_FEATURES,
 };
 
 export { LANDING_PAGE_CONSTANTS };

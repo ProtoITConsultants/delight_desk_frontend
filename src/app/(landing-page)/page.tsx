@@ -3,6 +3,7 @@ import AIProcessingTimeline from "@/modules/landing-page/components/AIProcessing
 import HeroSection from "@/modules/landing-page/components/HeroSection";
 import MissionControlHub from "@/modules/landing-page/components/MissionControlHub";
 import OrderChangeAutomation from "@/modules/landing-page/components/OrderChangeAutomation";
+import RapidResolution from "@/modules/landing-page/components/RapidResolution";
 import SectionDivider from "@/modules/landing-page/components/SectionDivider";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
       <AIProcessingTimeline />
       <MissionControlHub />
       <OrderChangeAutomation />
+      <RapidResolution />
     </div>
   );
 }
