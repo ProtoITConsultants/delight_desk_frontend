@@ -1,4 +1,5 @@
-import Navbar from "@/components/Navbar/Navbar";
+import LandingPageFooter from "@/modules/landing-page/components/Footer";
+import LandingPageNavbar from "@/modules/landing-page/components/Navbar";
 import AIProcessingTimeline from "@/modules/landing-page/sections/AIProcessingTimeline";
 import CustomerSupport from "@/modules/landing-page/sections/CustomerSupport";
 import FAQs from "@/modules/landing-page/sections/FAQs";
@@ -14,7 +15,9 @@ import Testimonials from "@/modules/landing-page/sections/Testimonials";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
-      <Navbar />
+      {/* Navbar */}
+      <LandingPageNavbar />
+      {/* Content - Sections */}
       <HeroSection />
       <SectionDivider />
       <AIProcessingTimeline />
@@ -26,6 +29,8 @@ export default function Home() {
       <CustomerSupport />
       <Testimonials />
       <FAQs />
+      {/* Footer */}
+      <LandingPageFooter />
     </div>
   );
 }
