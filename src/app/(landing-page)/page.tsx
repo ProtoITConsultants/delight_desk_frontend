@@ -1,6 +1,7 @@
 import LandingPageFooter from "@/modules/landing-page/components/Footer";
 import LandingPageNavbar from "@/modules/landing-page/components/Navbar";
 import AIProcessingTimeline from "@/modules/landing-page/sections/AIProcessingTimeline";
+import ContactUs from "@/modules/landing-page/sections/ContactUs";
 import CustomerSupport from "@/modules/landing-page/sections/CustomerSupport";
 import FAQs from "@/modules/landing-page/sections/FAQs";
 import HeroSection from "@/modules/landing-page/sections/HeroSection";
@@ -29,6 +30,7 @@ export default function Home() {
       <CustomerSupport />
       <Testimonials />
       <FAQs />
+      <ContactUs />
       {/* Footer */}
       <LandingPageFooter />
     </div>
