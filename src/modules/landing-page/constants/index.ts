@@ -95,12 +95,84 @@ const RAPID_RESOLUTION_FEATURES = [
   },
 ];
 
+// Testimonials - Section
+const TESTIMONIALS = [
+  {
+    rating: 5,
+    feedback:
+      "I am certain our customer satisfaction has improved after implementing Delight Desk. Customers are blown away by instant responses.",
+    name: "Marie Santana",
+    role: "Customer Success Manager",
+    company: "Wellness Box Co.",
+    avatarUrl:
+      "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop&crop=face",
+    companyColor: "text-green-400",
+  },
+  {
+    rating: 5,
+    feedback:
+      "My team loves the dashboard—they can instantly look up any customer, process refunds, manage subscriptions, all without the dreaded WooCommerce login.",
+    name: "Mike Torres",
+    role: "Founder",
+    company: "Coffee Monthly",
+    avatarUrl:
+      "https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop&crop=face",
+    companyColor: "text-blue-400",
+  },
+  {
+    rating: 5,
+    feedback:
+      "The promo code refund automation is a game-changer. Customers used to wait days for responses, now they get instant refunds and are so grateful.",
+    name: "Jessica Park",
+    role: "E-commerce Manager",
+    company: "BeautyBuzz",
+    avatarUrl:
+      "https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop&crop=face",
+    companyColor: "text-pink-400",
+  },
+  {
+    rating: 5,
+    feedback:
+      "Our churn rate dropped 28% since launch. When customers can instantly pause subscriptions instead of waiting for support, they don't cancel out of frustration.",
+    name: "David Blum",
+    role: "Operations Director",
+    company: "HealthyMeals Daily",
+    avatarUrl:
+      "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop&crop=face",
+    companyColor: "text-emerald-400",
+  },
+  {
+    rating: 5,
+    feedback:
+      "I was skeptical about AI customer service, but this is different. We've gone from drowning in tickets to handling 3x more customers.",
+    name: "Emma Rodriguez",
+    role: "CEO",
+    company: "PetBox Plus",
+    avatarUrl:
+      "https://images.pexels.com/photos/3786525/pexels-photo-3786525.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop&crop=face",
+    companyColor: "text-yellow-400",
+  },
+  {
+    rating: 5,
+    feedback:
+      "The subscription management automation saved us countless hours. No more waiting for human intervention, no more annoyance for us!",
+    name: "Ben Harmon",
+    role: "Operations Manager",
+    company: "FreshBox Delivery",
+    avatarUrl:
+      "https://images.pexels.com/photos/3789888/pexels-photo-3789888.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop&crop=face",
+    companyColor: "text-indigo-400",
+  },
+];
+
 const LANDING_PAGE_CONSTANTS = {
   // Order Change Automation - Section
   ORDER_CHANGE_STEPS,
   ORDER_CHANGE_CARDS,
   // Rapid Resolution - Section
   RAPID_RESOLUTION_FEATURES,
+  // Testimonials - Section
+  TESTIMONIALS,
 };
 
 export { LANDING_PAGE_CONSTANTS };
