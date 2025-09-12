@@ -6,6 +6,7 @@ import OrderChangeAutomation from "@/modules/landing-page/components/OrderChange
 import RapidResolution from "@/modules/landing-page/components/RapidResolution";
 import SectionDivider from "@/modules/landing-page/components/SectionDivider";
 import SelectiveAutomation from "@/modules/landing-page/components/SelectiveAutomation";
+import SimpleSetup from "@/modules/landing-page/components/SimpleSetup";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <OrderChangeAutomation />
       <RapidResolution />
       <SelectiveAutomation />
+      <SimpleSetup />
     </div>
   );
 }
