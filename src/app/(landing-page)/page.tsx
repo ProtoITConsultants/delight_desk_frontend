@@ -1,15 +1,15 @@
 import Navbar from "@/components/Navbar/Navbar";
-import AIProcessingTimeline from "@/modules/landing-page/components/AIProcessingTimeline";
-import CustomerSupport from "@/modules/landing-page/components/CustomerSupport";
-import FAQs from "@/modules/landing-page/components/FAQs";
-import HeroSection from "@/modules/landing-page/components/HeroSection";
-import MissionControlHub from "@/modules/landing-page/components/MissionControlHub";
-import OrderChangeAutomation from "@/modules/landing-page/components/OrderChangeAutomation";
-import RapidResolution from "@/modules/landing-page/components/RapidResolution";
-import SectionDivider from "@/modules/landing-page/components/SectionDivider";
-import SelectiveAutomation from "@/modules/landing-page/components/SelectiveAutomation";
-import SimpleSetup from "@/modules/landing-page/components/SimpleSetup";
-import Testimonials from "@/modules/landing-page/components/Testimonials";
+import AIProcessingTimeline from "@/modules/landing-page/sections/AIProcessingTimeline";
+import CustomerSupport from "@/modules/landing-page/sections/CustomerSupport";
+import FAQs from "@/modules/landing-page/sections/FAQs";
+import HeroSection from "@/modules/landing-page/sections/HeroSection";
+import MissionControlHub from "@/modules/landing-page/sections/MissionControlHub";
+import OrderChangeAutomation from "@/modules/landing-page/sections/OrderChangeAutomation";
+import RapidResolution from "@/modules/landing-page/sections/RapidResolution";
+import SectionDivider from "@/modules/landing-page/sections/SectionDivider";
+import SelectiveAutomation from "@/modules/landing-page/sections/SelectiveAutomation";
+import SimpleSetup from "@/modules/landing-page/sections/SimpleSetup";
+import Testimonials from "@/modules/landing-page/sections/Testimonials";
 
 export default function Home() {
   return (
