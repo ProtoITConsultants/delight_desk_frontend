@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar/Navbar";
 import AIProcessingTimeline from "@/modules/landing-page/components/AIProcessingTimeline";
 import CustomerSupport from "@/modules/landing-page/components/CustomerSupport";
+import FAQs from "@/modules/landing-page/components/FAQs";
 import HeroSection from "@/modules/landing-page/components/HeroSection";
 import MissionControlHub from "@/modules/landing-page/components/MissionControlHub";
 import OrderChangeAutomation from "@/modules/landing-page/components/OrderChangeAutomation";
@@ -24,6 +25,7 @@ export default function Home() {
       <SimpleSetup />
       <CustomerSupport />
       <Testimonials />
+      <FAQs />
     </div>
   );
 }

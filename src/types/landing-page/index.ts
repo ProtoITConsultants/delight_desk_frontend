@@ -30,6 +30,13 @@ type TESTIMONIAL_CARD_TYPES = {
   avatarUrl: string;
 };
 
+// FAQs - Section
+type FAQS_TYPE = {
+  _id: number;
+  question: string;
+  answer: string;
+};
+
 export type {
   // Order Change Automation - Section
   ORDER_CHANGE_AUTOMATION_STEPS_TYPES,
@@ -38,4 +45,6 @@ export type {
   RAPID_RESOLUTION_FEATURE_TYPES,
   // Testimonials - Section
   TESTIMONIAL_CARD_TYPES,
+  // FAQs - Section
+  FAQS_TYPE,
 };

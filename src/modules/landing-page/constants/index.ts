@@ -1,3 +1,4 @@
+import { FAQS_TYPE } from "@/types/landing-page";
 import {
   Brain,
   CheckCircle,
@@ -165,6 +166,71 @@ const TESTIMONIALS = [
   },
 ];
 
+// FAQs - Section
+const FAQs: FAQS_TYPE[] = [
+  {
+    _id: 1,
+    question: "What if I don't trust the AI agent?",
+    answer:
+      "That's why we have an approval queue. You have full control - you can manually approve every single automation before it processes, for as long as you want. Keep it on forever or turn it off when you're ready. You'll save time either way.",
+  },
+  {
+    _id: 2,
+    question: "Do I continue to work in my existing inbox?",
+    answer:
+      "Yes, because that's where you're comfortable and efficient. We're not forcing you into a helpdesk platform. We're just giving you inbox superpowers.",
+  },
+  {
+    _id: 3,
+    question: "What if customers realize they're talking to an AI agent?",
+    answer:
+      "We're completely transparent - every email clearly identifies it's from the AI agent. Customers actually prefer this because it resolves their issues instantly without waiting. Fast problem resolution matters more than who provides it.",
+  },
+  {
+    _id: 4,
+    question: "Will this replace my customer service team?",
+    answer:
+      " No - it amplifies them. AI handles the routine 80% (order status, simple refunds) so your team can focus on complex issues, VIP customers, and relationship building.",
+  },
+  {
+    _id: 5,
+    question: "What if the AI makes a mistake with a customer?",
+    answer:
+      "Our AI only handles transactional requests it's 98%+ confident about. Complex or unclear requests are automatically escalated to your team.",
+  },
+  {
+    _id: 6,
+    question: "How do I know it won't hurt my brand?",
+    answer:
+      "Customers prefer fast resolution over waiting. The approval queue lets you review everything initially, and faster response times typically improve customer satisfaction.",
+  },
+  {
+    _id: 7,
+    question: "What if my business is too unique or complex?",
+    answer:
+      " We integrate with WooCommerce, Shopify, and major email providers. The AI learns your specific products, policies, and common issues. Unique requests automatically go to your team.",
+  },
+  {
+    _id: 8,
+    question: "Is this just another chatbot?",
+    answer:
+      "No - this processes actual email tickets in your existing workflow. No chatbot widget, no customer behavior change required. It works with Gmail, Outlook, and your current setup.",
+  },
+  {
+    _id: 9,
+    question: "What about data security?",
+    answer:
+      "Enterprise-grade security with encrypted data transmission. We never store sensitive customer information permanently - only process it to generate responses.",
+  },
+  {
+    _id: 10,
+    question:
+      "Do the emails get sent out from my company or from Delight Desk?",
+    answer:
+      "They all go out from your company&apos;s email address, professionally formatted, and with language clarifying that it is AI and your company is using it in order to benefit its customers. Customers can reply back anytime and it will escalate to a human.",
+  },
+];
+
 const LANDING_PAGE_CONSTANTS = {
   // Order Change Automation - Section
   ORDER_CHANGE_STEPS,
@@ -173,6 +239,8 @@ const LANDING_PAGE_CONSTANTS = {
   RAPID_RESOLUTION_FEATURES,
   // Testimonials - Section
   TESTIMONIALS,
+  // FAQs - Section
+  FAQs,
 };
 
 export { LANDING_PAGE_CONSTANTS };
