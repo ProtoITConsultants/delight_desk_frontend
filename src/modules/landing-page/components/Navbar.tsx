@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, X } from "lucide-react";
 
-const Navbar = () => {
+const LandingPageNavbar = () => {
   // Local States
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -138,4 +138,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default LandingPageNavbar;
