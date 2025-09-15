@@ -4,6 +4,7 @@ import AIProcessingTimeline from "@/modules/landing-page/sections/AIProcessingTi
 import ContactUs from "@/modules/landing-page/sections/ContactUs";
 import CustomerSupport from "@/modules/landing-page/sections/CustomerSupport";
 import FAQs from "@/modules/landing-page/sections/FAQs";
+import FounderStory from "@/modules/landing-page/sections/FounderStory";
 import HeroSection from "@/modules/landing-page/sections/HeroSection";
 import MissionControlHub from "@/modules/landing-page/sections/MissionControlHub";
 import OrderChangeAutomation from "@/modules/landing-page/sections/OrderChangeAutomation";
@@ -29,6 +30,7 @@ export default function Home() {
       <SimpleSetup />
       <CustomerSupport />
       <Testimonials />
+      <FounderStory />
       <FAQs />
       <ContactUs />
       {/* Footer */}
