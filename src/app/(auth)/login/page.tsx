@@ -18,6 +18,7 @@ const LoginPage = () => {
           Sign in to access your customer service dashboard
         </p>
       </div>
+      {/* Login Card */}
       <Card>
         <CardHeader>
           <CardTitle className="text-xl text-center">Sign In</CardTitle>
@@ -26,7 +27,10 @@ const LoginPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Login Form */}
           <LoginForm />
+
+          {/* Forgot Password - Link */}
           <div className="mt-4 text-center">
             <Link
               href={"/forgot-password"}
@@ -36,7 +40,7 @@ const LoginPage = () => {
               Forgot your password?
             </Link>
           </div>
-
+          {/* Signup Page - Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don&apos;t have an account?{" "}
