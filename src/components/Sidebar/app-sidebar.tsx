@@ -32,7 +32,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
+    <Sidebar className="flex-1 flex flex-col min-h-0 bg-white border-r border-gray-200">
       <SidebarHeader className="p-0">
         <div className="flex items-center h-16 flex-shrink-0 px-4 border-b border-gray-200">
           <Image
@@ -63,7 +63,7 @@ export function AppSidebar() {
                         className={cn(
                           isAiAgentsActive
                             ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
-                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                           "w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]"
                         )}
                       >
@@ -85,7 +85,7 @@ export function AppSidebar() {
                             className={cn(
                               isSubItemActive
                                 ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
-                                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                               "group flex items-center px-2 py-2 text-sm rounded-md border border-transparent cursor-pointer"
                             )}
                           >
@@ -108,7 +108,7 @@ export function AppSidebar() {
                     className={cn(
                       isActive
                         ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
-                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                       "group flex items-center px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]"
                     )}
                   >
@@ -130,7 +130,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-100 hover:text-gray-900 border border-transparent hover:border-gray-200 h-[38px]">
+                <SidebarMenuButton className="w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200 h-[38px]">
                   <div className="flex items-center">
                     <Settings className="mr-3 h-4 w-4 text-gray-400" />
                     Settings & More
