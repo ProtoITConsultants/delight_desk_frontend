@@ -32,7 +32,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="flex-1 flex flex-col min-h-0 bg-white border-r border-gray-200">
+    <Sidebar>
       <SidebarHeader className="p-0">
         <div className="flex items-center h-16 flex-shrink-0 px-4 border-b border-gray-200">
           <Image
