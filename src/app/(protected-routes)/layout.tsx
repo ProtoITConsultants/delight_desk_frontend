@@ -1,5 +1,6 @@
+import DashboardNavbar from "@/components/dashboard-navbar/dashboard-navbar";
 import { AppSidebar } from "@/components/Sidebar/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
@@ -8,13 +9,13 @@ export default function DashboardLayout({
 }>) {
   return (
     <div className="min-h-screen flex bg-gray-50">
+      {/* Sidebar -Provider */}
+      {/* Wraps whole app to cover mobile version through trigger */}
       <SidebarProvider>
         <AppSidebar />
-        <div className="lg:pl-64 flex flex-col flex-1">
-          <main>
-            <SidebarTrigger />
-            {children}
-          </main>
+        <div className="flex flex-col flex-1">
+          <DashboardNavbar />
+          <main>{children}</main>
         </div>
       </SidebarProvider>
     </div>
