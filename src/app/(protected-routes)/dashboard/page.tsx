@@ -17,6 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AIAssistantQueue from "@/modules/protected-routes/dashboard/components/AIAssistantQueue";
+import ActivityLog, {
+  ActivityLogCardProps,
+} from "@/modules/protected-routes/dashboard/components/ActivityLog";
 
 const ESCALATION_QUEUE_TEMP_EMAILS = [
   {
@@ -45,6 +48,36 @@ const ESCALATION_QUEUE_TEMP_EMAILS = [
     customerEmailBody:
       "General inquiry requiring human review: The customer initially requested an update to their shipping address to ensure delivery. The follow-up email confirms that the change was made, indicating the customer's concern was about the shipping address.",
     createdAt: "8/25/2025, 6:46:51 PM",
+  },
+];
+
+const ACTIVIY_LOGS_TEMP: ActivityLogCardProps[] = [
+  {
+    id: "1",
+    executedBy: "human",
+    customerEmail: "rcmartin2525@gmail.com",
+    details:
+      "You successfully found order 19044 for customer rcmartin2525@gmail.com. Status: completed",
+    status: "completed",
+    createdAt: "1:00:25 AM",
+  },
+  {
+    id: "2",
+    executedBy: "ai",
+    customerEmail: "rcmartin2525@gmail.com",
+    details:
+      "AI successfully found order 19044 for customer rcmartin2525@gmail.com. Status: completed",
+    status: "failed",
+    createdAt: "1:00:01 AM",
+  },
+  {
+    id: "3",
+    executedBy: "human",
+    customerEmail: "ARPOWER17@gmail.com",
+    details:
+      "AI successfully found order 19006 for customer ARPOWER17@gmail.com. Status: completed",
+    status: "pending",
+    createdAt: "1:00:25 AM",
   },
 ];
 
@@ -180,7 +213,19 @@ const Dashboard = () => {
           }
           description="Real-time ticket processing activity"
         >
-          <div></div>
+          {escalationsLoading ? (
+            <ActivityLog.ActivityLogSkeleton />
+          ) : ACTIVIY_LOGS_TEMP.length === 0 ? (
+            <div className="p-4 text-center text-gray-500">
+              No recent activity
+            </div>
+          ) : (
+            <div className="space-y-3 p-4">
+              {ACTIVIY_LOGS_TEMP.slice(0, 10).map((activity) => (
+                <ActivityLog.ItemCard key={activity.id} {...activity} />
+              ))}
+            </div>
+          )}
         </DashboardCardsRoot>
       </div>
     </div>
