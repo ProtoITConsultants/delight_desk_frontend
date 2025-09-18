@@ -19,7 +19,7 @@ const TimeRangeSelector = ({
 }: TimeRangeSelectorProps) => {
   return (
     <Select value={timeRange} onValueChange={setTimeRange}>
-      <SelectTrigger className="w-full sm:w-[180px] hover:cursor-pointer">
+      <SelectTrigger className="w-full sm:w-[180px] hover:cursor-pointer bg-white">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

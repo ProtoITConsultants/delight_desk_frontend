@@ -1,8 +1,7 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
 import ConnectionCard from "@/modules/protected-routes/connections-page/components/connection-card";
 import ConnectionsHeader from "@/modules/protected-routes/connections-page/components/Header";
-import { Store, Mail } from "lucide-react";
+import { Store, Mail, Info } from "lucide-react";
 
 const ConnectionsPage = () => {
   return (
@@ -92,34 +91,41 @@ const ConnectionsPage = () => {
           onCreateConnection={() => {}}
           onManageConnection={() => {}}
         />
-        {/* Placeholder for future 3PL integrations */}
-        <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 opacity-60">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-500 dark:text-gray-400">
-                  More 3PLs
-                </h3>
-                <p className="text-sm text-gray-400 dark:text-gray-500">
-                  Coming Soon
-                </p>
-              </div>
+        <ConnectionCard.Item
+          title="Shipstation"
+          description="Shipping Platform"
+          icon={
+            <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center">
+              <svg
+                className="w-5 h-5 text-orange-600 dark:text-orange-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+              </svg>
             </div>
-            <Badge
-              variant="secondary"
-              className="bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full"
-            >
-              Coming Soon
-            </Badge>
+          }
+          connectionEstablished={false}
+          onCreateConnection={() => {}}
+          onManageConnection={() => {}}
+        />
+
+        {/* Callout for users without ShipBob/Shipstation */}
+        <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 col-span-2">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+            </div>
+            <div>
+              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                Don&apos;t use ShipBob or Shipstation?
+              </h4>
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                You can still make full use of all AI agents! You&apos;ll see
+                configuration options in the settings for each individual agent
+                to customize their behavior for your fulfillment process.
+              </p>
+            </div>
           </div>
         </div>
       </ConnectionCard.Root>
