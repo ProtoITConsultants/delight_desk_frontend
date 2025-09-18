@@ -1,9 +1,8 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import ConnectionCard from "@/modules/protected-routes/connections-page/components/connection-card";
-import ConnectionTesting from "@/modules/protected-routes/connections-page/components/connection-testing";
 import ConnectionsHeader from "@/modules/protected-routes/connections-page/components/Header";
-import { Store, Mail, TestTube } from "lucide-react";
+import { Store, Mail } from "lucide-react";
 
 const ConnectionsPage = () => {
   return (
@@ -123,14 +122,6 @@ const ConnectionsPage = () => {
             </Badge>
           </div>
         </div>
-      </ConnectionCard.Root>
-      {/* Email Testing Section */}
-      <ConnectionCard.Root
-        title="Test Email Connection"
-        description="Test your complete email workflow with real order data - sends test email to your connected account"
-        icon={<TestTube className="w-5 h-5" />}
-      >
-        <ConnectionTesting />
       </ConnectionCard.Root>
     </div>
   );
