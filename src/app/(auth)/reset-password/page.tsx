@@ -317,7 +317,11 @@ const ResetPassword = () => {
 };
 
 const ResetPasswordPage = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense
+    fallback={
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2094f3] mx-auto"></div>
+    }
+  >
     <ResetPassword />
   </Suspense>
 );
