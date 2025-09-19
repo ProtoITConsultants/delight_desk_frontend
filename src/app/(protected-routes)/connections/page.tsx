@@ -1,9 +1,13 @@
 "use client";
+import { useState } from "react";
 import ConnectionCard from "@/modules/protected-routes/connections-page/components/connection-card";
 import ConnectionsHeader from "@/modules/protected-routes/connections-page/components/Header";
+import ShipStationConnectionalModal from "@/modules/protected-routes/connections-page/components/modals/ShipStationConnectionalModal";
 import { Store, Mail, Info } from "lucide-react";
 
 const ConnectionsPage = () => {
+  // Local States
+  const [showShipstationDialog, setShowShipstationDialog] = useState(false);
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
@@ -91,6 +95,7 @@ const ConnectionsPage = () => {
           onCreateConnection={() => {}}
           onManageConnection={() => {}}
         />
+        {/* Shipstation Connection */}
         <ConnectionCard.Item
           title="Shipstation"
           description="Shipping Platform"
@@ -106,7 +111,7 @@ const ConnectionsPage = () => {
             </div>
           }
           connectionEstablished={false}
-          onCreateConnection={() => {}}
+          onCreateConnection={() => setShowShipstationDialog(true)}
           onManageConnection={() => {}}
         />
 
@@ -129,6 +134,13 @@ const ConnectionsPage = () => {
           </div>
         </div>
       </ConnectionCard.Root>
+
+      {/* Connection Modals */}
+      {/* ShipStation Connection - Modal */}
+      <ShipStationConnectionalModal
+        showShipstationDialog={showShipstationDialog}
+        setShowShipstationDialog={setShowShipstationDialog}
+      />
     </div>
   );
 };

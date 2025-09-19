@@ -80,7 +80,7 @@ const Item = ({
         variant="outline"
         size="sm"
         className="w-full h-9"
-        onClick={() => onCreateConnection()}
+        onClick={() => onManageConnection()}
       >
         <Settings className="w-4 h-4 mr-2" />
         Manage Connection
@@ -89,7 +89,7 @@ const Item = ({
       <Button
         size="sm"
         className="w-full h-9"
-        onClick={() => onManageConnection()}
+        onClick={() => onCreateConnection()}
       >
         Connect {title}
       </Button>
