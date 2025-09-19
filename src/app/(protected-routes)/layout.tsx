@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import DashboardNavbar from "@/components/dashboard-navbar/dashboard-navbar";
 import { AppSidebar } from "@/components/Sidebar/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+
+export const metadata: Metadata = {
+  title: "Dashboard - Delight Desk",
+};
 
 export default function DashboardLayout({
   children,
