@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import AuthFooter from "@/modules/auth/components/AuthFooter";
 import LoginForm from "@/modules/auth/components/LoginForm";
 import Link from "next/link";
 
@@ -55,6 +56,8 @@ const LoginPage = () => {
           </div>
         </CardContent>
       </Card>
+      {/* Footer */}
+      <AuthFooter />
     </>
   );
 };
