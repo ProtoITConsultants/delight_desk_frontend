@@ -4,10 +4,12 @@ import ConnectionCard from "@/modules/protected-routes/connections-page/componen
 import ConnectionsHeader from "@/modules/protected-routes/connections-page/components/Header";
 import ShipStationConnectionalModal from "@/modules/protected-routes/connections-page/components/modals/ShipStationConnectionalModal";
 import { Store, Mail, Info } from "lucide-react";
+import WooCommerceConnectionModal from "@/modules/protected-routes/connections-page/components/modals/WooCommerceConnectionModal";
 
 const ConnectionsPage = () => {
   // Local States
   const [showShipstationDialog, setShowShipstationDialog] = useState(false);
+  const [showWooCommerceDialog, setShowWooCommerceDialog] = useState(false);
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
@@ -29,7 +31,7 @@ const ConnectionsPage = () => {
             </div>
           }
           connectionEstablished={true}
-          onCreateConnection={() => {}}
+          onCreateConnection={() => setShowWooCommerceDialog(true)}
           onManageConnection={() => {}}
         />
       </ConnectionCard.Root>
@@ -136,6 +138,11 @@ const ConnectionsPage = () => {
       </ConnectionCard.Root>
 
       {/* Connection Modals */}
+      {/* WooCommerce Connection - Modal */}
+      <WooCommerceConnectionModal
+        isModalOpen={showWooCommerceDialog}
+        setIsModalOpen={setShowWooCommerceDialog}
+      />
       {/* ShipStation Connection - Modal */}
       <ShipStationConnectionalModal
         showShipstationDialog={showShipstationDialog}

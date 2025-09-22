@@ -29,7 +29,7 @@ const ESCALATION_QUEUE_TEMP_EMAILS = [
     customerEmail: "Krystle Law <krystle.law@getsieveapp.com>",
     customerEmailBody:
       "General inquiry requiring human review: The email is a follow-up from a business representative seeking to discuss compliance solutions with the recipient. There is no indication of a customer service issue or request for assistance related to orders, payments, or subscriptions. The intent is to initiate a business conversation rather than address a specific customer service concern.",
-    createdAt: "8/26/2025, 11:33:43 PM",
+    createdAt: "26/8/2025, 11:33:43 PM",
   },
   {
     escalationQueueId: "2",
@@ -38,7 +38,7 @@ const ESCALATION_QUEUE_TEMP_EMAILS = [
     customerEmail: "Lysa Robb <lysa.robb@gmail.com>",
     customerEmailBody:
       "General inquiry requiring human review: The email is a follow-up from a business representative seeking to discuss compliance solutions with the recipient. There is no indication of a customer service issue or request for assistance related to orders, payments, or subscriptions. The intent is to initiate a business conversation rather than address a specific customer service concern.",
-    createdAt: "8/26/2025, 11:33:43 PM",
+    createdAt: "26/8/2025, 11:33:43 PM",
   },
   {
     escalationQueueId: "3",
@@ -47,7 +47,7 @@ const ESCALATION_QUEUE_TEMP_EMAILS = [
     customerEmail: "B B <cd2155@hotmail.com>",
     customerEmailBody:
       "General inquiry requiring human review: The customer initially requested an update to their shipping address to ensure delivery. The follow-up email confirms that the change was made, indicating the customer's concern was about the shipping address.",
-    createdAt: "8/25/2025, 6:46:51 PM",
+    createdAt: "26/8/2025, 6:46:51 PM",
   },
 ];
 
