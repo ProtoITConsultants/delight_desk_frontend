@@ -1,11 +1,10 @@
 import { Metadata } from "next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, Shield, Store, User, Zap } from "lucide-react";
+import { CreditCard, Shield, User, Zap } from "lucide-react";
 import AccountSecurity from "@/modules/protected-routes/account-settings/sections/AccountSecurity";
 import ProfileSection from "@/modules/protected-routes/account-settings/sections/ProfileSection";
 import BillingandSubscription from "@/modules/protected-routes/account-settings/sections/BillingandSubscription";
 import PlanUsage from "@/modules/protected-routes/account-settings/sections/PlanUsage";
-import StoresInfo from "@/modules/protected-routes/account-settings/sections/StoresInfo";
 
 export const metadata: Metadata = {
   title: "Account Settings - Delight Desk",
@@ -55,13 +54,6 @@ const AccountSettings = () => {
             <Shield className="h-4 w-4" />
             Security
           </TabsTrigger>
-          <TabsTrigger
-            value="stores"
-            className="flex items-center gap-2 p-[6px_12px] cursor-pointer"
-          >
-            <Store className="h-4 w-4" />
-            Stores
-          </TabsTrigger>
         </TabsList>
         {/* Tabs Content */}
         {/* User Profile - Tab */}
@@ -79,10 +71,6 @@ const AccountSettings = () => {
         {/* Account Security - Tab */}
         <TabsContent value="security">
           <AccountSecurity />
-        </TabsContent>
-        {/* Stores - Tab */}
-        <TabsContent value="stores">
-          <StoresInfo />
         </TabsContent>
       </Tabs>
     </div>
