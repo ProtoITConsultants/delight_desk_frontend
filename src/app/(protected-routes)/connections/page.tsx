@@ -5,11 +5,30 @@ import ConnectionsHeader from "@/modules/protected-routes/connections-page/compo
 import ShipStationConnectionalModal from "@/modules/protected-routes/connections-page/components/modals/ShipStationConnectionalModal";
 import { Store, Mail, Info } from "lucide-react";
 import WooCommerceConnectionModal from "@/modules/protected-routes/connections-page/components/modals/WooCommerceConnectionModal";
+import ManageConnectionModal from "@/modules/protected-routes/connections-page/components/modals/ManageConnectionModal";
+
+type connectionModalType = {
+  isModalOpen: boolean;
+  type: "create-connection" | "manage-connection" | "";
+};
 
 const ConnectionsPage = () => {
   // Local States
-  const [showShipstationDialog, setShowShipstationDialog] = useState(false);
-  const [showWooCommerceDialog, setShowWooCommerceDialog] = useState(false);
+  const [shipstationDialog, setShipstationDialog] =
+    useState<connectionModalType>({
+      isModalOpen: false,
+      type: "",
+    });
+  const [wooCommerceDialog, setWooCommerceDialog] =
+    useState<connectionModalType>({
+      isModalOpen: false,
+      type: "",
+    });
+
+  const [gmailDialog, setGmailDialog] = useState<connectionModalType>({
+    isModalOpen: false,
+    type: "",
+  });
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
@@ -30,9 +49,19 @@ const ConnectionsPage = () => {
               <Store className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
           }
-          connectionEstablished={false}
-          onCreateConnection={() => setShowWooCommerceDialog(true)}
-          onManageConnection={() => {}}
+          connectionEstablished={true}
+          onCreateConnection={() =>
+            setWooCommerceDialog({
+              isModalOpen: true,
+              type: "create-connection",
+            })
+          }
+          onManageConnection={() => {
+            setWooCommerceDialog({
+              isModalOpen: true,
+              type: "manage-connection",
+            });
+          }}
         />
       </ConnectionCard.Root>
       {/* Email Connections */}
@@ -51,8 +80,18 @@ const ConnectionsPage = () => {
             </div>
           }
           connectionEstablished={true}
-          onCreateConnection={() => {}}
-          onManageConnection={() => {}}
+          onCreateConnection={() =>
+            setGmailDialog({
+              isModalOpen: true,
+              type: "create-connection",
+            })
+          }
+          onManageConnection={() => {
+            setGmailDialog({
+              isModalOpen: true,
+              type: "manage-connection",
+            });
+          }}
         />{" "}
         {/* Outlook Connection */}
         <ConnectionCard.Item
@@ -64,8 +103,18 @@ const ConnectionsPage = () => {
             </div>
           }
           connectionEstablished={false}
-          onCreateConnection={() => {}}
-          onManageConnection={() => {}}
+          onCreateConnection={() =>
+            setGmailDialog({
+              isModalOpen: true,
+              type: "create-connection",
+            })
+          }
+          onManageConnection={() => {
+            setGmailDialog({
+              isModalOpen: true,
+              type: "manage-connection",
+            });
+          }}
         />
       </ConnectionCard.Root>
       {/* Fulfillment Integration */}
@@ -113,8 +162,18 @@ const ConnectionsPage = () => {
             </div>
           }
           connectionEstablished={false}
-          onCreateConnection={() => setShowShipstationDialog(true)}
-          onManageConnection={() => {}}
+          onCreateConnection={() =>
+            setShipstationDialog({
+              isModalOpen: true,
+              type: "create-connection",
+            })
+          }
+          onManageConnection={() =>
+            setWooCommerceDialog({
+              isModalOpen: true,
+              type: "manage-connection",
+            })
+          }
         />
 
         {/* Callout for users without ShipBob/Shipstation */}
@@ -140,13 +199,64 @@ const ConnectionsPage = () => {
       {/* Connection Modals */}
       {/* WooCommerce Connection - Modal */}
       <WooCommerceConnectionModal
-        isModalOpen={showWooCommerceDialog}
-        setIsModalOpen={setShowWooCommerceDialog}
+        isModalOpen={
+          wooCommerceDialog.isModalOpen &&
+          wooCommerceDialog.type === "create-connection"
+        }
+        onCloseModal={() =>
+          setWooCommerceDialog({
+            isModalOpen: false,
+            type: "",
+          })
+        }
       />
       {/* ShipStation Connection - Modal */}
       <ShipStationConnectionalModal
-        showShipstationDialog={showShipstationDialog}
-        setShowShipstationDialog={setShowShipstationDialog}
+        showShipstationDialog={
+          shipstationDialog.isModalOpen &&
+          shipstationDialog.type === "create-connection"
+        }
+        onCloseModal={() =>
+          setShipstationDialog({
+            isModalOpen: false,
+            type: "",
+          })
+        }
+      />
+
+      {/* Manage Connections Modal */}
+      <ManageConnectionModal
+        isModalOpen={
+          gmailDialog.isModalOpen && gmailDialog.type === "manage-connection"
+        }
+        onCloseModal={() =>
+          setGmailDialog({
+            isModalOpen: false,
+            type: "",
+          })
+        }
+        type="gmail"
+        status="active"
+        tokenStatus="valid"
+        lastSynced="1 hour ago"
+        email="rcmartin2525@gmail"
+      />
+      {/* For Now I would have two separate Modals for each connection */}
+      <ManageConnectionModal
+        isModalOpen={
+          wooCommerceDialog.isModalOpen &&
+          wooCommerceDialog.type === "manage-connection"
+        }
+        onCloseModal={() =>
+          setWooCommerceDialog({
+            isModalOpen: false,
+            type: "",
+          })
+        }
+        type="wooCommerce"
+        status="active"
+        storeURL="https://example.com"
+        wooCommerceConnectionType="api-keys"
       />
     </div>
   );

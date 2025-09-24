@@ -13,12 +13,12 @@ import { useState } from "react";
 import { TimezoneSelect } from "../timezone-select";
 type WooCommerceConnectionModalProps = {
   isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onCloseModal: () => void;
 };
 
 const WooCommerceConnectionModal = ({
   isModalOpen,
-  setIsModalOpen,
+  onCloseModal,
 }: WooCommerceConnectionModalProps) => {
   const [wooCommerceStoreURL, setWooCommerceStoreURL] = useState("");
   const [wooConnectionMethod, setWooConnectionMethod] = useState("oauth");
@@ -32,7 +32,7 @@ const WooCommerceConnectionModal = ({
   const handleWooCommerceAPIConnect = () => {};
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+    <Dialog open={isModalOpen} onOpenChange={() => onCloseModal()}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Connect WooCommerce Store</DialogTitle>
@@ -159,7 +159,7 @@ const WooCommerceConnectionModal = ({
           <div className="grid grid-cols-2 gap-2 pt-2">
             <Button
               variant="outline"
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => onCloseModal()}
               className="w-full"
             >
               Cancel
