@@ -7,6 +7,7 @@ import {
   Globe,
   Loader2,
   MessageSquare,
+  PlayCircle,
   Plus,
   Sparkles,
   Trash2,
@@ -525,6 +526,94 @@ const ManuallContentForm = () => {
   );
 };
 
+// AI Performance Tab
+const AiPerformanceTestForm = () => {
+  const [playgroundQuery, setPlaygroundQuery] = useState("");
+  // TODO: Create handlePlaygroundTest function
+  const handlePlaygroundTest = () => {};
+
+  const playgroundLoading = false;
+  const playgroundResponse = "";
+  const brandVoice = "Professional";
+  const allowEmojis = false;
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Customer Question Input */}
+      <div className="space-y-4">
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">Ask a Customer Question</Label>
+          <Textarea
+            placeholder="What's your return policy? Tell me about your company. What makes your brand unique? Do you offer free shipping?"
+            value={playgroundQuery}
+            onChange={(e) => setPlaygroundQuery(e.target.value)}
+            rows={6}
+            className="resize-none h-[144px] overflow-auto placeholder:text-sm flex-1"
+          />
+        </div>
+        <Button
+          onClick={handlePlaygroundTest}
+          disabled={playgroundLoading || !playgroundQuery.trim()}
+          className="w-full bg-purple-600 hover:bg-purple-700"
+        >
+          {playgroundLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              AI is thinking...
+            </>
+          ) : (
+            <>
+              <PlayCircle className="h-4 w-4 mr-2" />
+              Get AI Response
+            </>
+          )}
+        </Button>
+      </div>
+      {/* AI Response */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium">AI Response Preview</Label>
+        <div
+          className={cn(
+            "min-h-[200px] max-h-[400px] p-4 border rounded-lg bg-gray-50 overflow-auto",
+            !playgroundLoading &&
+              !playgroundResponse &&
+              "flex items-center justify-center"
+          )}
+        >
+          {playgroundLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <Loader2 className="h-8 w-8 animate-spin text-purple-600 mx-auto mb-2" />
+                <p className="text-sm text-gray-600">Generating response...</p>
+              </div>
+            </div>
+          ) : playgroundResponse ? (
+            <div className="space-y-3">
+              <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                {playgroundResponse}
+              </p>
+              <div className="pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-500">
+                  Response generated using <strong>{brandVoice}</strong> voice
+                  {allowEmojis && " with emojis enabled"}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-2">
+              <MessageSquare className="h-8 w-8 text-gray-300 mx-auto" />
+              <p className="text-sm text-gray-500 text-center">
+                Enter a question and click &quot;Get AI Response&quot; to test
+                your trained AI
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AiTrainingComponents = {
   Root,
   Header,
@@ -537,6 +626,8 @@ const AiTrainingComponents = {
   AiKnowledgeSourceCard,
   ManuallyAddedSourceCard,
   ManuallContentForm,
+  // AI Performance Tab
+  AiPerformanceTestForm,
 };
 
 export default AiTrainingComponents;
