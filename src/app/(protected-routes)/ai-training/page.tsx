@@ -1,27 +1,8 @@
-import {
-  Brain,
-  Plus,
-  Trash2,
-  Globe,
-  MessageSquare,
-  Smile,
-  CheckCircle,
-  AlertCircle,
-  Loader2,
-  RefreshCw,
-  Bot,
-  User,
-  Sparkles,
-  Settings,
-  PlayCircle,
-  HelpCircle,
-  Heart,
-  Check,
-  FileText,
-} from "lucide-react";
+import { Globe, Bot, Settings, PlayCircle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AITrainingHeader from "@/modules/ai-training/sections/ai-training-header";
 import AiIdentityTab from "@/modules/ai-training/sections/ai-identity";
+import AiKnowledge from "@/modules/ai-training/sections/ai-knowledge";
 
 const AiTraining = () => {
   return (
@@ -63,9 +44,14 @@ const AiTraining = () => {
             <span className="md:hidden">Performance</span>
           </TabsTrigger>
         </TabsList>
+
+        {/* Tabs Content */}
+        {/* AI Identity */}
         <TabsContent value="ai-identity" className="space-y-6">
           <AiIdentityTab />
         </TabsContent>
+        {/* AI Knowledge */}
+        <AiKnowledge />
       </Tabs>
     </div>
   );
