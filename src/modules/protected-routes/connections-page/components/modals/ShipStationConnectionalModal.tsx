@@ -22,7 +22,7 @@ import z from "zod";
 // Shipstation Props Type
 type shipStationProps = {
   showShipstationDialog: boolean;
-  setShowShipstationDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  onCloseModal: () => void;
 };
 
 // Form Validation Schema
@@ -37,7 +37,7 @@ const formSchema = z.object({
 
 const ShipStationConnectionalModal = ({
   showShipstationDialog,
-  setShowShipstationDialog,
+  onCloseModal,
 }: shipStationProps) => {
   // React Hook Form
   const form = useForm({
@@ -52,10 +52,7 @@ const ShipStationConnectionalModal = ({
   const onSubmit = () => {};
 
   return (
-    <Dialog
-      open={showShipstationDialog}
-      onOpenChange={setShowShipstationDialog}
-    >
+    <Dialog open={showShipstationDialog} onOpenChange={onCloseModal}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Connect Shipstation</DialogTitle>
@@ -135,7 +132,7 @@ const ShipStationConnectionalModal = ({
               <Button
                 variant="outline"
                 onClick={() => {
-                  setShowShipstationDialog(false);
+                  onCloseModal();
                   // Reset the form
                   form.reset();
                 }}

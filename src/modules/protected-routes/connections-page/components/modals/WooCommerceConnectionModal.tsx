@@ -10,31 +10,62 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
+import { TimezoneSelect } from "../timezone-select";
 type WooCommerceConnectionModalProps = {
   isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onCloseModal: () => void;
 };
 
 const WooCommerceConnectionModal = ({
   isModalOpen,
-  setIsModalOpen,
+  onCloseModal,
 }: WooCommerceConnectionModalProps) => {
   const [wooCommerceStoreURL, setWooCommerceStoreURL] = useState("");
   const [wooConnectionMethod, setWooConnectionMethod] = useState("oauth");
   const [wooApiKey, setWooApiKey] = useState("");
   const [wooApiSecret, setWooApiSecret] = useState("");
+  const [wooTimezone, setWooTimezone] = useState("America/New_York");
+  const timezoneDetected = false;
 
   // TODO: Add Tanstack - Mutation here
   const handleWooCommerceConnect = () => {};
   const handleWooCommerceAPIConnect = () => {};
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+    <Dialog open={isModalOpen} onOpenChange={() => onCloseModal()}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Connect WooCommerce Store</DialogTitle>
         </DialogHeader>
         <div className="space-y-6 py-4">
+          {/* Store URL - always required */}
+          <div className="space-y-2 border-t pt-4">
+            <Label htmlFor="store-url">Store URL</Label>
+            <Input
+              id="store-url"
+              placeholder="https://your-store.com"
+              value={wooCommerceStoreURL}
+              onChange={(e) => setWooCommerceStoreURL(e.target.value)}
+              className="h-10"
+            />
+            <p className="text-xs text-gray-500">
+              Enter your WooCommerce store URL (e.g., yourstore.com)
+            </p>
+          </div>
+
+          {/* Timezone Select */}
+          <TimezoneSelect
+            label="Store Timezone"
+            value={wooTimezone}
+            onValueChange={setWooTimezone}
+            required
+            description={
+              timezoneDetected
+                ? "Auto-detected from your WooCommerce store"
+                : "Used for accurate order processing and delivery predictions"
+            }
+          />
+
           {/* Connection Method Selection */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Connection Method</Label>
@@ -92,10 +123,8 @@ const WooCommerceConnectionModal = ({
             </RadioGroup>
           </div>
 
-          {/* Store URL - always required */}
-
           {/* API Key Fields */}
-          {wooConnectionMethod === "api_key" ? (
+          {wooConnectionMethod === "api_key" && (
             <div className="border-t pt-4 space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="woo-key">Consumer Key</Label>
@@ -125,26 +154,12 @@ const WooCommerceConnectionModal = ({
                 REST API. Set permissions to Read/Write.
               </p>
             </div>
-          ) : (
-            <div className="space-y-2 border-t pt-4">
-              <Label htmlFor="store-url">Store URL</Label>
-              <Input
-                id="store-url"
-                placeholder="https://your-store.com"
-                value={wooCommerceStoreURL}
-                onChange={(e) => setWooCommerceStoreURL(e.target.value)}
-                className="h-10"
-              />
-              <p className="text-xs text-gray-500">
-                Enter your WooCommerce store URL (e.g., yourstore.com)
-              </p>
-            </div>
           )}
 
           <div className="grid grid-cols-2 gap-2 pt-2">
             <Button
               variant="outline"
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => onCloseModal()}
               className="w-full"
             >
               Cancel

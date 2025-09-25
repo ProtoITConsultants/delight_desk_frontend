@@ -21,7 +21,7 @@ const DashboardNavbar = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="h-full my-auto px-4 border-r border-gray-200 text-gray-500 md:hidden hover:bg-gray-100 rounded-none"
+          className="h-full my-auto px-4 border-r border-gray-200 text-gray-500 lg:hidden hover:bg-gray-100 rounded-none"
           onClick={toggleSidebar}
         >
           <Menu className="h-6 w-6" />
@@ -31,7 +31,7 @@ const DashboardNavbar = () => {
         {/* Navbar Content */}
         <div className="flex-1 px-4 flex justify-between items-center">
           {/* Logo For Mobile */}
-          <div className="flex items-center md:hidden">
+          <div className="flex items-center lg:hidden">
             <Image
               src="/dashboard-logo.svg"
               alt="Logo"
