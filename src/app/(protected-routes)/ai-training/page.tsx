@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AITrainingHeader from "@/modules/ai-training/sections/ai-training-header";
 import AiIdentityTab from "@/modules/ai-training/sections/ai-identity";
 import AiKnowledge from "@/modules/ai-training/sections/ai-knowledge";
+import VoiceAndSettings from "@/modules/ai-training/sections/voice-and-settings";
 
 const AiTraining = () => {
   return (
@@ -28,7 +29,7 @@ const AiTraining = () => {
             <span className="md:hidden">Knowledge</span>
           </TabsTrigger>
           <TabsTrigger
-            value="settings"
+            value="voice-and-setting"
             className="flex items-center gap-2 p-[6px_12px] cursor-pointer h-8"
           >
             <Settings className="h-4 w-4" />
@@ -36,7 +37,7 @@ const AiTraining = () => {
             <span className="md:hidden">Settings</span>
           </TabsTrigger>
           <TabsTrigger
-            value="playground"
+            value="ai-performance"
             className="flex items-center gap-2 p-[6px_12px] cursor-pointer h-8"
           >
             <PlayCircle className="h-4 w-4" />
@@ -54,6 +55,12 @@ const AiTraining = () => {
         <TabsContent value="ai-knowledge">
           <AiKnowledge />
         </TabsContent>
+        {/* Voice and Settings */}
+        <TabsContent value="voice-and-setting">
+          <VoiceAndSettings />
+        </TabsContent>
+        {/* AI Performance */}
+        <TabsContent value="ai-performance">Playground</TabsContent>
       </Tabs>
     </div>
   );
