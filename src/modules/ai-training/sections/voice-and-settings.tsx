@@ -1,5 +1,5 @@
 "use client";
-import { Heart, MessageSquare } from "lucide-react";
+import { Check, Heart, Loader2, MessageSquare } from "lucide-react";
 import AiTrainingTab from "../components/ai-training-tab";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,6 +33,10 @@ const VoiceAndSettings = () => {
     useBusinessVerticalGuidance: false,
     loyalCustomerGreeting: false,
   });
+
+  const saveConfigMutation = {
+    isPending: false,
+  };
   return (
     <AiTrainingTab.Root>
       <AiTrainingTab.Header
@@ -180,6 +184,25 @@ const VoiceAndSettings = () => {
             These instructions will be applied to all AI-generated responses
           </p>
         </div>
+
+        {/* Submit Button */}
+        <Button
+          onClick={() => {}}
+          disabled={saveConfigMutation.isPending}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          {saveConfigMutation.isPending ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Check className="h-4 w-4 mr-2" />
+              Save Changes
+            </>
+          )}
+        </Button>
       </AiTrainingTab.Body>
     </AiTrainingTab.Root>
   );
