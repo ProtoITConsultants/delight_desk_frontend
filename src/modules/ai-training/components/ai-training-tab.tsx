@@ -300,12 +300,12 @@ const AiKnowledgeSourceCard = ({
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg bg-white">
-      <div className="flex items-center gap-3 flex-1 min-w-0">
+    <div className="flex items-center justify-between gap-2 p-4 border rounded-lg bg-white">
+      <div className="flex items-center gap-2 flex-1 min-w-0">
         {getStatusIcon(status)}
-        <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm truncate">{url}</p>
-          <div className="flex items-center gap-2 mt-1">
+        <div className="w-full">
+          <p className="font-medium text-sm line-clamp-1">{url}</p>
+          <div className="flex items-center gap-2 flex-wrap mt-1">
             <Badge
               variant="secondary"
               className={`text-xs rounded-full ${getStatusColor(status)}`}
@@ -319,7 +319,8 @@ const AiKnowledgeSourceCard = ({
             )}
             {status === "completed" && lastCrawled && (
               <span className="text-xs text-green-600">
-                ✓ Crawled {new Date(lastCrawled).toLocaleString()}
+                {/* ✓ Crawled {new Date(lastCrawled).toLocaleString()} */}✓
+                Crawled {lastCrawled}
               </span>
             )}
           </div>
@@ -329,6 +330,7 @@ const AiKnowledgeSourceCard = ({
         variant="ghost"
         size="sm"
         onClick={() => {}}
+        className="!p-0"
         // disabled={removeUrlMutation.isPending}
       >
         <Trash2 className="h-4 w-4" />
@@ -378,11 +380,13 @@ const ManuallyAddedSourceCard = ({
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <MessageSquare className="h-4 w-4 text-blue-600" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-blue-900">{title}</p>
-          <div className="flex items-center gap-2 mt-1">
+          <p className="text-sm font-medium text-blue-900 line-clamp-1">
+            {title}
+          </p>
+          <div className="flex items-center flex-wrap gap-2 mt-1">
             <Badge
               variant="secondary"
-              className="text-xs bg-blue-100 text-blue-800"
+              className="text-xs bg-blue-100 text-blue-800 rounded-full"
             >
               manual content
             </Badge>

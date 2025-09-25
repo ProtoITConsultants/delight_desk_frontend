@@ -10,19 +10,19 @@ const TRAINING_SOURCES = [
     url: "https://shop.humanfoodbar.com/lectin-free-bars/blueberry-muffin/",
     status: "completed",
     pageCount: 1,
-    lastCrawled: "23/08/2023",
+    lastCrawled: "23/08/2025, 04:45:42",
   },
   {
     url: "https://shop.humanfoodbar.com/our-story/",
     status: "failed",
     pageCount: 1,
-    lastCrawled: "23/08/2023",
+    lastCrawled: "23/08/2025, 04:45:42",
   },
   {
     url: "https://shop.humanfoodbar.com/whats-inside/",
     status: "crawling",
     pageCount: 1,
-    lastCrawled: "23/08/2023",
+    lastCrawled: "23/08/2025, 04:45:42",
   },
 ];
 

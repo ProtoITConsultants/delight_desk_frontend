@@ -20,7 +20,7 @@ const AiTraining = () => {
             <span className="md:hidden">Identity</span>
           </TabsTrigger>
           <TabsTrigger
-            value="content"
+            value="ai-knowledge"
             className="flex items-center gap-2 p-[6px_12px] cursor-pointer h-8"
           >
             <Globe className="h-4 w-4" />
@@ -47,11 +47,13 @@ const AiTraining = () => {
 
         {/* Tabs Content */}
         {/* AI Identity */}
-        <TabsContent value="ai-identity" className="space-y-6">
+        <TabsContent value="ai-identity">
           <AiIdentityTab />
         </TabsContent>
         {/* AI Knowledge */}
-        <AiKnowledge />
+        <TabsContent value="ai-knowledge">
+          <AiKnowledge />
+        </TabsContent>
       </Tabs>
     </div>
   );
