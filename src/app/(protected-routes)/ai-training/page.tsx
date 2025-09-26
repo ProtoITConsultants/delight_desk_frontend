@@ -1,11 +1,11 @@
 "use client";
 import { Globe, Bot, Settings, PlayCircle, HelpCircle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AITrainingHeader from "@/modules/ai-training/sections/ai-training-header";
-import AiIdentityTab from "@/modules/ai-training/sections/ai-identity";
-import AiKnowledge from "@/modules/ai-training/sections/ai-knowledge";
-import VoiceAndSettings from "@/modules/ai-training/sections/voice-and-settings";
-import AiPerformance from "@/modules/ai-training/sections/ai-performance";
+import AITrainingHeader from "@/modules/protected-routes/ai-training/sections/ai-training-header";
+import AiIdentityTab from "@/modules/protected-routes/ai-training/sections/ai-identity";
+import AiKnowledge from "@/modules/protected-routes/ai-training/sections/ai-knowledge";
+import VoiceAndSettings from "@/modules/protected-routes/ai-training/sections/voice-and-settings";
+import AiPerformance from "@/modules/protected-routes/ai-training/sections/ai-performance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import {
