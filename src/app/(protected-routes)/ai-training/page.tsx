@@ -1,3 +1,4 @@
+"use client";
 import { Globe, Bot, Settings, PlayCircle, HelpCircle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AITrainingHeader from "@/modules/ai-training/sections/ai-training-header";
@@ -6,14 +7,27 @@ import AiKnowledge from "@/modules/ai-training/sections/ai-knowledge";
 import VoiceAndSettings from "@/modules/ai-training/sections/voice-and-settings";
 import AiPerformance from "@/modules/ai-training/sections/ai-performance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AiTraining = () => {
+  const [activeTab, setActiveTab] = useState("ai-identity");
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <AITrainingHeader />
       {/* Main Navigation Tabs */}
-      <Tabs defaultValue="ai-identity" className="space-y-6">
-        <TabsList className="flex items-center flex-wrap w-full gap-2 p-1 h-10">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
+        <TabsList className="hidden md:flex items-center flex-wrap w-full gap-2 p-1 h-10">
           <TabsTrigger
             value="ai-identity"
             className="flex items-center gap-2 p-[6px_12px] cursor-pointer h-8"
@@ -47,6 +61,22 @@ const AiTraining = () => {
             <span className="md:hidden">Performance</span>
           </TabsTrigger>
         </TabsList>
+        {/* Mobile Version Tabs */}
+        <div className="flex md:hidden justify-end">
+          <Select value={activeTab} onValueChange={setActiveTab}>
+            <SelectTrigger className="min-w-[183.39px] bg-white">
+              <SelectValue placeholder="Select section" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ai-identity">AI Identity</SelectItem>
+              <SelectItem value="ai-knowledge">AI Knowledge</SelectItem>
+              <SelectItem value="voice-and-setting">
+                Voice & Settings
+              </SelectItem>
+              <SelectItem value="ai-performance">AI Performance</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Tabs Content */}
         {/* AI Identity */}
