@@ -28,11 +28,6 @@ class ApiService {
   private async request<T>(config: AxiosRequestConfig): Promise<T> {
     const response: AxiosResponse<T> = await this.api.request(config);
     return response.data;
-    // try {
-
-    // } catch (error) {
-    //   throw error;
-    // }
   }
 
   // Shorthand methods
