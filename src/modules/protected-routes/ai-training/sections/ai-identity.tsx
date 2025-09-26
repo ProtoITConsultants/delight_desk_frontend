@@ -279,7 +279,7 @@ const AiIdentity = () => {
               <Button
                 onClick={() => {}}
                 disabled={saveConfigMutation.isPending}
-                className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
+                className="flex items-center gap-2"
               >
                 {saveConfigMutation.isPending ? (
                   <>
