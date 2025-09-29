@@ -23,10 +23,12 @@ import { toast } from "sonner";
 import useUserProfileForm from "../hooks/useUserProfileForm";
 import { useState } from "react";
 import { Edit } from "lucide-react";
+import UserProfileSkeleton from "../components/user-profile/user-profile-skeleton";
 
 const ProfileSection = () => {
   const queryClient = useQueryClient();
-  const { userProfileForm, userProfileData } = useUserProfileForm();
+  const { userProfileForm, userProfileData, isFetchingUserProfie } =
+    useUserProfileForm();
   const [isEditable, setIsEditable] = useState(false);
 
   const updateUserProfile = useMutation({
@@ -58,7 +60,7 @@ const ProfileSection = () => {
       <CardHeader>
         <CardTitle className="text-2xl flex items-center gap-2 justify-between">
           Profile Information{" "}
-          {!isEditable && (
+          {!isEditable && !isFetchingUserProfie && (
             <Button
               variant="ghost"
               type="button"
@@ -74,120 +76,124 @@ const ProfileSection = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Form {...userProfileForm}>
-          <form
-            onSubmit={userProfileForm.handleSubmit((data) =>
-              updateUserProfile.mutate(data)
-            )}
-            className="space-y-4"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={userProfileForm.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        className="h-10"
-                        placeholder="Enter Your First Name"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-                disabled={updateUserProfile.isPending || !isEditable}
-              />
-              <FormField
-                control={userProfileForm.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        className="h-10"
-                        placeholder="Enter Your Last Name"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-                disabled={updateUserProfile.isPending || !isEditable}
-              />
-            </div>
-
-            <FormField
-              control={userProfileForm.control}
-              name="company"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Company</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="h-10"
-                      placeholder="Enter Company Name"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+        {isFetchingUserProfie ? (
+          <UserProfileSkeleton />
+        ) : (
+          <Form {...userProfileForm}>
+            <form
+              onSubmit={userProfileForm.handleSubmit((data) =>
+                updateUserProfile.mutate(data)
               )}
-              disabled={updateUserProfile.isPending || !isEditable}
-            />
-
-            <FormField
-              control={userProfileForm.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="tel"
-                      className="h-10"
-                      placeholder="Enter Your Phone Number"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-              disabled={updateUserProfile.isPending || !isEditable}
-            />
-
-            {isEditable && (
-              <div className="pt-4 flex items-center gap-2">
-                <Button
-                  type="submit"
-                  disabled={updateUserProfile.isPending}
-                  className="h-10"
-                >
-                  {updateUserProfile.isPending ? "Saving..." : "Save Changes"}
-                </Button>
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() => setIsEditable(false)}
-                  className="h-10"
-                >
-                  Cancel
-                </Button>
+              className="space-y-4"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={userProfileForm.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="h-10"
+                          placeholder="Enter Your First Name"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                  disabled={updateUserProfile.isPending || !isEditable}
+                />
+                <FormField
+                  control={userProfileForm.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="h-10"
+                          placeholder="Enter Your Last Name"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                  disabled={updateUserProfile.isPending || !isEditable}
+                />
               </div>
-            )}
-          </form>
-          <div className="mt-6 pt-6 border-t">
-            <div className="space-y-2">
-              <h3 className="font-medium">Account Email</h3>
-              <span className="text-sm text-gray-600">
-                {userProfileData?.user?.email}
-              </span>
+
+              <FormField
+                control={userProfileForm.control}
+                name="company"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="h-10"
+                        placeholder="Enter Company Name"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+                disabled={updateUserProfile.isPending || !isEditable}
+              />
+
+              <FormField
+                control={userProfileForm.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="tel"
+                        className="h-10"
+                        placeholder="Enter Your Phone Number"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+                disabled={updateUserProfile.isPending || !isEditable}
+              />
+
+              {isEditable && (
+                <div className="pt-4 flex items-center gap-2">
+                  <Button
+                    type="submit"
+                    disabled={updateUserProfile.isPending}
+                    className="h-10"
+                  >
+                    {updateUserProfile.isPending ? "Saving..." : "Save Changes"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    onClick={() => setIsEditable(false)}
+                    className="h-10"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              )}
+            </form>
+            <div className="mt-6 pt-6 border-t">
+              <div className="space-y-2">
+                <h3 className="font-medium">Account Email</h3>
+                <span className="text-sm text-gray-600">
+                  {userProfileData?.user?.email}
+                </span>
+              </div>
             </div>
-          </div>
-        </Form>
+          </Form>
+        )}
       </CardContent>
     </Card>
   );

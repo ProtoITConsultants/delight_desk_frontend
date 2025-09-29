@@ -16,6 +16,7 @@ import {
 
 const AccountSettingsTabs = () => {
   const [activeTab, setActiveTab] = useState("profile");
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
       <TabsList className="hidden md:flex items-center flex-wrap w-full gap-2 p-1 h-10">
