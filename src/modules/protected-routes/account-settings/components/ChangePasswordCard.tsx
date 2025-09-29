@@ -17,40 +17,35 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { CHANGE_PASSWORD_SCHEMA } from "../schema";
-
-type ChangePassword = z.infer<typeof CHANGE_PASSWORD_SCHEMA>;
+import { useMutation } from "@tanstack/react-query";
+import { ChangePasswordType } from "../types";
+import accountrSettingsAPIs from "../api";
+import { toast } from "sonner";
 
 const ChangePasswordCard = () => {
-  const form = useForm<ChangePassword & { userId: string }>({
-    resolver: zodResolver(
-      z
-        .object({
-          userId: z.string(),
-          currentPassword: z.string().min(1, "Current password is required"),
-          newPassword: z
-            .string()
-            .min(8, "Password must be at least 8 characters"),
-          confirmPassword: z
-            .string()
-            .min(1, "Please confirm your new password"),
-        })
-        .refine((data) => data.newPassword === data.confirmPassword, {
-          message: "Passwords don't match",
-          path: ["confirmPassword"],
-        })
-    ),
+  const form = useForm<ChangePasswordType>({
+    resolver: zodResolver(CHANGE_PASSWORD_SCHEMA),
     defaultValues: {
-      userId: "",
       currentPassword: "",
       newPassword: "",
-      confirmPassword: "",
+      confirmNewPassword: "",
     },
   });
 
-  // TODO: Implement change password mutation
-  const onSubmit = () => {};
+  const updateUserPassword = useMutation({
+    mutationFn: (data: ChangePasswordType) =>
+      accountrSettingsAPIs.changePassword(data),
+    onSuccess: () => {
+      toast.success("Password changed successfully!");
+      form.reset();
+    },
+    onError: (error) => {
+      toast.error("Failed to change password!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
   return (
     <Card>
       <CardHeader>
@@ -61,7 +56,12 @@ const ChangePasswordCard = () => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit((data) =>
+              updateUserPassword.mutate(data)
+            )}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="currentPassword"
@@ -74,6 +74,7 @@ const ChangePasswordCard = () => {
                   <FormMessage />
                 </FormItem>
               )}
+              disabled={updateUserPassword.isPending}
             />
 
             <FormField
@@ -88,11 +89,12 @@ const ChangePasswordCard = () => {
                   <FormMessage />
                 </FormItem>
               )}
+              disabled={updateUserPassword.isPending}
             />
 
             <FormField
               control={form.control}
-              name="confirmPassword"
+              name="confirmNewPassword"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Confirm New Password</FormLabel>
@@ -102,13 +104,11 @@ const ChangePasswordCard = () => {
                   <FormMessage />
                 </FormItem>
               )}
+              disabled={updateUserPassword.isPending}
             />
 
-            <Button type="submit">
-              {/* {changePasswordMutation.isPending
-                ? "Changing..."
-                : "Change Password"} */}
-              Change Password
+            <Button type="submit" disabled={updateUserPassword.isPending}>
+              {updateUserPassword.isPending ? "Changing..." : "Change Password"}
             </Button>
           </form>
         </Form>

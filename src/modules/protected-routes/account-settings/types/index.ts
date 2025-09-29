@@ -1,5 +1,5 @@
 import z from "zod";
-import { UPDATE_USER_PROFILE_SCHEMA } from "../schema";
+import { CHANGE_PASSWORD_SCHEMA, UPDATE_USER_PROFILE_SCHEMA } from "../schema";
 
 type UserProfile = {
   id: string;
@@ -34,4 +34,11 @@ type GetUserProfileResponse = {
 // Update User Profile Type
 type UpdateUserProfileType = z.infer<typeof UPDATE_USER_PROFILE_SCHEMA>;
 
-export type { GetUserProfileResponse, UpdateUserProfileType };
+// Change Password Type
+type ChangePasswordType = z.infer<typeof CHANGE_PASSWORD_SCHEMA>;
+
+export type {
+  GetUserProfileResponse,
+  UpdateUserProfileType,
+  ChangePasswordType,
+};
