@@ -11,19 +11,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AuthAPIs from "../api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { LOGIN_FORM_SCHEMA } from "../schema/login";
+import { useState } from "react";
 
 type LoginFormTypes = z.infer<typeof LOGIN_FORM_SCHEMA>;
 
 const LoginForm = () => {
   // Hooks
   const router = useRouter();
+
+  // States
+  const [showPassword, setShowPassword] = useState(false);
+
   // Form Hook
   const loginForm = useForm<LoginFormTypes>({
     resolver: zodResolver(LOGIN_FORM_SCHEMA),
@@ -87,13 +92,28 @@ const LoginForm = () => {
                 Password
               </FormLabel>
               <FormControl>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  className="py-2 h-10"
-                  {...field}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    className="py-2 h-10"
+                    {...field}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 bg-white hover:bg-white border border-l-0 rounded-l-none peer-focus:!border-ring"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
