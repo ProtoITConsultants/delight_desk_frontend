@@ -61,6 +61,10 @@
   --radius-radius: var(--radius);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Installed With Shadcn Sidebar */
 .dark {
   --sidebar: hsl(240 5.9% 10%);
