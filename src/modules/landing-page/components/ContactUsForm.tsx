@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,26 +12,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
-
-// Form Validation Schema
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.email({
-    message: "Please enter a valid email address.",
-  }),
-  company: z.string().optional(),
-  inquiry: z.string().min(10, {
-    message: "Inquiry must be at least 10 characters.",
-  }),
-});
+import { RefreshCw, Send } from "lucide-react";
+import { CONTACT_US_FORM_SCHEMA } from "../schema";
+import { useMutation } from "@tanstack/react-query";
+import LandingPageAPIs from "../api";
+import { CONTACT_US_FORM_TYPE } from "../types";
+import { toast } from "sonner";
 
 const ContactUsForm = () => {
   // React Hook Form
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(CONTACT_US_FORM_SCHEMA),
     defaultValues: {
       name: "",
       email: "",
@@ -41,14 +31,29 @@ const ContactUsForm = () => {
     },
   });
 
-  // TODO: Add Tanstack - Mutation here
-  const onSubmit = () => {};
+  const contactUsMutation = useMutation({
+    mutationFn: (data: CONTACT_US_FORM_TYPE) =>
+      LandingPageAPIs.contactUsForm(data),
+    onSuccess: () => {
+      form.reset();
+    },
+    onError: (error) => {
+      toast.error("Failed to send message!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="ds-surface-elevated rounded-2xl ds-card-padding">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit((data) =>
+              contactUsMutation.mutate(data)
+            )}
+            className="space-y-6"
+          >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -69,6 +74,7 @@ const ContactUsForm = () => {
                     <FormMessage />
                   </FormItem>
                 )}
+                disabled={contactUsMutation.isPending}
               />
               <FormField
                 control={form.control}
@@ -89,6 +95,7 @@ const ContactUsForm = () => {
                     <FormMessage />
                   </FormItem>
                 )}
+                disabled={contactUsMutation.isPending}
               />
             </div>
 
@@ -111,6 +118,7 @@ const ContactUsForm = () => {
                   <FormMessage />
                 </FormItem>
               )}
+              disabled={contactUsMutation.isPending}
             />
             <FormField
               control={form.control}
@@ -131,15 +139,15 @@ const ContactUsForm = () => {
                   <FormMessage />
                 </FormItem>
               )}
+              disabled={contactUsMutation.isPending}
             />
 
             <Button
               type="submit"
-              // disabled={isSubmitting} // TODO: Disable - With Mutation
               className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium py-3 hover:cursor-pointer"
+              disabled={contactUsMutation.isPending}
             >
-              {/* TODO: Add loading state - With Mutation */}
-              {/* {isSubmitting ? (
+              {contactUsMutation.isPending ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                   Sending...
@@ -149,11 +157,7 @@ const ContactUsForm = () => {
                   <Send className="w-4 h-4 mr-2" />
                   Send Message
                 </>
-              )} */}
-              <>
-                <Send className="w-4 h-4 mr-2" />
-                Send Message
-              </>
+              )}
             </Button>
           </form>
         </Form>
