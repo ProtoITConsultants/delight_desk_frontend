@@ -25,6 +25,12 @@ const AuthAPIs = {
       password,
       company,
     }),
+
+  // Forgot Password
+  forgotPassword: ({ email }: { email: string }) =>
+    apiService.post(AUTH_API.FORGOT_PASSWORD_URL, {
+      email,
+    }),
 };
 
 export default AuthAPIs;
