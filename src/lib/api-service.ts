@@ -50,6 +50,10 @@ class ApiService {
     return this.request<T>({ url, method: "PUT", data, ...config });
   }
 
+  public patch<T>(url: string, data?: unknown, config?: AxiosRequestConfig) {
+    return this.request<T>({ url, method: "PATCH", data, ...config });
+  }
+
   public delete<T>(url: string, config?: AxiosRequestConfig) {
     return this.request<T>({ url, method: "DELETE", ...config });
   }

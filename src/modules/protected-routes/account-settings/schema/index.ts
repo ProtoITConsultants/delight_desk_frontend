@@ -2,7 +2,7 @@ import z from "zod";
 
 // User Profile Schema
 const UPDATE_USER_PROFILE_SCHEMA = z.object({
-  firstName: z.string().optional(),
+  firstName: z.string().min(1, "First name is required"),
   lastName: z.string().optional(),
   company: z.string().optional(),
   phone: z.string().optional(),

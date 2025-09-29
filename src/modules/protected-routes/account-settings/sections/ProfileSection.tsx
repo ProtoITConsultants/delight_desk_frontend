@@ -1,8 +1,4 @@
 "use client";
-import z from "zod";
-import { UPDATE_USER_PROFILE_SCHEMA } from "../schema";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Card,
   CardContent,
@@ -20,114 +16,175 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-// Types
-type UpdateUserProfile = z.infer<typeof UPDATE_USER_PROFILE_SCHEMA>;
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import accountrSettingsAPIs from "../api";
+import { UpdateUserProfileType } from "../types";
+import { toast } from "sonner";
+import useUserProfileForm from "../hooks/useUserProfileForm";
+import { useState } from "react";
+import { Edit } from "lucide-react";
 
 const ProfileSection = () => {
-  // Form
-  const form = useForm<UpdateUserProfile>({
-    resolver: zodResolver(UPDATE_USER_PROFILE_SCHEMA),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      company: "",
-      phone: "",
+  const queryClient = useQueryClient();
+  const { userProfileForm, userProfileData } = useUserProfileForm();
+  const [isEditable, setIsEditable] = useState(false);
+
+  const updateUserProfile = useMutation({
+    mutationFn: (data: UpdateUserProfileType) => {
+      const API_DATA = Object.fromEntries(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        Object.entries(data).filter(([_, value]) => value !== "")
+      ) as Partial<UpdateUserProfileType>;
+
+      return accountrSettingsAPIs.updateUserProfile(API_DATA);
+    },
+    onSuccess: () => {
+      toast.success("Profile Updated!", {
+        description: "Your profile has been updated successfully",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["profile"],
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to update profile!", {
+        description: error.message || "Something went wrong",
+      });
     },
   });
-
-  // TODO: Implement Update Profile Mutation
-  const onSubmit = () => {
-    // Log Form Data
-    console.log(form.getValues());
-  };
 
   return (
     <Card className="rounded-lg">
       <CardHeader>
-        <CardTitle className="text-2xl">Profile Information</CardTitle>
+        <CardTitle className="text-2xl flex items-center gap-2 justify-between">
+          Profile Information{" "}
+          {!isEditable && (
+            <Button
+              variant="ghost"
+              type="button"
+              className="w-fit"
+              onClick={() => setIsEditable(true)}
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+          )}
+        </CardTitle>
         <CardDescription>
           Update your personal details and contact information
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <Form {...userProfileForm}>
+          <form
+            onSubmit={userProfileForm.handleSubmit((data) =>
+              updateUserProfile.mutate(data)
+            )}
+            className="space-y-4"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
-                control={form.control}
+                control={userProfileForm.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input {...field} className="h-10" />
+                      <Input
+                        {...field}
+                        className="h-10"
+                        placeholder="Enter Your First Name"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
+                disabled={updateUserProfile.isPending || !isEditable}
               />
               <FormField
-                control={form.control}
+                control={userProfileForm.control}
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input {...field} className="h-10" />
+                      <Input
+                        {...field}
+                        className="h-10"
+                        placeholder="Enter Your Last Name"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
+                disabled={updateUserProfile.isPending || !isEditable}
               />
             </div>
 
             <FormField
-              control={form.control}
+              control={userProfileForm.control}
               name="company"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Company</FormLabel>
                   <FormControl>
-                    <Input {...field} className="h-10" />
+                    <Input
+                      {...field}
+                      className="h-10"
+                      placeholder="Enter Company Name"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
+              disabled={updateUserProfile.isPending || !isEditable}
             />
 
             <FormField
-              control={form.control}
+              control={userProfileForm.control}
               name="phone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input {...field} type="tel" className="h-10" />
+                    <Input
+                      {...field}
+                      type="tel"
+                      className="h-10"
+                      placeholder="Enter Your Phone Number"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
+              disabled={updateUserProfile.isPending || !isEditable}
             />
 
-            <div className="pt-4">
-              <Button type="submit" disabled={false} className="h-10">
-                {/* {updateProfileMutation.isPending ? "Saving..." : "Save Changes"} */}
-                Save Changes
-              </Button>
-            </div>
+            {isEditable && (
+              <div className="pt-4 flex items-center gap-2">
+                <Button
+                  type="submit"
+                  disabled={updateUserProfile.isPending}
+                  className="h-10"
+                >
+                  {updateUserProfile.isPending ? "Saving..." : "Save Changes"}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => setIsEditable(false)}
+                  className="h-10"
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
           </form>
           <div className="mt-6 pt-6 border-t">
             <div className="space-y-2">
               <h3 className="font-medium">Account Email</h3>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">
-                  m.babar@protogroup.co
-                </span>
-                <Button variant="outline" size="sm">
-                  Change Email
-                </Button>
-              </div>
+              <span className="text-sm text-gray-600">
+                {userProfileData?.user?.email}
+              </span>
             </div>
           </div>
         </Form>
