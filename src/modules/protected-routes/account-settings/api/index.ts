@@ -16,6 +16,8 @@ const accountrSettingsAPIs = {
   // change password
   changePassword: (API_DATA: ChangePasswordType) =>
     apiService.patch(ACCOUNT_SETTINGS.UPDATE_PASSWORD, API_DATA),
+  // delete account
+  deleteAccount: () => apiService.delete(ACCOUNT_SETTINGS.DELETE_ACCOUNT),
 };
 
 export default accountrSettingsAPIs;
