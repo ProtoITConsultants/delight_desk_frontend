@@ -189,16 +189,16 @@ const VoiceAndSettings = () => {
         <Button
           onClick={() => {}}
           disabled={saveConfigMutation.isPending}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="flex items-center gap-2"
         >
           {saveConfigMutation.isPending ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Loader2 className="h-4 w-4 animate-spin" />
               Saving...
             </>
           ) : (
             <>
-              <Check className="h-4 w-4 mr-2" />
+              <Check className="h-4 w-4" />
               Save Changes
             </>
           )}

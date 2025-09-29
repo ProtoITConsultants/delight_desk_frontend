@@ -4,15 +4,32 @@ import { Button } from "@/components/ui/button";
 import { Menu, User, Shield, LogOut, HelpCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import AuthAPIs from "@/modules/auth/api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const DashboardNavbar = () => {
   // Toggle Sidebar as Drawer
   const { toggleSidebar } = useSidebar();
+  const router = useRouter();
 
   const isAdmin = true;
 
-  // TODO: Add Logout Mutation
-  const handleLogout = () => {};
+  const logout = useMutation({
+    mutationFn: AuthAPIs.logout,
+    onSuccess: () => {
+      toast.success("Logout successful!", {
+        description: "Redirecting...",
+      });
+      router.replace("/login");
+    },
+    onError: () => {
+      toast.error("Logout failed!", {
+        description: "Please try again.",
+      });
+    },
+  });
 
   return (
     <nav className="sticky top-0 z-10 flex-shrink-0">
@@ -84,7 +101,7 @@ const DashboardNavbar = () => {
               variant="ghost"
               size="sm"
               className="flex items-center gap-2 text-gray-600 hover:text-red-600 hover:bg-red-50 px-3 h-9 hover:cursor-pointer rounded-md font-medium text-sm"
-              onClick={handleLogout}
+              onClick={() => logout.mutate()}
             >
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Logout</span>

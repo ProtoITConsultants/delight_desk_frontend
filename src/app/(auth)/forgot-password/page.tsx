@@ -17,43 +17,43 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import AuthAPIs from "@/modules/auth/api";
+import { FORGOT_PASSWORD_FORM_SCHEMA } from "@/modules/auth/schema/fogot-password";
+import { ForgotPasswordFormTypes } from "@/modules/auth/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle, Mail } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
-
-// Form Validation
-const forgotPasswordSchema = z.object({
-  email: z.email("Please enter a valid email address"),
-});
-type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
+import { toast } from "sonner";
 
 const ForgotPassword = () => {
   const [activeTab, setActiveTab] = useState("email-not-submitted");
 
   // Form Hook
-  const form = useForm<ForgotPasswordForm>({
-    resolver: zodResolver(forgotPasswordSchema),
+  const form = useForm<ForgotPasswordFormTypes>({
+    resolver: zodResolver(FORGOT_PASSWORD_FORM_SCHEMA),
     defaultValues: {
       email: "",
     },
   });
 
-  // TODO: Add Tanstack - Mutation here
-  const onSubmit = () => {
-    // Log Form Data
-    console.log(form.getValues());
-
-    // Set Active Tab
-    setActiveTab("email-submitted");
-  };
-
-  const mutation = {
-    isPending: false,
-    error: null,
-  };
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (data: ForgotPasswordFormTypes) =>
+      AuthAPIs.forgotPassword(data),
+    onSuccess: () => {
+      setActiveTab("email-submitted");
+      toast.success("Reset Password Email Sent!", {
+        description: "Check your email to reset your password",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to send reset email!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
 
   return activeTab === "email-not-submitted" ? (
     // Initial Form - When Email is not submitted
@@ -67,7 +67,12 @@ const ForgotPassword = () => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit((data) =>
+              forgotPasswordMutation.mutate(data)
+            )}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="email"
@@ -87,26 +92,15 @@ const ForgotPassword = () => {
               )}
             />
 
-            {mutation.error && (
-              <Alert
-                variant="destructive"
-                className="border-[#ef4444] bg-red-100"
-              >
-                <AlertDescription>
-                  {mutation.error
-                    ? mutation.error
-                    : "Failed to send reset email"}
-                </AlertDescription>
-              </Alert>
-            )}
-
             {/* Action Buttons */}
             <Button
               type="submit"
               className="w-full h-10"
-              disabled={mutation.isPending}
+              disabled={forgotPasswordMutation.isPending}
             >
-              {mutation.isPending ? "Sending..." : "Send Reset Link"}
+              {forgotPasswordMutation.isPending
+                ? "Sending..."
+                : "Send Reset Link"}
             </Button>
             <div className="text-center">
               <Link href="/login">

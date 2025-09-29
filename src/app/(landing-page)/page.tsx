@@ -8,6 +8,7 @@ import FounderStory from "@/modules/landing-page/sections/FounderStory";
 import HeroSection from "@/modules/landing-page/sections/HeroSection";
 import MissionControlHub from "@/modules/landing-page/sections/MissionControlHub";
 import OrderChangeAutomation from "@/modules/landing-page/sections/OrderChangeAutomation";
+import PricingPlans from "@/modules/landing-page/sections/PricingPlans";
 import RapidResolution from "@/modules/landing-page/sections/RapidResolution";
 import SectionDivider from "@/modules/landing-page/sections/SectionDivider";
 import SelectiveAutomation from "@/modules/landing-page/sections/SelectiveAutomation";
@@ -31,6 +32,7 @@ export default function Home() {
       <CustomerSupport />
       <Testimonials />
       <FounderStory />
+      <PricingPlans />
       <FAQs />
       <ContactUs />
       {/* Footer */}

@@ -20,12 +20,27 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Trash2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import accountrSettingsAPIs from "../api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const DeleteAccountCard = () => {
+  const router = useRouter();
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
-  // TODO: implement delete account
-  const handleDeleteAccount = () => {};
+  const deleteUserAccount = useMutation({
+    mutationFn: () => accountrSettingsAPIs.deleteAccount(),
+    onSuccess: () => {
+      router.replace("/login");
+    },
+    onError: (error) => {
+      toast.error("Failed to delete account!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
+
   return (
     <Card className="border-red-200 bg-red-50/50">
       <CardHeader>
@@ -73,66 +88,69 @@ const DeleteAccountCard = () => {
                       <AlertTriangle className="h-5 w-5" />
                       Are you absolutely sure?
                     </AlertDialogTitle>
-                    <AlertDialogDescription className="flex flex-col gap-3">
-                      <span>
-                        This action will permanently delete your Delight Desk
-                        account and cannot be undone. All your data will be
-                        permanently removed from our servers.
-                      </span>
-                      <div className="flex flex-col gap-2 bg-red-50 border border-red-200 rounded p-3">
-                        <span className="font-medium text-red-900">
-                          This will delete:
-                        </span>
-                        <ul className="text-sm text-red-700 space-y-1">
-                          <li>• Your profile and account settings</li>
-                          <li>• All store connections and integrations</li>
-                          <li>• Email automation rules and templates</li>
-                          <li>• Order history and customer data</li>
-                          <li>• Billing information and invoices</li>
-                        </ul>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <label
-                          htmlFor="delete-confirmation"
-                          className="text-sm font-medium text-gray-700"
-                        >
-                          To confirm, type{" "}
-                          <span className="font-mono bg-gray-100 px-1 rounded">
-                            DELETE
-                          </span>{" "}
-                          in the box below:
-                        </label>
-                        <Input
-                          id="delete-confirmation"
-                          value={deleteConfirmation}
-                          onChange={(e) =>
-                            setDeleteConfirmation(e.target.value)
-                          }
-                          placeholder="Type DELETE to confirm"
-                          className="font-mono"
-                        />
-                      </div>
-                    </AlertDialogDescription>
                   </AlertDialogHeader>
+                  <AlertDialogDescription className="flex flex-col gap-3">
+                    <span>
+                      This action will permanently delete your Delight Desk
+                      account and cannot be undone. All your data will be
+                      permanently removed from our servers.
+                    </span>
+                  </AlertDialogDescription>
+
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2 bg-red-50 border border-red-200 rounded p-3">
+                      <span className="font-medium text-red-900">
+                        This will delete:
+                      </span>
+                      <ul className="text-sm text-red-700 space-y-1">
+                        <li>• Your profile and account settings</li>
+                        <li>• All store connections and integrations</li>
+                        <li>• Email automation rules and templates</li>
+                        <li>• Order history and customer data</li>
+                        <li>• Billing information and invoices</li>
+                      </ul>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label
+                        htmlFor="delete-confirmation"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        To confirm, type{" "}
+                        <span className="font-mono bg-gray-100 px-1 rounded">
+                          DELETE
+                        </span>{" "}
+                        in the box below:
+                      </label>
+                      <Input
+                        id="delete-confirmation"
+                        value={deleteConfirmation}
+                        onChange={(e) => setDeleteConfirmation(e.target.value)}
+                        placeholder="Type DELETE to confirm"
+                        className="font-mono"
+                        disabled={deleteUserAccount.isPending}
+                      />
+                    </div>
+                  </div>
+
                   <AlertDialogFooter>
                     <AlertDialogCancel
                       onClick={() => setDeleteConfirmation("")}
                       className="hover:cursor-pointer"
+                      disabled={deleteUserAccount.isPending}
                     >
                       Cancel
                     </AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={handleDeleteAccount}
-                      //   disabled={
-                      //     deleteConfirmation !== "DELETE" ||
-                      //     deleteAccountMutation.isPending
-                      //   }
+                      onClick={() => deleteUserAccount.mutate()}
+                      disabled={
+                        deleteConfirmation !== "DELETE" ||
+                        deleteUserAccount.isPending
+                      }
                       className="bg-red-600 hover:bg-red-700 focus:ring-red-500 hover:cursor-pointer"
                     >
-                      {/* {deleteAccountMutation.isPending
+                      {deleteUserAccount.isPending
                         ? "Deleting..."
-                        : "Delete Account Forever"} */}
-                      Delete Account Forever
+                        : "Delete Account Forever"}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

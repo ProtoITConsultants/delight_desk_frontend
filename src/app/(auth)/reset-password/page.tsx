@@ -1,7 +1,6 @@
 "use client";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -30,21 +29,11 @@ import {
   CheckCircle,
   AlertTriangle,
 } from "lucide-react";
-
-// Form Validation
-const resetPasswordSchema = z
-  .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
+import { RESET_PASSWORD_FORM_SCHEMA } from "@/modules/auth/schema/reset-password";
+import { ResetPasswordFormTypes } from "@/modules/auth/types";
+import { useMutation } from "@tanstack/react-query";
+import AuthAPIs from "@/modules/auth/api";
+import { toast } from "sonner";
 
 const ResetPassword = () => {
   // Hooks
@@ -55,34 +44,39 @@ const ResetPassword = () => {
 
   // Local States
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordResetSuccess, setPasswordResetSuccess] = useState(false);
 
   // Form
-  const form = useForm<ResetPasswordForm>({
-    resolver: zodResolver(resetPasswordSchema),
+  const form = useForm<ResetPasswordFormTypes>({
+    resolver: zodResolver(RESET_PASSWORD_FORM_SCHEMA),
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
   });
 
-  // TODO: Add Tanstack - Mutation here
-  const onSubmit = (data: ResetPasswordForm) => {
-    console.log(data);
-  };
-
-  const resetMutation = {
-    isSuccess: false,
-    isPending: false,
-    error: null,
-  };
-
-  const tokenValidation = {
-    isPending: false,
-    error: null,
-  };
+  const resetPassword = useMutation({
+    mutationFn: () =>
+      AuthAPIs.resetPassword({
+        password: form.getValues("password"),
+        token: token || "",
+      }),
+    onSuccess: () => {
+      setPasswordResetSuccess(true);
+      form.reset();
+      toast.success("Password reset successful!", {
+        description: "You can now login with your new password",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to reset password!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
 
   // Show success message
-  if (resetMutation.isSuccess) {
+  if (passwordResetSuccess) {
     return (
       <Card className="w-full max-w-md rounded-lg">
         <CardHeader className="text-center">
@@ -111,21 +105,7 @@ const ResetPassword = () => {
     );
   }
 
-  // Show loading while validating token
-  if (tokenValidation.isPending) {
-    return (
-      <Card className="w-full max-w-md rounded-lg">
-        <CardContent className="p-8 text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2094f3] mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">
-            Validating reset link...
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!token || tokenValidation.error) {
+  if (!token) {
     return (
       <Card className="w-full max-w-md rounded-lg">
         <CardHeader className="text-center">
@@ -143,8 +123,8 @@ const ResetPassword = () => {
           <Alert variant="destructive" className="border-[#ef4444] bg-red-100">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              {tokenValidation.error ||
-                "The reset link is invalid or has expired. Please request a new password reset."}
+              The reset link is invalid or has expired. Please request a new
+              password reset.
             </AlertDescription>
           </Alert>
           <div className="flex flex-col gap-2">
@@ -191,7 +171,10 @@ const ResetPassword = () => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(() => resetPassword.mutate())}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="password"
@@ -259,14 +242,14 @@ const ResetPassword = () => {
               )}
             />
 
-            {resetMutation.error && (
+            {resetPassword.isError && (
               <Alert
                 variant="destructive"
                 className="border-[#ef4444] bg-red-100"
               >
                 <AlertDescription>
-                  {resetMutation.error
-                    ? resetMutation.error
+                  {resetPassword.error
+                    ? resetPassword.error.message
                     : "Failed to reset password"}
                 </AlertDescription>
               </Alert>
@@ -275,9 +258,9 @@ const ResetPassword = () => {
             <Button
               type="submit"
               className="w-full h-10"
-              disabled={resetMutation.isPending}
+              disabled={resetPassword.isPending}
             >
-              {resetMutation.isPending
+              {resetPassword.isPending
                 ? "Updating Password..."
                 : "Update Password"}
             </Button>
