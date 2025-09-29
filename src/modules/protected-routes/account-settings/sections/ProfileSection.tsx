@@ -41,6 +41,7 @@ const ProfileSection = () => {
       return accountrSettingsAPIs.updateUserProfile(API_DATA);
     },
     onSuccess: () => {
+      setIsEditable(false);
       toast.success("Profile Updated!", {
         description: "Your profile has been updated successfully",
       });
@@ -178,6 +179,7 @@ const ProfileSection = () => {
                     type="button"
                     onClick={() => setIsEditable(false)}
                     className="h-10"
+                    disabled={updateUserProfile.isPending}
                   >
                     Cancel
                   </Button>
