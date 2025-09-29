@@ -17,21 +17,16 @@ import { z } from "zod";
 import AuthAPIs from "../api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { LOGIN_FORM_SCHEMA } from "../schema/login";
 
-// Form Validation Schema
-const loginSchema = z.object({
-  email: z.email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginFormTypes = z.infer<typeof loginSchema>;
+type LoginFormTypes = z.infer<typeof LOGIN_FORM_SCHEMA>;
 
 const LoginForm = () => {
   // Hooks
   const router = useRouter();
   // Form Hook
   const loginForm = useForm<LoginFormTypes>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(LOGIN_FORM_SCHEMA),
     defaultValues: {
       email: "",
       password: "",
