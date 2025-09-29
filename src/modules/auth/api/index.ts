@@ -31,6 +31,13 @@ const AuthAPIs = {
     apiService.post(AUTH_API.FORGOT_PASSWORD_URL, {
       email,
     }),
+
+  // Reset Password
+  resetPassword: ({ password, token }: { password: string; token: string }) =>
+    apiService.post(AUTH_API.RESET_PASSWORD_URL, {
+      password,
+      token,
+    }),
 };
 
 export default AuthAPIs;
