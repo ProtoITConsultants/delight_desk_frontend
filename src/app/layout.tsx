@@ -33,7 +33,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
         <QueryProvider>{children}</QueryProvider>
-        <Toaster />
+        <Toaster richColors theme="light" duration={3000} />
       </body>
     </html>
   );

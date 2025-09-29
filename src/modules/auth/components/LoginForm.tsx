@@ -10,9 +10,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Lock, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import AuthAPIs from "../api";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // Form Validation Schema
 const loginSchema = z.object({
@@ -23,6 +27,8 @@ const loginSchema = z.object({
 type LoginFormTypes = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
+  // Hooks
+  const router = useRouter();
   // Form Hook
   const loginForm = useForm<LoginFormTypes>({
     resolver: zodResolver(loginSchema),
@@ -32,15 +38,28 @@ const LoginForm = () => {
     },
   });
 
-  // TODO: Add Tanstack - Mutation here
-  const onSubmit = () => {
-    // Log Form Data
-    console.log(loginForm.getValues());
-  };
+  // Login Mutation
+  const loginUser = useMutation({
+    mutationFn: (data: LoginFormTypes) => AuthAPIs.login(data),
+    onSuccess: () => {
+      toast.success("Login successful", {
+        description: "Welcome back! Redirecting...",
+      });
+      router.replace("/dashboard");
+    },
+    onError: (error) => {
+      toast.error("Login failed", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
 
   return (
     <Form {...loginForm}>
-      <form onSubmit={loginForm.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={loginForm.handleSubmit((data) => loginUser.mutate(data))}
+        className="space-y-4"
+      >
         <FormField
           control={loginForm.control}
           name="email"
@@ -88,10 +107,9 @@ const LoginForm = () => {
         <Button
           type="submit"
           className="w-full hover:cursor-pointer"
-          // disabled={loginMutation.isPending}
+          disabled={loginUser.isPending}
         >
-          {/* {loginMutation.isPending ? "Signing In..." : "Sign In"} */}
-          Sign In
+          {loginUser.isPending ? "Signing In..." : "Sign In"}
         </Button>
       </form>
     </Form>

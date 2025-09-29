@@ -13,13 +13,19 @@ class ApiService {
     this.api.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          if (typeof window !== "undefined") {
-            window.location.href = "/login";
-          }
-        }
-        // You can also show a toast here
-        return Promise.reject(error);
+        console.log("error", error);
+
+        // if (error.response?.status === 401) {
+        //   if (typeof window !== "undefined") {
+        //     window.location.href = "/login";
+        //   }
+        // }
+        // Create a custom error with message
+        const message =
+          (error.response?.data as { message: string })?.message ||
+          "Something went wrong";
+
+        return Promise.reject(new Error(message));
       }
     );
   }
