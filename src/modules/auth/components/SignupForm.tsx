@@ -1,5 +1,4 @@
 "use client";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -11,29 +10,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, User, Building } from "lucide-react";
+import { Mail, Lock, User, Building, EyeOff, Eye } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-// Form Validation Schema
-const signupSchema = z
-  .object({
-    email: z.string().email("Please enter a valid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    company: z.string().min(1, "Company name is required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type SignupFormTypes = z.infer<typeof signupSchema>;
+import { SIGNUP_FORM_SCHEMA } from "../schema/signup";
+import { SignupFormTypes } from "../types";
+import { useMutation } from "@tanstack/react-query";
+import AuthAPIs from "../api";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const SignupForm = () => {
+  // Hooks
+  const router = useRouter();
+
+  // Local States
+  const [showPassword, setShowPassword] = useState(false);
+
   const form = useForm<SignupFormTypes>({
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(SIGNUP_FORM_SCHEMA),
     defaultValues: {
       email: "",
       password: "",
@@ -44,14 +39,27 @@ const SignupForm = () => {
     },
   });
 
-  // TODO: Add Tanstack - Mutation here
-  const onSubmit = () => {
-    // Log Form Data
-    console.log(form.getValues());
-  };
+  const createAccount = useMutation({
+    mutationFn: (data: SignupFormTypes) => AuthAPIs.signup(data),
+    onSuccess: () => {
+      toast.success("Signup successful!", {
+        description: "Welcome! Redirecting...",
+      });
+      router.replace("/dashboard");
+    },
+    onError: (error) => {
+      toast.error("Signup failed!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit((data) => createAccount.mutate(data))}
+        className="space-y-4"
+      >
         <div className="grid sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -152,13 +160,28 @@ const SignupForm = () => {
                 Password
               </FormLabel>
               <FormControl>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  className="py-2 h-10"
-                  {...field}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    className="py-2 h-10 peer"
+                    {...field}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 bg-white hover:bg-white border border-l-0 rounded-l-none peer-focus:!border-ring"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -174,13 +197,28 @@ const SignupForm = () => {
                 Confirm Password
               </FormLabel>
               <FormControl>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Confirm your password"
-                  className="py-2 h-10"
-                  {...field}
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    className="py-2 h-10"
+                    {...field}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 bg-white hover:bg-white border border-l-0 rounded-l-none peer-focus:!border-ring"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -189,10 +227,9 @@ const SignupForm = () => {
         <Button
           type="submit"
           className="w-full hover:cursor-pointer"
-          // disabled={signupMutation.isPending}
+          disabled={createAccount.isPending}
         >
-          {/* {signupMutation.isPending ? "Creating Account..." : "Create Account"} */}
-          Create Account
+          {createAccount.isPending ? "Creating Account..." : "Create Account"}
         </Button>
       </form>
     </Form>
