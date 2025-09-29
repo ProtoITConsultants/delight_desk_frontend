@@ -38,6 +38,9 @@ const AuthAPIs = {
       password,
       token,
     }),
+
+  // Logout
+  logout: () => apiService.post(AUTH_API.LOGOUT_URL),
 };
 
 export default AuthAPIs;
