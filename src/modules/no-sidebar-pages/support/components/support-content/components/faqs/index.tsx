@@ -8,7 +8,7 @@ const FAQs = () => {
   return (
     <FAQSidebarProvider>
       <div className="col-span-4 grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div className="col-span-1">
+        <div className="col-span-1 sticky top-6">
           <FAQsSidebar />
         </div>
         <div className="col-span-1 lg:col-span-3" id="faq-section">
