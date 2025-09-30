@@ -1,7 +1,6 @@
 "use client";
 import { RefreshCw, Send } from "lucide-react";
 import { CONTACT_US_FORM_SCHEMA } from "@/modules/core/utils/contact-us-form/schema";
-import LandingPageAPIs from "@/modules/landing-page/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -22,6 +21,7 @@ import {
   CONTACT_US_FORM_TYPE,
 } from "@/modules/core/utils/contact-us-form/types";
 import { cn } from "@/lib/utils";
+import ContactUsFormAPIs from "@/modules/core/api/contact-us-form";
 
 const ContactUsForm = ({
   submitButtonClassName,
@@ -32,14 +32,14 @@ const ContactUsForm = ({
     defaultValues: {
       name: "",
       email: "",
-      company: "",
+      subject: "",
       inquiry: "",
     },
   });
 
   const contactUsMutation = useMutation({
     mutationFn: (data: CONTACT_US_FORM_TYPE) =>
-      LandingPageAPIs.contactUsForm(data),
+      ContactUsFormAPIs.sendUserInquiry(data),
     onSuccess: () => {
       form.reset();
       toast.success("Message sent successfully!");
@@ -124,7 +124,7 @@ const ContactUsForm = ({
 
         <FormField
           control={form.control}
-          name="company"
+          name="subject"
           render={({ field }) => (
             <FormItem>
               <FormLabel
@@ -135,12 +135,12 @@ const ContactUsForm = ({
                     : "text-gray-700"
                 )}
               >
-                Company
+                Subject *
               </FormLabel>
               <FormControl>
                 <Input
                   type="text"
-                  placeholder="Your Company Name"
+                  placeholder="Enter your subject"
                   className={cn(
                     formType === "landing-page" &&
                       "bg-white/5 border-white/20 text-white placeholder:text-white/40"
