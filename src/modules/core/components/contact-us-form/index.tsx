@@ -42,6 +42,7 @@ const ContactUsForm = ({
       LandingPageAPIs.contactUsForm(data),
     onSuccess: () => {
       form.reset();
+      toast.success("Message sent successfully!");
     },
     onError: (error) => {
       toast.error("Failed to send message!", {
