@@ -1,6 +1,7 @@
 "use client";
 import FAQsContent from "./components/accordion-content";
 import FAQsSidebar from "./components/accordion-sidebar";
+import ContactUsForm from "./components/contact-us-form";
 import { FAQSidebarProvider } from "./context/use-faq-sidebar";
 
 const FAQs = () => {
@@ -12,6 +13,7 @@ const FAQs = () => {
         </div>
         <div className="col-span-1 lg:col-span-3" id="faq-section">
           <FAQsContent />
+          <ContactUsForm />
         </div>
       </div>
     </FAQSidebarProvider>
