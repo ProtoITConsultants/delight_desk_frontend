@@ -1,4 +1,4 @@
-type SUBSCRIPTION_PLAN_CARD = {
+type SUBSCRIPTION_PLAN = {
   id: string;
   name: string;
   displayName: string;
@@ -11,4 +11,4 @@ type SUBSCRIPTION_PLAN_CARD = {
   createdAt: string;
 };
 
-export type { SUBSCRIPTION_PLAN_CARD };
+export type { SUBSCRIPTION_PLAN };

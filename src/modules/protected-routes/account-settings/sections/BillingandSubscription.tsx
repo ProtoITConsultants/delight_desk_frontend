@@ -1,3 +1,7 @@
+"use client";
+
+import SubscriptionManagement from "../components/subscription-management/subscription-management";
+
 const BillingandSubscription = () => {
   return (
     <div className="space-y-6">
@@ -13,6 +17,7 @@ const BillingandSubscription = () => {
         </div>
       </div>
       {/* Subscription Management */}
+      <SubscriptionManagement />
     </div>
   );
 };

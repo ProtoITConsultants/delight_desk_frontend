@@ -54,6 +54,8 @@ const DashboardNavbar = () => {
               alt="Logo"
               height={32}
               width={120}
+              className="h-8 w-[120px]"
+              priority
             />
           </div>
 
