@@ -1,4 +1,4 @@
-const SEND_USER_INQUIRY_URL = "";
+const SEND_USER_INQUIRY_URL = "/contact";
 
 const CONTACT_US_FORM = {
   SEND_USER_INQUIRY_URL,
