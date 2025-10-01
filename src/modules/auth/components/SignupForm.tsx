@@ -45,7 +45,7 @@ const SignupForm = () => {
       toast.success("Signup successful!", {
         description: "Welcome! Redirecting...",
       });
-      router.replace("/dashboard");
+      router.replace("/plan-selection");
     },
     onError: (error) => {
       toast.error("Signup failed!", {
