@@ -5,7 +5,7 @@ import EscalationQueueTab from "./components/escalation-queue-tab";
 
 const AiAssistantTabs = () => {
   return (
-    <Tabs defaultValue="email-signature" className="space-y-4">
+    <Tabs defaultValue="escalation-queue" className="space-y-4">
       <TabsList className="flex items-center flex-wrap w-full gap-2 p-1 h-10">
         <TabsTrigger
           value="escalation-queue"
