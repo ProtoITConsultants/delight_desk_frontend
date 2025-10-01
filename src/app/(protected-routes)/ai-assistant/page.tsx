@@ -1,4 +1,5 @@
 import AiAssistantHeader from "@/modules/protected-routes/ai-assistant/components/ai-assistant-header";
+import AiAssistantTabs from "@/modules/protected-routes/ai-assistant/components/ai-assistant-tabs";
 import AiTrainingNotification from "@/modules/protected-routes/ai-assistant/components/ai-training-notification";
 
 const AiAssistantPage = () => {
@@ -22,6 +23,7 @@ const AiAssistantPage = () => {
       {showAiTrainingNotification && (
         <AiTrainingNotification {...aiTrainingStatus} />
       )}
+      <AiAssistantTabs />
     </div>
   );
 };
