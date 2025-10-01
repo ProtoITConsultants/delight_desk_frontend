@@ -23,10 +23,10 @@ const SignatureBuilderTabs = () => {
           HTML Signature
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="visual-builder">
+      <TabsContent value="visual-builder" className="pt-3">
         <VisualSignatureBuilder />
       </TabsContent>
-      <TabsContent value="html-builder">
+      <TabsContent value="html-builder" className="pt-3">
         <HTMLSignatureBuilder />
       </TabsContent>
     </Tabs>

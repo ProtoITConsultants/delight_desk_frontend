@@ -31,10 +31,7 @@ const HTMLSignatureBuilder = () => {
 
   return (
     <Form {...form}>
-      <form
-        className="space-y-6 max-w-2xl"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="htmlContent"
