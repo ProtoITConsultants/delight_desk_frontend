@@ -48,9 +48,14 @@ const VisualSignatureBuilder = () => {
 
   const isUploading = null;
 
+  const onSubmit = () => {};
+
   return (
     <Form {...form}>
-      <form className="space-y-6 max-w-2xl">
+      <form
+        className="space-y-6 max-w-2xl"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         {/* Personal Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
