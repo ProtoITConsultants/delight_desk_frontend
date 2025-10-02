@@ -1,3 +1,7 @@
+type EmailPriority = "low" | "medium" | "high";
+type EmailStatus = "pending" | "resolved" | "in_progress" | "closed";
+
+// Email Object Type
 type ESCALATED_EMAIL_TYPE = {
   id: string;
   emailId: string;
@@ -5,10 +9,10 @@ type ESCALATED_EMAIL_TYPE = {
   subject: string;
   customerEmail: string;
   body: string;
-  priority: "low" | "medium" | "high" | "urgent";
-  status: "pending" | "in_progress" | "resolved" | "closed";
+  priority: EmailPriority;
+  status: EmailStatus;
   classification: string;
-  reason: string;
+  reason: string; // Escalation reason
   assignedTo?: string;
   notes?: string;
   aiSuggestedResponse?: string;
@@ -17,4 +21,16 @@ type ESCALATED_EMAIL_TYPE = {
   resolvedAt?: string;
 };
 
-export type { ESCALATED_EMAIL_TYPE };
+// Email Card Props
+type ESCALATION_EMAIL_CARD_PROPS = Pick<
+  ESCALATED_EMAIL_TYPE,
+  | "id"
+  | "subject"
+  | "customerEmail"
+  | "priority"
+  | "status"
+  | "reason"
+  | "createdAt"
+>;
+
+export type { ESCALATED_EMAIL_TYPE, ESCALATION_EMAIL_CARD_PROPS };

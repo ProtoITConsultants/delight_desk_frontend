@@ -7,6 +7,7 @@ import EscalationEmailsStatusTabsList from "./components/email-filters/emails-st
 import EscalationEmailPriorityFilter from "./components/email-filters/email-priority-filter";
 import BulkActionTab from "./components/email-filters/bulk-action";
 import SelectAllEscalationEmailsButton from "./components/email-filters/select-all-emails-button";
+import EscalationEmailsList from "./components/emails-list";
 
 const EscalationQueueEmailsList = ({
   className,
@@ -30,7 +31,9 @@ const EscalationQueueEmailsList = ({
         </CardHeader>
 
         {/* Emails List */}
-        <CardContent className="p-0 max-h-[500px] overflow-y-auto"></CardContent>
+        <CardContent className="p-0 max-h-[500px] overflow-y-auto">
+          <EscalationEmailsList />
+        </CardContent>
       </Card>
     </EscalationEmailsListProvider>
   );
