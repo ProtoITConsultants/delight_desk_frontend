@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEscalationEmails } from "../../utils/context/escalation-emails-filters";
+import { useEscalationEmails } from "../../../utils/context/escalation-emails-filters";
 
 const EscalationEmailPriorityFilter = () => {
   const { emailPriority, setEmailPriority } = useEscalationEmails();

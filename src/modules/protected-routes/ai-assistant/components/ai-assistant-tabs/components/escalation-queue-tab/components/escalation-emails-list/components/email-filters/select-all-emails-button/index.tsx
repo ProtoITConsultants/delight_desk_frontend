@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useEscalationEmails } from "../../utils/context/escalation-emails-filters";
+import { useEscalationEmails } from "../../../utils/context/escalation-emails-filters";
 
 const SelectAllEscalationEmailsButton = () => {
   const { FILTERED_EMAILS, selectedEmails, setSelectedEmails } =

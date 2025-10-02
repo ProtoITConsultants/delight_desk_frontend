@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useEscalationEmails } from "../../utils/context/escalation-emails-filters";
+import { useEscalationEmails } from "../../../utils/context/escalation-emails-filters";
 import { Button } from "@/components/ui/button";
 
 const BulkActionTab = () => {

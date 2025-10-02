@@ -1,7 +1,7 @@
 "use client";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useEscalationEmails } from "../../utils/context/escalation-emails-filters";
+import { useEscalationEmails } from "../../../utils/context/escalation-emails-filters";
 
 const SearchBar = () => {
   const { searchQuery, setSearchQuery } = useEscalationEmails();

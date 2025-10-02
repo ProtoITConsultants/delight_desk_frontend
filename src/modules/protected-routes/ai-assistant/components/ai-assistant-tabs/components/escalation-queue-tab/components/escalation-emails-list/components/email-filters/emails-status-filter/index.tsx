@@ -1,7 +1,7 @@
 "use client";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
-import { useEscalationEmails } from "../../utils/context/escalation-emails-filters";
+import { useEscalationEmails } from "../../../utils/context/escalation-emails-filters";
 
 const EscalationEmailsStatusTabsList = () => {
   const { emailStatus, setEmailStatus } = useEscalationEmails();

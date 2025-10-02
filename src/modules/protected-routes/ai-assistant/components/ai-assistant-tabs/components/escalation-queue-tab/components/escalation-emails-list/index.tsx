@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 import { ESCALATION_EMAILS_LIST_PROPS } from "../../types/escalation-emails-list";
-import { Card, CardHeader } from "@/components/ui/card";
-import SearchBar from "./components/search-bar";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import SearchBar from "./components/email-filters/search-bar";
 import { EscalationEmailsListProvider } from "./utils/context/escalation-emails-filters";
-import EscalationEmailsStatusTabsList from "./components/emails-status-filter";
-import EscalationEmailPriorityFilter from "./components/email-priority-filter";
-import BulkActionTab from "./components/bulk-action";
-import SelectAllEscalationEmailsButton from "./components/select-all-emails-button";
+import EscalationEmailsStatusTabsList from "./components/email-filters/emails-status-filter";
+import EscalationEmailPriorityFilter from "./components/email-filters/email-priority-filter";
+import BulkActionTab from "./components/email-filters/bulk-action";
+import SelectAllEscalationEmailsButton from "./components/email-filters/select-all-emails-button";
 
 const EscalationQueueEmailsList = ({
   className,
@@ -14,8 +14,8 @@ const EscalationQueueEmailsList = ({
   return (
     <EscalationEmailsListProvider>
       <Card className={cn(className)}>
+        {/* Filters Header */}
         <CardHeader className="space-y-3">
-          {/* Filters */}
           {/* Search Bar */}
           <SearchBar />
           {/* Filter Tabs - Email Status */}
@@ -28,6 +28,9 @@ const EscalationQueueEmailsList = ({
           {/* Select All / Clear Selection - Button */}
           <SelectAllEscalationEmailsButton />
         </CardHeader>
+
+        {/* Emails List */}
+        <CardContent className="p-0 max-h-[500px] overflow-y-auto"></CardContent>
       </Card>
     </EscalationEmailsListProvider>
   );
