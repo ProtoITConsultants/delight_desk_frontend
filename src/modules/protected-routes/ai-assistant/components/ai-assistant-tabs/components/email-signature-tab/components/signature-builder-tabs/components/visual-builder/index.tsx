@@ -27,8 +27,13 @@ import { Separator } from "@/components/ui/separator";
 import FileUploader from "@/modules/core/components/file-uploader";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import React, { useEffect } from "react";
+import { useSignatureBuilder } from "../../../../utils/context/signature-builder-context";
+import { generateSignaturePreview } from "../../../../utils/services/generateSignaturePreview";
 
 const VisualSignatureBuilder = () => {
+  const { setSignatureHtml } = useSignatureBuilder();
+
   const form = useForm({
     resolver: zodResolver(VISUAL_BUILDER_FORM_SCHEMA),
     defaultValues: {
@@ -49,6 +54,14 @@ const VisualSignatureBuilder = () => {
   const isUploading = null;
 
   const onSubmit = () => {};
+
+  const values = form.watch();
+
+  useEffect(() => {
+    const preview = generateSignaturePreview(values);
+
+    setSignatureHtml(preview);
+  }, [values, setSignatureHtml]);
 
   return (
     <Form {...form}>
@@ -202,6 +215,9 @@ const VisualSignatureBuilder = () => {
                       fileType="image"
                       dialogHeading="Upload Profile Photo"
                       dialogDescription="This will appear in your email signature"
+                      onSaveSelectedFile={(file) => {
+                        field.onChange(file);
+                      }}
                     >
                       <div className="flex items-center gap-2">
                         <Camera className="h-4 w-4" />
@@ -239,6 +255,9 @@ const VisualSignatureBuilder = () => {
                           fileType="image"
                           dialogHeading="Upload Profile Photo"
                           dialogDescription="This will appear in your email signature"
+                          onSaveSelectedFile={(file) => {
+                            field.onChange(file);
+                          }}
                         >
                           <div className="flex items-center gap-2">
                             <Camera className="h-4 w-4" />

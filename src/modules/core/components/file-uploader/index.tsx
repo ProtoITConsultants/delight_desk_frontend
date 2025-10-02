@@ -20,6 +20,7 @@ const FileUploader = ({
   dialogDescription,
   maxFileSize = 10485760, // 10MB default
   fileType,
+  onSaveSelectedFile,
   children,
 }: FILE_UPLOADER_PROPS) => {
   // Local State
@@ -39,7 +40,11 @@ const FileUploader = ({
           <DialogTitle className="text-xl">{dialogHeading}</DialogTitle>
           <DialogDescription>{dialogDescription}</DialogDescription>
         </DialogHeader>
-        <FileInput maxFileSize={maxFileSize} fileType={fileType} />
+        <FileInput
+          maxFileSize={maxFileSize}
+          fileType={fileType}
+          onSaveSelectedFile={onSaveSelectedFile}
+        />
         <DialogFooter className="text-muted-foreground text-sm">
           maximum file size: {maxFileSize / 1024 / 1024}MB
         </DialogFooter>

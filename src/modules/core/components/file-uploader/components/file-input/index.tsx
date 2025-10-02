@@ -1,19 +1,20 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { FILE_INPUT_FIELD_PROPS } from "@/modules/core/utils/file-uploader/types";
+import {
+  FILE_INPUT_FIELD_PROPS,
+  SELECTED_IMAGE_DATA_TYPE,
+} from "@/modules/core/utils/file-uploader/types";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
-type SelectedImageDataType = {
-  fileURL: string | null;
-  fileName: string | null;
-  fileSize: number | null;
-};
-
-const FileInput = ({ maxFileSize, fileType }: FILE_INPUT_FIELD_PROPS) => {
+const FileInput = ({
+  maxFileSize,
+  fileType,
+  onSaveSelectedFile,
+}: FILE_INPUT_FIELD_PROPS) => {
   const [selectedImageData, setSelectedImageData] =
-    useState<SelectedImageDataType>({
+    useState<SELECTED_IMAGE_DATA_TYPE>({
       fileURL: null,
       fileName: null,
       fileSize: null,
@@ -45,8 +46,6 @@ const FileInput = ({ maxFileSize, fileType }: FILE_INPUT_FIELD_PROPS) => {
     // Reset the input field value so onChange can be triggered again if the same image is uploaded
     inputFile.value = "";
   };
-
-  //   console.log("selectedImage", selectedImageData);
 
   return (
     <div className="h-[345px] py-2 w-full">
@@ -87,7 +86,10 @@ const FileInput = ({ maxFileSize, fileType }: FILE_INPUT_FIELD_PROPS) => {
               </Button>
             </div>
           </div>
-          <Button className="" onClick={() => {}}>
+          <Button
+            className=""
+            onClick={() => onSaveSelectedFile(selectedImageData.fileURL!)}
+          >
             Save File
           </Button>
         </div>
