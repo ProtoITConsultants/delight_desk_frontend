@@ -59,6 +59,8 @@
 
   /* Radius */
   --radius-radius: var(--radius);
+  /* Custom Breakpoints */
+  --breakpoint-w1440: 1440px;
 }
 
 html {

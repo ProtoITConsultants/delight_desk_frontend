@@ -53,6 +53,10 @@ export const EscalationEmailsListProvider = ({
     return matchesSearch && matchesPriority && matchesStatus;
   });
 
+  const selectedEmailDetails = selectedEmailForPreview
+    ? escalatedEmails.find((email) => email.id === selectedEmailForPreview)
+    : null;
+
   return (
     <EscalationEmailsListContext.Provider
       value={{
@@ -67,6 +71,7 @@ export const EscalationEmailsListProvider = ({
         selectedEmails,
         setSelectedEmails,
         FILTERED_EMAILS,
+        selectedEmailDetails,
       }}
     >
       {children}

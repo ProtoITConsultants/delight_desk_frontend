@@ -20,6 +20,8 @@ type ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE = {
   setSelectedEmails: React.Dispatch<React.SetStateAction<Set<string>>>;
   // Filtered Emails Array
   FILTERED_EMAILS: ESCALATED_EMAIL_TYPE[];
+  // selectedEmailDetails
+  selectedEmailDetails: ESCALATED_EMAIL_TYPE | null | undefined;
 };
 
 export type { ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE };
