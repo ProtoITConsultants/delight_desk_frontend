@@ -198,10 +198,10 @@ const VisualSignatureBuilder = () => {
                   {/* Photo Management When Exists */}
                   {!field.value ? (
                     <FileUploader
-                      maxFileSize={2097152} // 2MB
-                      onGetUploadParameters={() => {}}
-                      onComplete={() => {}}
-                      buttonClassName="w-full"
+                      triggerClassName="w-full"
+                      fileType="image"
+                      dialogHeading="Upload Profile Photo"
+                      dialogDescription="This will appear in your email signature"
                     >
                       <div className="flex items-center gap-2">
                         <Camera className="h-4 w-4" />
@@ -235,16 +235,16 @@ const VisualSignatureBuilder = () => {
 
                       <div className="flex gap-2">
                         <FileUploader
-                          maxFileSize={2097152} // 2MB
-                          onGetUploadParameters={() => {}}
-                          onComplete={() => {}}
-                          buttonClassName="flex-1"
+                          triggerClassName="w-full"
+                          fileType="image"
+                          dialogHeading="Upload Profile Photo"
+                          dialogDescription="This will appear in your email signature"
                         >
-                          <div className="flex items-center justify-center gap-2">
+                          <div className="flex items-center gap-2">
                             <Camera className="h-4 w-4" />
                             {isUploading === "photo"
                               ? "Uploading..."
-                              : "Replace Photo"}
+                              : "Upload Profile Photo"}
                           </div>
                         </FileUploader>
 
