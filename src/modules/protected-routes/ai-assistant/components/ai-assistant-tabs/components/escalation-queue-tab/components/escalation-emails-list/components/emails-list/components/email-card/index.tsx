@@ -69,7 +69,7 @@ const EscalationEmailCard = ({
                   className={`text-xs ${getPriorityColor(priority)}`}
                 >
                   <EmailIcon className="h-3 w-3" />
-                  <span className="ml-1 capitalize">{priority}</span>
+                  <span className="capitalize">{priority}</span>
                 </Badge>
                 <Badge
                   variant="secondary"
