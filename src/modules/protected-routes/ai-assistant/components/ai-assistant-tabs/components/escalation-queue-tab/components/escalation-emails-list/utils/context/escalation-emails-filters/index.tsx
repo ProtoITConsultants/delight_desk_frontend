@@ -23,7 +23,7 @@ const escalatedEmails: ESCALATED_EMAIL_TYPE[] = [
     assignedTo: "Babar",
     notes: "No notes",
     aiSuggestedResponse: "Hello, this is a test response.",
-    aiConfidence: 0.8,
+    aiConfidence: 0.4,
     createdAt: "Sep 29, 2025 3:53 AM",
     resolvedAt: "2023-01-02",
   },
