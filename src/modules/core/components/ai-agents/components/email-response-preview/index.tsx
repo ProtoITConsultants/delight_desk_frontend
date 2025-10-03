@@ -17,7 +17,7 @@ const EmailResponseSamplePreview = ({
         "border rounded-lg p-4",
         type === "ai-agent-test"
           ? "bg-gradient-to-br from-blue-50 to-purple-50"
-          : "",
+          : "bg-gray-50",
         className
       )}
     >
