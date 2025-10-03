@@ -1,13 +1,13 @@
 "use client";
-import SubscriptionPlanCard from "@/modules/protected-routes/plan-selection/components/subscription-plan-card";
+import SubscriptionPlanCard from "@/modules/no-sidebar-pages/plan-selection/components/subscription-plan-card";
 import SubscriptionPlansAPI from "@/modules/protected-routes/account-settings/components/subscription-management/api";
-import PlanSelectionHeader from "@/modules/protected-routes/plan-selection/components/plan-selection-header";
-import PlanValueCard from "@/modules/protected-routes/plan-selection/components/value-card";
-import { VALUE_PROP_CARDS_DATA } from "@/modules/protected-routes/plan-selection/constants/value-card";
+import PlanSelectionHeader from "@/modules/no-sidebar-pages/plan-selection/components/plan-selection-header";
+import PlanValueCard from "@/modules/no-sidebar-pages/plan-selection/components/value-card";
+import { VALUE_PROP_CARDS_DATA } from "@/modules/no-sidebar-pages/plan-selection/constants/value-card";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import TrustSelectionFooter from "@/modules/protected-routes/plan-selection/components/trust-selection-footer/indext";
+import TrustSelectionFooter from "@/modules/no-sidebar-pages/plan-selection/components/trust-selection-footer/indext";
 
 // Plan Selection After Signup
 const PlanSelectionPage = () => {
