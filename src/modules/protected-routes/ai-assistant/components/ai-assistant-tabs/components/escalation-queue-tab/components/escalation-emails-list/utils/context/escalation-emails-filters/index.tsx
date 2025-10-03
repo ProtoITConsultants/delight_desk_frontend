@@ -1,7 +1,10 @@
 "use client";
 import React, { createContext, useContext, useState } from "react";
 import { ESCALATED_EMAIL_TYPE } from "../../types/escalation-email";
-import { ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE } from "../../types/escalation-email-context";
+import {
+  ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE,
+  FEEDBACK_DIALOG_DATA_TYPE,
+} from "../../types/escalation-email-context";
 
 const EscalationEmailsListContext =
   createContext<ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE | null>(null);
@@ -119,6 +122,11 @@ export const EscalationEmailsListProvider = ({
     string | null
   >(null);
   const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
+  const [feedbackDialogData, setFeedbackDialogData] =
+    useState<FEEDBACK_DIALOG_DATA_TYPE>({
+      isOpen: false,
+      emailId: "",
+    });
 
   // Filter Emails List
   const FILTERED_EMAILS = escalatedEmails.filter((email) => {
@@ -152,6 +160,8 @@ export const EscalationEmailsListProvider = ({
         setSelectedEmails,
         FILTERED_EMAILS,
         selectedEmailDetails,
+        feedbackDialogData,
+        setFeedbackDialogData,
       }}
     >
       {children}

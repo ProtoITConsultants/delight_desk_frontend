@@ -6,8 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Edit, Send, X } from "lucide-react";
 import { useState } from "react";
+import { useEscalationEmails } from "../../../../../escalation-emails-list/utils/context/escalation-emails-filters";
 
 const HighConfidenceResponse = () => {
+  const { setFeedbackDialogData } = useEscalationEmails();
   const [isEditingResponse, setIsEditingResponse] = useState(false);
 
   const selectedEmailDetails = {
@@ -93,7 +95,9 @@ const HighConfidenceResponse = () => {
             <Button
               size="sm"
               variant="ghost"
-              onClick={() => {}}
+              onClick={() =>
+                setFeedbackDialogData({ isOpen: true, emailId: "" })
+              }
               data-testid="button-reject-response"
               className="!h-9"
             >

@@ -1,5 +1,10 @@
 import { ESCALATED_EMAIL_TYPE } from "../escalation-email";
 
+type FEEDBACK_DIALOG_DATA_TYPE = {
+  isOpen: boolean;
+  emailId: string;
+};
+
 type ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE = {
   // Search Bar
   searchQuery: string;
@@ -22,6 +27,14 @@ type ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE = {
   FILTERED_EMAILS: ESCALATED_EMAIL_TYPE[];
   // selectedEmailDetails
   selectedEmailDetails: ESCALATED_EMAIL_TYPE | null | undefined;
+  // Feedback Dialog
+  feedbackDialogData: FEEDBACK_DIALOG_DATA_TYPE;
+  setFeedbackDialogData: React.Dispatch<
+    React.SetStateAction<FEEDBACK_DIALOG_DATA_TYPE>
+  >;
 };
 
-export type { ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE };
+export type {
+  ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE,
+  FEEDBACK_DIALOG_DATA_TYPE,
+};
