@@ -2,6 +2,8 @@
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
+import WhatAgentHandles from "@/modules/core/components/ai-agents/components/what-agent-handles";
+import WHAT_AGENT_HANDLES from "@/modules/core/components/ai-agents/constants/what-agent-handles";
 import { Bot, Truck } from "lucide-react";
 import { useState } from "react";
 
@@ -40,6 +42,7 @@ const WismoAgentPage = () => {
           isChangingAgentSettings={false}
         />
       </div>
+      <WhatAgentHandles agentFeatures={WHAT_AGENT_HANDLES.WISMO_AGENT} />
     </AiAgentRoot>
   );
 };

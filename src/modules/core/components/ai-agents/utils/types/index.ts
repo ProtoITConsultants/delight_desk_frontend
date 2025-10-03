@@ -26,8 +26,14 @@ type AI_AGENT_SETTINGS_PROPS = {
   isChangingAgentSettings: boolean;
 };
 
+type WHAT_AGENT_HANDLES_PROPS = {
+  className?: string;
+  agentFeatures: string[];
+};
+
 export type {
   AI_AGENT_ROOT_PROPS,
   AI_AGENT_HEADER_PROPS,
   AI_AGENT_SETTINGS_PROPS,
+  WHAT_AGENT_HANDLES_PROPS,
 };
