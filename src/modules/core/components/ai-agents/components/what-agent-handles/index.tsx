@@ -7,8 +7,8 @@ const WhatAgentHandles = ({
   agentFeatures,
 }: WHAT_AGENT_HANDLES_PROPS) => {
   return (
-    <Card className={cn("gap-4", className)}>
-      <CardHeader>
+    <Card className={cn(className)}>
+      <CardHeader className="gap-0">
         <CardTitle className="text-2xl">What this agent handles</CardTitle>
       </CardHeader>
       <CardContent>

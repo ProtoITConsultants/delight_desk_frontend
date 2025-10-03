@@ -50,6 +50,35 @@ type HOW_AGENT_WORKS_PROPS = {
   agentRequiresModeration?: boolean;
 };
 
+// AI Response Preview
+type AI_AGENT_RESPONSE_SIGNATURE_TYPE = {
+  agentName: string;
+  agentTitle: string;
+  companyName: string;
+};
+
+type AI_RESPONSE_PREVIEW_PROPS = {
+  className?: string;
+  type: "default" | "ai-agent-test";
+  fromEmail: string;
+  subject: string;
+  content: string;
+  signature: AI_AGENT_RESPONSE_SIGNATURE_TYPE;
+};
+
+// Test AI Agent
+type TEST_AI_AGENT_PROPS = {
+  className?: string;
+  instructions: string;
+  contentClassName?: string;
+  InputField: React.ReactNode;
+  actionButtonTitle?: string;
+  onActionButtonClick: () => void;
+  isActionButtonDisabled: boolean;
+  isGeneratingResponse: boolean;
+  emailResponse?: AI_RESPONSE_PREVIEW_PROPS;
+};
+
 export type {
   AI_AGENT_ROOT_PROPS,
   AI_AGENT_HEADER_PROPS,
@@ -57,4 +86,6 @@ export type {
   WHAT_AGENT_HANDLES_PROPS,
   AGENT_WORKFLOW_CARD_PROPS,
   HOW_AGENT_WORKS_PROPS,
+  TEST_AI_AGENT_PROPS,
+  AI_RESPONSE_PREVIEW_PROPS,
 };

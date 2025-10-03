@@ -9,8 +9,8 @@ const HowAgentWorks = ({
   agentRequiresModeration,
 }: HOW_AGENT_WORKS_PROPS) => {
   return (
-    <Card className={cn("gap-4", className)}>
-      <CardHeader>
+    <Card className={cn(className)}>
+      <CardHeader className="gap-0">
         <CardTitle className="text-2xl">How It Works</CardTitle>
       </CardHeader>
       <CardContent
