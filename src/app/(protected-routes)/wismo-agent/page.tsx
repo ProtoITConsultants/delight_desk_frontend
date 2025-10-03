@@ -67,17 +67,17 @@ const WismoAgentPage = () => {
           onActionButtonClick={() => {}}
           isActionButtonDisabled={!aiAgentTestQuery.trim()}
           isGeneratingResponse={false}
-          // emailResponse={{
-          //   type: "ai-agent-test",
-          //   fromEmail: "hello@humanfoodbar.com",
-          //   subject: "Re: Order Status",
-          //   content: `<p>Your subscription has been paused! Reply back "reactivate" anytime and we will turn it back on for you.<br/><br/>Need help with something else? I'm here to assist with any subscription questions you might have.</p>`,
-          //   signature: {
-          //     agentName: "Kai",
-          //     agentTitle: "AI Customer Service Agent",
-          //     companyName: "Human Food Bar",
-          //   },
-          // }}
+          emailResponse={{
+            type: "ai-agent-test",
+            fromEmail: "hello@humanfoodbar.com",
+            subject: "Re: Order Status",
+            content: `<p>Your subscription has been paused! Reply back "reactivate" anytime and we will turn it back on for you.<br/><br/>Need help with something else? I'm here to assist with any subscription questions you might have.</p>`,
+            signature: {
+              agentName: "Kai",
+              agentTitle: "AI Customer Service Agent",
+              companyName: "Human Food Bar",
+            },
+          }}
         />
       </div>
       {/* What Agent Handles */}
