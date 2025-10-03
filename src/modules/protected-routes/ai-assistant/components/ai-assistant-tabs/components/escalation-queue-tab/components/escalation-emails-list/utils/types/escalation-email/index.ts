@@ -1,4 +1,4 @@
-type EmailPriority = "low" | "medium" | "high";
+type EmailPriority = "low" | "medium" | "high" | "urgent";
 type EmailStatus = "pending" | "resolved" | "in_progress" | "closed";
 
 // Email Object Type

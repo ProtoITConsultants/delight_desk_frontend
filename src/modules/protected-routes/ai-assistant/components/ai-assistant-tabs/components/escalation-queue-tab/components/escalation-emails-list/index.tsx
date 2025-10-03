@@ -29,7 +29,7 @@ const EscalationQueueEmailsList = ({
       </CardHeader>
 
       {/* Emails List */}
-      <CardContent className="p-0 max-h-[500px] overflow-y-auto">
+      <CardContent className="p-0 max-h-[500px] h-fit overflow-y-auto">
         <EscalationEmailsList />
       </CardContent>
     </Card>

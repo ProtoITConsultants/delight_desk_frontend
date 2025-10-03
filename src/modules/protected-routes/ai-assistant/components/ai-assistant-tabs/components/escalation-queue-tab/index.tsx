@@ -6,7 +6,7 @@ const EscalationQueueTab = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
       <EscalationEmailsListProvider>
-        <EscalationQueueEmailsList className="lg:col-span-2" />
+        <EscalationQueueEmailsList className="lg:col-span-2 h-fit" />
         <EscalationEmailPreview className="lg:col-span-3" />
       </EscalationEmailsListProvider>
     </div>

@@ -13,9 +13,11 @@ const EscalationEmailsList = () => {
       No escalated emails found
     </div>
   ) : (
-    FILTERED_EMAILS.map((email) => (
-      <EscalationEmailCard key={email.id} {...email} />
-    ))
+    <div className="divide-y">
+      {FILTERED_EMAILS.map((email) => (
+        <EscalationEmailCard key={email.id} {...email} />
+      ))}
+    </div>
   );
 };
 
