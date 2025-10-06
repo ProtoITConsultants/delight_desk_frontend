@@ -20,6 +20,7 @@ type AI_AGENT_SETTINGS_PROPS = {
   agentName: string;
   agentIcon: React.ReactNode;
   agentDescription: string;
+  enableAgentButtonDescription?: string;
   settingsTipTitle?: string;
   settingsTip?: string;
   isAgentEnabled: boolean;

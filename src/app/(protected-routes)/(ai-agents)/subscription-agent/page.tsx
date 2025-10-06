@@ -33,6 +33,7 @@ const SubscriptionAgentPage = () => {
           agentName="Subscription Agent"
           agentIcon={<Bot className="h-5 w-5" />}
           agentDescription="Configure how the Subscription Agent handles billing and plan inquiries."
+          enableAgentButtonDescription="Automatically respond to billing and subscription change requests."
           isAgentEnabled={isAgentEnabled}
           onChangeAgentConfiguration={() => {
             if (isAgentEnabled) {

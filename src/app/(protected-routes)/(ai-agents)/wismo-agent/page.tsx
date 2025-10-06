@@ -34,6 +34,7 @@ const WismoAgentPage = () => {
           agentName="WISMO Agent"
           agentIcon={<Bot className="h-5 w-5" />}
           agentDescription="Configure how the WISMO Agent handles order status inquiries"
+          enableAgentButtonDescription="Automatically respond to order status and shipping inquiries"
           isAgentEnabled={isAgentEnabled}
           onChangeAgentConfiguration={() => {
             if (isAgentEnabled) {

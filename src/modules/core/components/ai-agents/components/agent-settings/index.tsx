@@ -15,6 +15,7 @@ const AgentSettings = ({
   agentName,
   agentIcon,
   agentDescription,
+  enableAgentButtonDescription = "Automatically respond to user inquiries",
   settingsTipTitle,
   settingsTip,
   isAgentEnabled,
@@ -43,7 +44,7 @@ const AgentSettings = ({
           <div className="space-y-0.5">
             <div className="text-base font-medium">Enable {agentName}</div>
             <div className="text-sm text-muted-foreground">
-              Automatically respond to order status and shipping inquiries
+              {enableAgentButtonDescription}
             </div>
           </div>
           <Switch
