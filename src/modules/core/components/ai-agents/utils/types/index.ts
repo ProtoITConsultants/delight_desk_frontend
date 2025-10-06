@@ -80,6 +80,27 @@ type TEST_AI_AGENT_PROPS = {
   emailResponse?: AI_RESPONSE_PREVIEW_PROPS;
 };
 
+// Agent Training Data
+type AGENT_TRAINING_REQUIREMENTS = {
+  agentType: string;
+  hasMinimumContent: boolean;
+  hasRelevantContent: boolean;
+  urlCount: number;
+  manualContentCount: number;
+  relevantChunks: number;
+  totalSources: number;
+  contentQuality: "insufficient" | "basic" | "good" | "excellent";
+  recommendations: string[];
+  warning?: string;
+};
+
+type AI_AGENT_TRAINING_DATA_PROPS = {
+  className?: string;
+  agentDisplayName: string;
+  Icon?: React.ReactNode;
+  trainingRequirements: AGENT_TRAINING_REQUIREMENTS;
+};
+
 export type {
   AI_AGENT_ROOT_PROPS,
   AI_AGENT_HEADER_PROPS,
@@ -89,4 +110,5 @@ export type {
   HOW_AGENT_WORKS_PROPS,
   TEST_AI_AGENT_PROPS,
   AI_RESPONSE_PREVIEW_PROPS,
+  AI_AGENT_TRAINING_DATA_PROPS,
 };
