@@ -21,7 +21,7 @@ const EmailResponseSamplePreview = ({
     >
       {/* Response Header - If Not AI Agent Test Preview */}
       {type === "default" && (
-        <CardHeader>
+        <CardHeader className="px-0">
           <CardTitle className="flex items-center gap-2 text-2xl">
             <Eye className="h-5 w-5" />
             <span>Email Preview</span>

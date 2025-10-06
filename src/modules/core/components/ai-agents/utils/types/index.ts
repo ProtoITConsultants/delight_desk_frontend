@@ -21,7 +21,7 @@ type AI_AGENT_SETTINGS_PROPS = {
   agentIcon: React.ReactNode;
   agentDescription: string;
   settingsTipTitle?: string;
-  settingsTip?: boolean;
+  settingsTip?: string;
   isAgentEnabled: boolean;
   onChangeAgentConfiguration: () => void;
   agentNeedsModeration: boolean;

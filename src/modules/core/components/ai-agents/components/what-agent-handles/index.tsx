@@ -14,7 +14,7 @@ const WhatAgentHandles = ({
       <CardContent>
         <ul className="space-y-2 text-sm">
           {agentFeatures.map((feature, index) => (
-            <li key={index} className="flex items-center gap-2">
+            <li key={index} className="flex items-center gap-2 capitalize">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               {feature}
             </li>
