@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,21 +7,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import { useState } from "react";
 import {
   PROMO_CODE_DIALOG_PROPS,
   PROMO_CODE_FORM_TYPE,
-} from "../../utils/types/promo-code-agent";
+} from "../../utils/types/promo-code-dialog";
 import PromoCodeForm from "../promo-code-form";
 
 const PromoCodeDialoge = ({
   dialogType,
   dialogeTitle,
   dialogDescription,
+  isDialogOpen,
+  setIsDialogOpen,
+  dialogTrigger,
 }: PROMO_CODE_DIALOG_PROPS) => {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-
+  // TODO: Create Mutation
   const onSubmit = (data: PROMO_CODE_FORM_TYPE) => {
     if (dialogType === "add-promo-code") {
       console.log("Add Promo Code", data);
@@ -32,17 +31,9 @@ const PromoCodeDialoge = ({
   };
 
   return (
-    <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       {/* Trigger */}
-      <DialogTrigger asChild>
-        <Button
-          onClick={() => setIsCreateDialogOpen(true)}
-          className="flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Add Promo Code
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{dialogTrigger}</DialogTrigger>
       {/* Content */}
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
@@ -66,7 +57,7 @@ const PromoCodeDialoge = ({
           dialogType={dialogType}
           isSavingPromoCode={false}
           onSubmit={onSubmit}
-          setIsDialogOpen={setIsCreateDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
         />
       </DialogContent>
     </Dialog>

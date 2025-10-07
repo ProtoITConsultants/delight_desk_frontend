@@ -5,12 +5,17 @@ type PROMO_CODE_DIALOG_PROPS = {
   dialogType: "add-promo-code" | "edit-promo-code";
   dialogeTitle: string;
   dialogDescription: string;
+  isDialogOpen: boolean;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  dialogTrigger: React.ReactNode;
 };
 
 type PROMO_CODE_FORM_TYPE = z.infer<typeof PROMO_CODE_FORM_SCHEMA>;
 
-type PROMO_CODE_FORM_PROPS = Pick<PROMO_CODE_DIALOG_PROPS, "dialogType"> & {
-  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+type PROMO_CODE_FORM_PROPS = Pick<
+  PROMO_CODE_DIALOG_PROPS,
+  "dialogType" | "setIsDialogOpen"
+> & {
   onSubmit: (data: PROMO_CODE_FORM_TYPE) => void;
   isSavingPromoCode: boolean;
 };

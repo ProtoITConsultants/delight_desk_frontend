@@ -14,7 +14,7 @@ import { PROMO_CODE_FORM_SCHEMA } from "../../utils/schema/promo-code-agent";
 import {
   PROMO_CODE_FORM_PROPS,
   PROMO_CODE_FORM_TYPE,
-} from "../../utils/types/promo-code-agent";
+} from "../../utils/types/promo-code-dialog";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { BadgeDollarSign, Calendar, Settings, Target } from "lucide-react";
