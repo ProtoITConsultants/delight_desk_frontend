@@ -8,13 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { PROMO_CODE_FORM_SCHEMA } from "../../utils/schema/promo-code-agent";
-import {
-  PROMO_CODE_FORM_PROPS,
-  PROMO_CODE_FORM_TYPE,
-} from "../../utils/types/promo-code-dialog";
+import { PROMO_CODE_FORM_PROPS } from "../../utils/types/promo-code-dialog";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { BadgeDollarSign, Calendar, Settings, Target } from "lucide-react";
@@ -28,35 +22,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { usePromoCodeDialog } from "../../utils/context";
 
 const PromoCodeForm = ({
   dialogType,
-  setIsDialogOpen,
+  onCancel,
   onSubmit,
   isSavingPromoCode,
 }: PROMO_CODE_FORM_PROPS) => {
-  const form = useForm<PROMO_CODE_FORM_TYPE>({
-    resolver: zodResolver(PROMO_CODE_FORM_SCHEMA),
-    defaultValues: {
-      promo_code: "",
-      description: "",
-      usage_type: "refund_only",
-      discount_type: "percentage",
-      discount_percentage: "",
-      max_refund_value: "",
-      valid_from: "",
-      valid_until: "",
-      min_order_value: "",
-      applies_to_subscription: false,
-      is_active: false,
-      requires_moderation: false,
-      enable_first_time_customer_discounts: false,
-      first_time_customer_message: "",
-      enable_general_inquiry_discounts: false,
-      max_offer_per_customer: 1,
-      offer_frequency_days: 90,
-    },
-  });
+  const { form } = usePromoCodeDialog();
 
   return (
     <Form {...form}>
@@ -646,7 +620,7 @@ const PromoCodeForm = ({
           <Button
             type="button"
             variant="outline"
-            onClick={() => setIsDialogOpen(false)}
+            onClick={onCancel}
             data-testid="button-cancel"
           >
             Cancel

@@ -5,7 +5,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   PROMO_CODE_DIALOG_PROPS,
@@ -18,8 +17,7 @@ const PromoCodeDialoge = ({
   dialogeTitle,
   dialogDescription,
   isDialogOpen,
-  setIsDialogOpen,
-  dialogTrigger,
+  onOpenChange,
 }: PROMO_CODE_DIALOG_PROPS) => {
   // TODO: Create Mutation
   const onSubmit = (data: PROMO_CODE_FORM_TYPE) => {
@@ -31,9 +29,7 @@ const PromoCodeDialoge = ({
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      {/* Trigger */}
-      <DialogTrigger asChild>{dialogTrigger}</DialogTrigger>
+    <Dialog open={isDialogOpen} onOpenChange={onOpenChange}>
       {/* Content */}
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
@@ -57,7 +53,9 @@ const PromoCodeDialoge = ({
           dialogType={dialogType}
           isSavingPromoCode={false}
           onSubmit={onSubmit}
-          setIsDialogOpen={setIsDialogOpen}
+          onCancel={() => {
+            onOpenChange(false);
+          }}
         />
       </DialogContent>
     </Dialog>

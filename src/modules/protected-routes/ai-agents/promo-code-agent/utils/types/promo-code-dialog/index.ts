@@ -6,18 +6,15 @@ type PROMO_CODE_DIALOG_PROPS = {
   dialogeTitle: string;
   dialogDescription: string;
   isDialogOpen: boolean;
-  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  dialogTrigger: React.ReactNode;
+  onOpenChange: (value: boolean) => void;
 };
 
 type PROMO_CODE_FORM_TYPE = z.infer<typeof PROMO_CODE_FORM_SCHEMA>;
 
-type PROMO_CODE_FORM_PROPS = Pick<
-  PROMO_CODE_DIALOG_PROPS,
-  "dialogType" | "setIsDialogOpen"
-> & {
+type PROMO_CODE_FORM_PROPS = Pick<PROMO_CODE_DIALOG_PROPS, "dialogType"> & {
   onSubmit: (data: PROMO_CODE_FORM_TYPE) => void;
   isSavingPromoCode: boolean;
+  onCancel: () => void;
 };
 
 export type {
