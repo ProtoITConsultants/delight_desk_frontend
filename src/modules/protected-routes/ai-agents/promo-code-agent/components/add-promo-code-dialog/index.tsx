@@ -21,7 +21,7 @@ const PromoCodeDialoge = ({
   dialogeTitle,
   dialogDescription,
 }: PROMO_CODE_DIALOG_PROPS) => {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(true);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const onSubmit = (data: PROMO_CODE_FORM_TYPE) => {
     if (dialogType === "add-promo-code") {

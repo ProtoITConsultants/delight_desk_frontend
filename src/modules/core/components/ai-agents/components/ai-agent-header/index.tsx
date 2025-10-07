@@ -12,11 +12,13 @@ const AiAgentHeader = ({
 }: AI_AGENT_HEADER_PROPS) => {
   return (
     <div className={cn("flex items-center justify-between gap-4", className)}>
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         {Icon}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-          <p className="text-gray-600">{description}</p>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 leading-4">
+            {title}
+          </h1>
+          <p className="text-gray-600 leading-normal">{description}</p>
         </div>
       </div>
       {hasRightSection && (

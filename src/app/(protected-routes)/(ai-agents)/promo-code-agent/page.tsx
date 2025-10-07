@@ -15,7 +15,7 @@ const PromoCodeAgent = () => {
           </div>
         }
         title="Promo Code Agent"
-        description="Configure sophisticated promo code refund automation with advanced eligibility rules and validation"
+        description="Automatically handle promo code refunds AND offer first-time customer discounts. Configure when and how to provide discounts to new customers and general inquiries, plus process refunds for missed promo codes."
         hasRightSection={true}
         rightSection={
           <PromoCodeDialoge
