@@ -1,0 +1,58 @@
+type WORKFLOW_STATUS_TYPE =
+  | "processing"
+  | "awaiting_warehouse"
+  | "canceled"
+  | "cannot_cancel"
+  | "failed"
+  | "completed";
+
+type FULLFILLMENT_METHODS =
+  | "warehouse_email"
+  | "shipbob"
+  | "self_fulfillment"
+  | "shipstation";
+
+// Fullfillment Method Steps Types
+type BASE_STEPS =
+  | "identify_order"
+  | "check_eligibility"
+  | "acknowledge_customer"
+  | "complete";
+type WAREHOUSE_EMAIL_STEPS =
+  | BASE_STEPS
+  | "email_warehouse"
+  | "await_warehouse"
+  | "process_result";
+type SHIPBOB_STEPS = BASE_STEPS | "process_cancellation" | "process_result";
+type SELF_FULFILLMENT_STEPS =
+  | BASE_STEPS
+  | "process_cancellation"
+  | "process_result";
+type SHIPSTATION_FULLFILLMENT_STEPS =
+  | BASE_STEPS
+  | "process_cancellation"
+  | "process_result";
+
+type AGENT_WORKFLOW_PROPS = {
+  workflowId: string;
+  workflowStatus: WORKFLOW_STATUS_TYPE;
+  fulfillmentMethod: FULLFILLMENT_METHODS;
+  orderNumber: string;
+  customerEmail: string;
+  createdAt: string;
+  workflowCancelled: boolean;
+  refundProcessed?: boolean;
+  refundAmount?: number;
+  failingReason?: string;
+};
+
+export type {
+  AGENT_WORKFLOW_PROPS,
+  WORKFLOW_STATUS_TYPE,
+  FULLFILLMENT_METHODS,
+  // Workflow Steps
+  WAREHOUSE_EMAIL_STEPS,
+  SHIPBOB_STEPS,
+  SELF_FULFILLMENT_STEPS,
+  SHIPSTATION_FULLFILLMENT_STEPS,
+};
