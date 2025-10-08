@@ -34,16 +34,15 @@ const WorkflowTimeline = ({
         Current Step: {workflowSteps[currentStep - 1]?.label || "Processing"}
       </div>
       {/* Timeline Steps */}
-      <div className="relative">
-        {/* Timeline line */}
-        <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700"></div>
-        {/* Steps */}
-        <div className="relative flex justify-between">
-          {workflowSteps.map((step, index) => {
+      <div className="relative max-w-[calc(100dvw-96px)] lg:max-w-[calc(100dvw-366.5px)] overflow-x-auto">
+        <div className="relative flex justify-between items-start gap-4 px-4 py-2 min-w-max">
+          {/* Timeline line */}
+          <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700"></div>
+          {/* Steps */}
+          {workflowSteps.map((step) => {
             const stepNumber = step.order;
             const isCompleted = stepNumber < currentStep;
             const isCurrent = stepNumber === currentStep;
-            const isUpcoming = stepNumber > currentStep;
             const isFailed =
               workflowStatus === "failed" && stepNumber === currentStep;
 
