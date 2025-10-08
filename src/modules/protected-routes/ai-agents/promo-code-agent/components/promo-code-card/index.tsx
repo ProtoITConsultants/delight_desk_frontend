@@ -17,11 +17,6 @@ import PromoCodeDialoge from "../add-promo-code-dialog";
 import { useState } from "react";
 import "./styles.css";
 import { Label } from "@/components/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 const PromoCodeCard = ({
   id,
