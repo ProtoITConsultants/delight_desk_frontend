@@ -151,50 +151,40 @@ const PromoCodeCard = ({
           </CardDescription>
         </div>
         <div className="flex items-center gap-2 header-actions">
-          <Tooltip>
-            <TooltipTrigger className="flex items-center gap-2">
-              <Switch
-                id={`switch-automation-${id}`}
-                checked={is_active || false}
-                onCheckedChange={() => {
-                  console.log("Switch checked");
-                }}
-                data-testid={`switch-automation-${id}`}
-              />
-              <Label
-                htmlFor={`switch-automation-${id}`}
-                className="text-sm text-muted-foreground hover:cursor-pointer"
-              >
-                Auto
-              </Label>
-            </TooltipTrigger>
-            <TooltipContent className="text-xs ">
-              <p>Active Automation</p>
-            </TooltipContent>
-          </Tooltip>
+          <div className="flex items-center gap-2">
+            <Switch
+              id={`switch-automation-${id}`}
+              checked={is_active || false}
+              onCheckedChange={() => {
+                console.log("Switch checked");
+              }}
+              data-testid={`switch-automation-${id}`}
+            />
+            <Label
+              htmlFor={`switch-automation-${id}`}
+              className="text-sm text-muted-foreground hover:cursor-pointer"
+            >
+              Auto
+            </Label>
+          </div>
 
-          {/* Moderation Switch */}
-          <Tooltip>
-            <TooltipTrigger className="flex items-center gap-2">
-              <Switch
-                id={`switch-moderation-${id}`}
-                checked={requires_moderation || false}
-                onCheckedChange={() => {
-                  console.log("Moderation Switch checked");
-                }}
-                data-testid={`switch-moderation-${id}`}
-              />
-              <Label
-                htmlFor={`switch-moderation-${id}`}
-                className="text-sm text-muted-foreground hover:cursor-pointer"
-              >
-                Mod
-              </Label>
-            </TooltipTrigger>
-            <TooltipContent className="text-xs" color="">
-              <p>Requires Moderation</p>
-            </TooltipContent>
-          </Tooltip>
+          <div className="flex items-center gap-2">
+            <Switch
+              id={`switch-moderation-${id}`}
+              checked={requires_moderation || false}
+              onCheckedChange={() => {
+                console.log("Moderation Switch checked");
+              }}
+              data-testid={`switch-moderation-${id}`}
+            />
+            <Label
+              htmlFor={`switch-moderation-${id}`}
+              className="text-sm text-muted-foreground hover:cursor-pointer"
+            >
+              Mod
+            </Label>
+          </div>
+
           <Button
             variant="outline"
             size="sm"
