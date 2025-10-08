@@ -15,6 +15,7 @@ import DeletePromoCodeDialog from "../delete-promo-code-dialog";
 import { usePromoCodeDialog } from "../../utils/context";
 import PromoCodeDialoge from "../add-promo-code-dialog";
 import { useState } from "react";
+import "./styles.css";
 
 const PromoCodeCard = ({
   id,
@@ -130,112 +131,108 @@ const PromoCodeCard = ({
 
   return (
     <Card data-testid={`config-card-${id}`}>
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle
-              className="flex items-center gap-2xl"
-              data-testid={`config-title-${id}`}
-            >
-              {promo_code}
-              {getStatusBadge()}
-            </CardTitle>
-            <CardDescription data-testid={`config-description-${id}`}>
-              {description || "No description provided"}
-            </CardDescription>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={is_active || false}
-                onCheckedChange={() => {}}
-                data-testid={`switch-automation-${id}`}
-              />
-              <span className="text-sm text-muted-foreground">Auto</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={requires_moderation || false}
-                onCheckedChange={() => {}}
-                data-testid={`switch-moderation-${id}`}
-              />
-              <span className="text-sm text-muted-foreground">Mod</span>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleEditPromoCode()}
-              data-testid={`button-edit-${id}`}
-            >
-              <Edit2 className="w-4 h-4" />
-            </Button>
-
-            {/* Edit Promo Code Dialog */}
-            <PromoCodeDialoge
-              dialogType="edit-promo-code"
-              dialogeTitle="Create Promo Code Configuration"
-              dialogDescription="Set up automatic refunds for customers who qualified for a promo code but didn't receive the discount on their order. Configure the discount amount, validity period, and eligibility requirements."
-              isDialogOpen={isEditPromoCodeDialogOpen}
-              onOpenChange={(value) => {
-                setIsEditPromoCodeDialogOpen(value);
-              }}
+      <CardHeader className="flex justify-between items-start gap-2 header-container">
+        <div className="header-title">
+          <CardTitle
+            className="flex items-center gap-2 text-2xl"
+            data-testid={`config-title-${id}`}
+          >
+            {promo_code}
+            {getStatusBadge()}
+          </CardTitle>
+          <CardDescription data-testid={`config-description-${id}`}>
+            {description || "No description provided"}
+          </CardDescription>
+        </div>
+        <div className="flex items-center gap-2 header-actions">
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={is_active || false}
+              onCheckedChange={() => {}}
+              data-testid={`switch-automation-${id}`}
             />
-
-            {/* Delete Promo Code Dialog */}
-            <DeletePromoCodeDialog promo_code_id={id} promo_code={promo_code} />
+            <span className="text-sm text-muted-foreground">Auto</span>
           </div>
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={requires_moderation || false}
+              onCheckedChange={() => {}}
+              data-testid={`switch-moderation-${id}`}
+            />
+            <span className="text-sm text-muted-foreground">Mod</span>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleEditPromoCode()}
+            data-testid={`button-edit-${id}`}
+          >
+            <Edit2 className="w-4 h-4" />
+          </Button>
+
+          {/* Edit Promo Code Dialog */}
+          <PromoCodeDialoge
+            dialogType="edit-promo-code"
+            dialogeTitle="Create Promo Code Configuration"
+            dialogDescription="Set up automatic refunds for customers who qualified for a promo code but didn't receive the discount on their order. Configure the discount amount, validity period, and eligibility requirements."
+            isDialogOpen={isEditPromoCodeDialogOpen}
+            onOpenChange={(value) => {
+              setIsEditPromoCodeDialogOpen(value);
+            }}
+          />
+
+          {/* Delete Promo Code Dialog */}
+          <DeletePromoCodeDialog promo_code_id={id} promo_code={promo_code} />
         </div>
       </CardHeader>
 
-      <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div data-testid={`config-discount-${id}`}>
-            <div className="font-medium">Discount</div>
-            <div className="text-muted-foreground">
-              {formatDiscountDisplay({
-                discountType: discount_type,
-              })}
-            </div>
+      <CardContent className="grid grid-cols-2 w1440:grid-cols-4 gap-4 text-sm">
+        <div data-testid={`config-discount-${id}`}>
+          <div className="font-medium">Discount</div>
+          <div className="text-muted-foreground">
+            {formatDiscountDisplay({
+              discountType: discount_type,
+            })}
           </div>
+        </div>
 
-          <div data-testid={`config-validity-${id}`}>
-            <div className="font-medium">Valid Until</div>
-            <div className="text-muted-foreground">
-              {formatDistanceToNow(new Date(valid_until), {
-                addSuffix: true,
-              })}
-            </div>
+        <div data-testid={`config-validity-${id}`}>
+          <div className="font-medium">Valid Until</div>
+          <div className="text-muted-foreground">
+            {formatDistanceToNow(new Date(valid_until), {
+              addSuffix: true,
+            })}
           </div>
+        </div>
 
-          <div data-testid={`config-usage-${id}`}>
-            <div className="font-medium">Usage</div>
-            <div className="text-muted-foreground">
-              {usage_count || 0} times
-              {last_used && (
-                <div className="text-xs">
-                  Last:{" "}
-                  {formatDistanceToNow(new Date(last_used), {
-                    addSuffix: true,
-                  })}
-                </div>
-              )}
-            </div>
+        <div data-testid={`config-usage-${id}`}>
+          <div className="font-medium">Usage</div>
+          <div className="text-muted-foreground">
+            {usage_count || 0} times
+            {last_used && (
+              <div className="text-xs">
+                Last:{" "}
+                {formatDistanceToNow(new Date(last_used), {
+                  addSuffix: true,
+                })}
+              </div>
+            )}
           </div>
+        </div>
 
-          <div data-testid={`config-restrictions-${id}`}>
-            <div className="font-medium">Restrictions</div>
-            <div className="text-muted-foreground space-y-1">
-              {min_order_value && (
-                <Badge variant="outline" className="text-xs">
-                  Min ${min_order_value}
-                </Badge>
-              )}
-              {!applies_to_subscription && (
-                <Badge variant="outline" className="text-xs">
-                  No subscriptions
-                </Badge>
-              )}
-            </div>
+        <div data-testid={`config-restrictions-${id}`}>
+          <div className="font-medium">Restrictions</div>
+          <div className="text-muted-foreground space-y-1">
+            {min_order_value && (
+              <Badge variant="outline" className="text-xs">
+                Min ${min_order_value}
+              </Badge>
+            )}
+            {!applies_to_subscription && (
+              <Badge variant="outline" className="text-xs">
+                No subscriptions
+              </Badge>
+            )}
           </div>
         </div>
       </CardContent>
