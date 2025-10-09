@@ -1,12 +1,15 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Settings } from "lucide-react";
+import { usePromoCodeDialog } from "../../utils/context";
 
 type PROPS = {
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const NoPromoCodeCard = ({ setIsDialogOpen }: PROPS) => {
+  const { form } = usePromoCodeDialog();
   return (
     <Card data-testid="empty-state">
       <CardContent className="flex flex-col items-center justify-center py-12">
@@ -19,7 +22,10 @@ const NoPromoCodeCard = ({ setIsDialogOpen }: PROPS) => {
           sophisticated automation
         </p>
         <Button
-          onClick={() => setIsDialogOpen(true)}
+          onClick={() => {
+            form.reset();
+            setIsDialogOpen(true);
+          }}
           data-testid="button-create-first"
         >
           <Plus className="w-4 h-4 mr-2" />

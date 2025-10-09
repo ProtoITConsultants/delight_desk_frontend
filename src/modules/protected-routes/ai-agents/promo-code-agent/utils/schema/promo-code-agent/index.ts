@@ -20,7 +20,6 @@ export const PROMO_CODE_FORM_SCHEMA = z
     min_order_value: z.string().optional(),
     applies_to_subscription: z.boolean().optional(),
     is_active: z.boolean().optional(),
-    requires_moderation: z.boolean().optional(),
     // Customer Offering Rules
     enable_first_time_customer_discounts: z.boolean().optional(), // Automatically offer this discount to customers with no previous orders
     first_time_customer_message: z.string().optional(),

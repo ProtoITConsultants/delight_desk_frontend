@@ -34,7 +34,6 @@ export const PromoCodeDialogContextProvider = ({
       min_order_value: "",
       applies_to_subscription: false,
       is_active: false,
-      requires_moderation: false,
       enable_first_time_customer_discounts: false,
       first_time_customer_message: "",
       enable_general_inquiry_discounts: false,

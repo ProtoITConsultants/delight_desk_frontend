@@ -38,7 +38,7 @@ const PromoCodeForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6"
       >
-        {/* Enable Promo Code */}
+        {/* Promo Code Activation Status */}
         <FormField
           control={form.control}
           name="is_active"
@@ -58,32 +58,6 @@ const PromoCodeForm = ({
                   checked={field.value || false}
                   onCheckedChange={field.onChange}
                   data-testid="switch-is-active"
-                  className="!mb-0"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        {/* Requires Moderation */}
-        <FormField
-          control={form.control}
-          name="requires_moderation"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-              <FormLabel
-                data-testid="label-requires-approval"
-                className="flex-col items-start mb-0"
-              >
-                Require Moderation
-                <div className="text-sm text-muted-foreground font-normal">
-                  Responses will appear in approval queue before sending
-                </div>
-              </FormLabel>
-              <FormControl>
-                <Switch
-                  checked={field.value || false}
-                  onCheckedChange={field.onChange}
-                  data-testid="switch-requires-approval"
                   className="!mb-0"
                 />
               </FormControl>

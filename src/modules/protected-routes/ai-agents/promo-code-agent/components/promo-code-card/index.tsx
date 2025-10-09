@@ -26,7 +26,6 @@ const PromoCodeCard = ({
   valid_from,
   valid_until,
   is_active,
-  requires_moderation,
   usage_count,
   last_used,
   discount_type,
@@ -77,7 +76,7 @@ const PromoCodeCard = ({
     if (is_active) {
       return (
         <Badge variant="default" data-testid={`status-automated-${id}`}>
-          Automated
+          Active
         </Badge>
       );
     }
@@ -117,7 +116,6 @@ const PromoCodeCard = ({
       min_order_value: min_order_value || "",
       applies_to_subscription: applies_to_subscription || false,
       is_active: is_active || false,
-      requires_moderation: requires_moderation || false,
       enable_first_time_customer_discounts:
         enable_first_time_customer_discounts || false,
       first_time_customer_message: first_time_customer_message || "",
@@ -148,35 +146,18 @@ const PromoCodeCard = ({
         <div className="flex items-center gap-2 header-actions">
           <div className="flex items-center gap-2">
             <Switch
-              id={`switch-automation-${id}`}
+              id={`switch-activation-status-${id}`}
               checked={is_active || false}
               onCheckedChange={() => {
                 console.log("Switch checked");
               }}
-              data-testid={`switch-automation-${id}`}
+              data-testid={`switch-activation-status-${id}`}
             />
             <Label
-              htmlFor={`switch-automation-${id}`}
+              htmlFor={`switch-activation-status-${id}`}
               className="text-sm text-muted-foreground hover:cursor-pointer"
             >
-              Auto
-            </Label>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Switch
-              id={`switch-moderation-${id}`}
-              checked={requires_moderation || false}
-              onCheckedChange={() => {
-                console.log("Moderation Switch checked");
-              }}
-              data-testid={`switch-moderation-${id}`}
-            />
-            <Label
-              htmlFor={`switch-moderation-${id}`}
-              className="text-sm text-muted-foreground hover:cursor-pointer"
-            >
-              Mod
+              Active
             </Label>
           </div>
 
