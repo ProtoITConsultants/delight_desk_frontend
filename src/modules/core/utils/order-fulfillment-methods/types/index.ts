@@ -4,4 +4,14 @@ type FULLFILLMENT_METHODS_TYPES =
   | "self_fulfillment"
   | "shipstation";
 
-export type { FULLFILLMENT_METHODS_TYPES };
+type FULLFILLMENT_METHOD_CONFIG_SETTINGS_TYPES = {
+  warehouseEmailEnabled: boolean;
+  shipbobEnabled: boolean;
+  selfFulfillmentEnabled: boolean;
+  shipstationEnabled: boolean;
+};
+
+export type {
+  FULLFILLMENT_METHODS_TYPES,
+  FULLFILLMENT_METHOD_CONFIG_SETTINGS_TYPES,
+};

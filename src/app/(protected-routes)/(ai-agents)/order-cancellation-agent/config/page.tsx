@@ -4,6 +4,8 @@ import FULLFILLMENT_METHODS from "@/modules/core/components/ai-agents/components
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
 import FulfillmentMethodConfigCard from "@/modules/core/components/ai-agents/components/fulfillment-method-configuration/components/fulfillment-method-card";
+import { isConfigMethodEnabled } from "@/modules/core/utils/order-fulfillment-methods/services/config-method-enabled";
+import getConfigMethodStatus from "@/modules/core/utils/order-fulfillment-methods/services/get-config-method-status";
 import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
 import { Settings } from "lucide-react";
 import { useState } from "react";
@@ -18,30 +20,6 @@ const OrderCancellationAgentConfig = () => {
     shipbobEnabled: false,
     selfFulfillmentEnabled: false,
     shipstationEnabled: true,
-  };
-
-  const isConfigMethodEnabled = (methodId: string) => {
-    switch (methodId) {
-      case "warehouse_email":
-        return configSettings?.warehouseEmailEnabled ?? false;
-      case "shipbob":
-        return configSettings?.shipbobEnabled ?? false;
-      case "self_fulfillment":
-        return configSettings?.selfFulfillmentEnabled ?? false;
-      case "shipstation":
-        return configSettings?.shipstationEnabled ?? false;
-      default:
-        return false;
-    }
-  };
-
-  const getConfigMethodStatus = (methodId: string) => {
-    const isEnabled = isConfigMethodEnabled(methodId);
-    const isCurrent = currentConfigurationMethod === methodId;
-
-    if (isCurrent && isEnabled) return "Active";
-    if (!isCurrent && isEnabled) return "Available";
-    return "Not Configured";
   };
 
   return (
@@ -72,10 +50,15 @@ const OrderCancellationAgentConfig = () => {
             const MethodIcon = fulfillmentMethod.icon;
             const isCurrentConfiguredMethod =
               currentConfigurationMethod === fulfillmentMethod.id;
-            const isEnabled = isConfigMethodEnabled(fulfillmentMethod.id);
-            const methodConfigStatus = getConfigMethodStatus(
-              fulfillmentMethod.id
-            );
+            const isEnabled = isConfigMethodEnabled({
+              methodId: fulfillmentMethod.id as FULLFILLMENT_METHODS_TYPES,
+              configSettings,
+            });
+
+            const methodConfigStatus = getConfigMethodStatus({
+              isCurrent: isCurrentConfiguredMethod,
+              isEnabled,
+            });
             return (
               <FulfillmentMethodConfigCard
                 key={fulfillmentMethod.id}
