@@ -78,6 +78,7 @@ const OrderCancellationAgentConfig = () => {
                   );
                 }}
                 onClickConfigMethod={() => {}}
+                configuredWarehouseEmail="m.babar@protogroup.co"
               />
             );
           })}

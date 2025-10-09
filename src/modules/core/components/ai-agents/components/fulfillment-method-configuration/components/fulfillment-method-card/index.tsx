@@ -115,19 +115,17 @@ const FulfillmentMethodConfigCard = ({
             )} */}
 
             {/* Action buttons when not editing */}
-            <div className="mt-3 pt-3 border-t">
+            <div className="pt-3 border-t">
               {!isConfigMethodEnabled || isCurrentConfiguredMethod ? (
-                <div className="space-y-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={onClickConfigMethod}
-                  >
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure {methodTitle}
-                  </Button>
-                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={onClickConfigMethod}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Configure {methodTitle}
+                </Button>
               ) : (
                 <Button
                   type="button"
