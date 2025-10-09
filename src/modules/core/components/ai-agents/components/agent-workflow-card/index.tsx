@@ -33,25 +33,39 @@ const AgentWorkflowCard = ({
 
   return (
     <Card>
-      <CardHeader className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <StatusIcon className="h-5 w-5 text-gray-500" />
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold">Order #{orderNumber}</h3>
-              {fullfillmentMethodConfig && (
-                <Badge
-                  variant="outline"
-                  className="text-xs flex items-center gap-1"
-                >
-                  <fullfillmentMethodConfig.icon className="h-3 w-3" />
-                  {fullfillmentMethodConfig.title}
-                </Badge>
-              )}
+      <CardHeader className="flex items-start flex-col sm:flex-row sm:justify-between gap-4">
+        <div className="flex flex-col gap-2">
+          {/* Mobile Version */}
+          {fullfillmentMethodConfig && (
+            <Badge
+              variant="outline"
+              className="text-xs items-center gap-1 flex sm:hidden mt-1"
+            >
+              <fullfillmentMethodConfig.icon className="h-3 w-3" />
+              {fullfillmentMethodConfig.title}
+            </Badge>
+          )}
+
+          <div className="flex items-center gap-2">
+            <StatusIcon className="h-5 w-5 text-gray-500" />
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold">Order #{orderNumber}</h3>
+                {/* Big Screen */}
+                {fullfillmentMethodConfig && (
+                  <Badge
+                    variant="outline"
+                    className="text-xs  items-center gap-1 hidden sm:flex"
+                  >
+                    <fullfillmentMethodConfig.icon className="h-3 w-3" />
+                    {fullfillmentMethodConfig.title}
+                  </Badge>
+                )}
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {customerEmail}
+              </p>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {customerEmail}
-            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
