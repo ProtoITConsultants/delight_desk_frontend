@@ -1,6 +1,8 @@
 "use client";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import AgentWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card";
+import EmptyWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/components/empty-workflow-card";
+import NoFulfillmentMethodConfiguredCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/components/no-fulfillment-method-config-card";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
 import OrderCancellationWorkflowRoot from "@/modules/protected-routes/ai-agents/order-cancellation/components/agent-workflow-root";
@@ -11,6 +13,9 @@ import { useState } from "react";
 const OrderCancellationAgent = () => {
   const [isAgentEnabled, setIsAgentEnabled] = useState(false);
   const [isAgentModerated, setIsAgentModerated] = useState(false);
+
+  const hasSelectedMethod = false;
+
   return (
     <AiAgentRoot>
       {/* Header */}
@@ -84,6 +89,7 @@ const OrderCancellationAgent = () => {
           workflowCancelled={false}
         />
       </OrderCancellationWorkflowRoot>
+
       {/* Recently Completed Workflows Section */}
       <OrderCancellationWorkflowRoot
         workflowType="recently-completed"
@@ -120,6 +126,14 @@ const OrderCancellationAgent = () => {
           failingReason="Warehouse response: Order WC-54789 has already been picked and packed for shipment. Unfortunately we cannot cancel this order as it is currently being loaded onto the delivery truck. The customer will need to initiate a return once they receive the package."
         />
       </OrderCancellationWorkflowRoot>
+
+      {!hasSelectedMethod && (
+        <NoFulfillmentMethodConfiguredCard agentType="order-cancellation-agent" />
+      )}
+
+      {/* No Workflow Cards */}
+      <EmptyWorkflowCard workflowType="active-workflow" />
+      <EmptyWorkflowCard workflowType="completed-workflow" />
     </AiAgentRoot>
   );
 };
