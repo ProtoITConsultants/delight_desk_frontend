@@ -1,3 +1,5 @@
+import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
+
 // Fulfillment Method Card
 type FULFILLMENT_METHOD_CARD_PROPS = {
   methodId: string;
@@ -15,4 +17,11 @@ type FULFILLMENT_METHOD_CARD_PROPS = {
   onClickConfigMethod: () => void;
 };
 
-export type { FULFILLMENT_METHOD_CARD_PROPS };
+// Fulfillment Method Dialog
+type FULFILLMENT_METHOD_DIALOG_PROPS = {
+  dialogType: FULLFILLMENT_METHODS_TYPES;
+  isDialogOpen: boolean;
+  onOpenChange: (value: boolean) => void;
+};
+
+export type { FULFILLMENT_METHOD_CARD_PROPS, FULFILLMENT_METHOD_DIALOG_PROPS };

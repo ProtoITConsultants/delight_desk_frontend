@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FULLFILLMENT_METHODS from "@/modules/core/components/ai-agents/components/agent-workflow-card/constants/fullfilement-methods";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
+import FulfillmentMethodConfigDialog from "@/modules/core/components/ai-agents/components/fulfillment-method-configuration/components/config-dialog";
 import FulfillmentMethodConfigCard from "@/modules/core/components/ai-agents/components/fulfillment-method-configuration/components/fulfillment-method-card";
 import { isConfigMethodEnabled } from "@/modules/core/utils/order-fulfillment-methods/services/config-method-enabled";
 import getConfigMethodStatus from "@/modules/core/utils/order-fulfillment-methods/services/get-config-method-status";
@@ -10,10 +11,20 @@ import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillme
 import { Settings } from "lucide-react";
 import { useState } from "react";
 
+type CONFIG_DIALOG_DATA = {
+  dialogType: FULLFILLMENT_METHODS_TYPES;
+  isDialogOpen: boolean;
+};
+
 const OrderCancellationAgentConfig = () => {
   const [currentConfigurationMethod, setCurrentConfigurationMethod] = useState<
     FULLFILLMENT_METHODS_TYPES | ""
   >("");
+
+  const [configDialogData, setConfigDialogData] = useState<CONFIG_DIALOG_DATA>({
+    dialogType: "self_fulfillment",
+    isDialogOpen: false,
+  });
 
   const configSettings = {
     warehouseEmailEnabled: true,
@@ -77,7 +88,13 @@ const OrderCancellationAgentConfig = () => {
                     fulfillmentMethod.id as FULLFILLMENT_METHODS_TYPES
                   );
                 }}
-                onClickConfigMethod={() => {}}
+                onClickConfigMethod={() => {
+                  setConfigDialogData({
+                    dialogType:
+                      fulfillmentMethod.id as FULLFILLMENT_METHODS_TYPES,
+                    isDialogOpen: true,
+                  });
+                }}
                 configuredWarehouseEmail="m.babar@protogroup.co"
               />
             );
@@ -85,7 +102,17 @@ const OrderCancellationAgentConfig = () => {
         </CardContent>
       </Card>
 
-      {/* Configuration Dialogs */}
+      {/* Configuration Dialog */}
+      <FulfillmentMethodConfigDialog
+        dialogType={configDialogData.dialogType}
+        isDialogOpen={configDialogData.isDialogOpen}
+        onOpenChange={(value) => {
+          setConfigDialogData({
+            ...configDialogData,
+            isDialogOpen: value,
+          });
+        }}
+      />
     </AiAgentRoot>
   );
 };
