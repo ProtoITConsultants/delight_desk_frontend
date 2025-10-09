@@ -1,3 +1,5 @@
+import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
+
 type WORKFLOW_STATUS_TYPE =
   | "processing"
   | "awaiting_warehouse"
@@ -5,12 +7,6 @@ type WORKFLOW_STATUS_TYPE =
   | "cannot_cancel"
   | "failed"
   | "completed";
-
-type FULLFILLMENT_METHODS =
-  | "warehouse_email"
-  | "shipbob"
-  | "self_fulfillment"
-  | "shipstation";
 
 // Fullfillment Method Steps Types
 type BASE_STEPS =
@@ -36,7 +32,7 @@ type SHIPSTATION_FULLFILLMENT_STEPS =
 type AGENT_WORKFLOW_PROPS = {
   workflowId: string;
   workflowStatus: WORKFLOW_STATUS_TYPE;
-  fulfillmentMethod: FULLFILLMENT_METHODS;
+  fulfillmentMethod: FULLFILLMENT_METHODS_TYPES;
   orderNumber: string;
   customerEmail: string;
   createdAt: string;
@@ -49,7 +45,6 @@ type AGENT_WORKFLOW_PROPS = {
 export type {
   AGENT_WORKFLOW_PROPS,
   WORKFLOW_STATUS_TYPE,
-  FULLFILLMENT_METHODS,
   // Workflow Steps
   WAREHOUSE_EMAIL_STEPS,
   SHIPBOB_STEPS,
