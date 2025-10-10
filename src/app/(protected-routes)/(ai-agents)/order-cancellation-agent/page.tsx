@@ -132,8 +132,14 @@ const OrderCancellationAgent = () => {
       )}
 
       {/* No Workflow Cards */}
-      <EmptyWorkflowCard workflowType="active-workflow" />
-      <EmptyWorkflowCard workflowType="completed-workflow" />
+      <EmptyWorkflowCard
+        workflowType="active-workflow"
+        agentType="order-cancellation-agent"
+      />
+      <EmptyWorkflowCard
+        workflowType="completed-workflow"
+        agentType="order-cancellation-agent"
+      />
     </AiAgentRoot>
   );
 };
