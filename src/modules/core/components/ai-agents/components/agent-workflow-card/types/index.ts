@@ -40,6 +40,7 @@ type AGENT_WORKFLOW_PROPS = {
   refundProcessed?: boolean;
   refundAmount?: number;
   failingReason?: string;
+  agentType: "order-cancellation-agent" | "address-change-agent";
 };
 
 export type {
