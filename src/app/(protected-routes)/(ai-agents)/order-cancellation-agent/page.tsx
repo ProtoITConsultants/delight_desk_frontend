@@ -37,7 +37,7 @@ const OrderCancellationAgent = () => {
       />
       {/* Agent Settings */}
       <AgentSettings
-        agentName="Product Agent"
+        agentName="Order Cancellation Agent"
         agentIcon={<Bot className="h-5 w-5" />}
         agentDescription="Enable automatic order cancellation handling for incoming customer emails. The agent will process cancellation requests based on your configured fulfillment method."
         enableAgentButtonDescription="Process order cancellation requests automatically."
