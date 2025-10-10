@@ -1,14 +1,14 @@
 "use client";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
-import AgentWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent";
-import EmptyWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent/components/empty-workflow-card";
-import NoFulfillmentMethodConfiguredCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent/components/no-fulfillment-method-config-card";
+import EmptyWorkflowCard from "@/modules/core/components/ai-agents/components/empty-workflow-card";
+import NoFulfillmentMethodConfiguredCard from "@/modules/core/components/ai-agents/components/no-fulfillment-method-config-card";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
 import AgentWorkflowRoot from "@/modules/protected-routes/ai-agents/common/components/agent-workflow-root";
 import { Bot, Package, Settings } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import OrderCancellationAgentWorkflowCard from "@/modules/protected-routes/ai-agents/order-cancellation/components/agent-workflow-card";
 
 const OrderCancellationAgent = () => {
   const [isAgentEnabled, setIsAgentEnabled] = useState(false);
@@ -61,7 +61,7 @@ const OrderCancellationAgent = () => {
         activeWorkflowsCount={2}
         onRefresh={() => {}}
       >
-        <AgentWorkflowCard
+        <OrderCancellationAgentWorkflowCard
           workflowId="1"
           workflowStatus="processing"
           fulfillmentMethod="warehouse_email"
@@ -70,7 +70,7 @@ const OrderCancellationAgent = () => {
           createdAt="12 Feb 2024"
           workflowCancelled={false}
         />
-        <AgentWorkflowCard
+        <OrderCancellationAgentWorkflowCard
           workflowId="2"
           workflowStatus="awaiting_warehouse"
           fulfillmentMethod="self_fulfillment"
@@ -79,7 +79,7 @@ const OrderCancellationAgent = () => {
           createdAt="12 June 2025"
           workflowCancelled={false}
         />
-        <AgentWorkflowCard
+        <OrderCancellationAgentWorkflowCard
           workflowId="3"
           workflowStatus="failed"
           fulfillmentMethod="self_fulfillment"
@@ -95,7 +95,7 @@ const OrderCancellationAgent = () => {
         workflowType="recently-completed"
         sectionHeading="Recently Completed Workflows"
       >
-        <AgentWorkflowCard
+        <OrderCancellationAgentWorkflowCard
           workflowId="4"
           workflowStatus="completed"
           fulfillmentMethod="shipbob"
@@ -106,7 +106,7 @@ const OrderCancellationAgent = () => {
           refundProcessed={true}
           refundAmount={12.99}
         />
-        <AgentWorkflowCard
+        <OrderCancellationAgentWorkflowCard
           workflowId="5"
           workflowStatus="completed"
           fulfillmentMethod="shipbob"
@@ -115,7 +115,7 @@ const OrderCancellationAgent = () => {
           createdAt="02 Mar 2025"
           workflowCancelled={true}
         />
-        <AgentWorkflowCard
+        <OrderCancellationAgentWorkflowCard
           workflowId="6"
           workflowStatus="completed"
           fulfillmentMethod="shipstation"

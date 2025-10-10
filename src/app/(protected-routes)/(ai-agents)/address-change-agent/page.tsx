@@ -1,7 +1,7 @@
 "use client";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
-import EmptyWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent/components/empty-workflow-card";
-import NoFulfillmentMethodConfiguredCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent/components/no-fulfillment-method-config-card";
+import EmptyWorkflowCard from "@/modules/core/components/ai-agents/components/empty-workflow-card";
+import NoFulfillmentMethodConfiguredCard from "@/modules/core/components/ai-agents/components/no-fulfillment-method-config-card";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
 import AddressChangeWorkflowCard from "@/modules/protected-routes/ai-agents/address-change/components/agent-workflow-card";
