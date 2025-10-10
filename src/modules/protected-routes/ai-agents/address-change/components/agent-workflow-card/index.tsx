@@ -1,27 +1,23 @@
+import FULLFILLMENT_METHODS from "../../constants/fullfilement-methods";
+import STATUS_CONFIG from "../../constants/status-config";
+import { ADDRESS_CHANGE_WORKFLOW_CARD_PROPS } from "../../utils/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AGENT_WORKFLOW_PROPS } from "./order-cancellation-agent/types";
-import STATUS_CONFIG from "./order-cancellation-agent/constants/status-config";
-import FULLFILLMENT_METHODS from "./order-cancellation-agent/constants/fullfilement-methods";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
-import OrderCancellationWorkflowOutcomeBanner from "./order-cancellation-agent/components/outcome-banner";
-import { Button } from "@/components/ui/button";
 import { Eye, RefreshCw } from "lucide-react";
-import OrderCancellationWorkflowTimeline from "./order-cancellation-agent/components/workflow-timeline/order-cancellation-agent";
+import { Button } from "@/components/ui/button";
+import AddressChangeWorkflowOutcomeBanner from "./components/outcome-banner";
+import AddressChangeWorkflowTimeline from "./components/workflow-timeline";
 
-const AgentWorkflowCard = ({
+const AddressChangeWorkflowCard = ({
   workflowStatus,
   fulfillmentMethod,
   orderNumber,
   customerEmail,
   createdAt,
-  workflowCancelled,
-  refundProcessed,
-  refundAmount,
-  failingReason,
   workflowId,
-  agentType,
-}: AGENT_WORKFLOW_PROPS) => {
+  ...restProps
+}: ADDRESS_CHANGE_WORKFLOW_CARD_PROPS) => {
   // Workflow Config (Status and Icon)
   const config =
     STATUS_CONFIG[workflowStatus as keyof typeof STATUS_CONFIG] ||
@@ -34,6 +30,7 @@ const AgentWorkflowCard = ({
 
   return (
     <Card>
+      {/* Header */}
       <CardHeader className="flex items-start flex-col sm:flex-row sm:justify-between gap-4">
         <div className="flex flex-col gap-2">
           {/* Mobile Version */}
@@ -80,31 +77,28 @@ const AgentWorkflowCard = ({
           </span>
         </div>
       </CardHeader>
+      {/* Content */}
       <CardContent className="flex flex-col gap-2">
-        {agentType === "order-cancellation-agent" ? (
-          <>
-            {/* Workflow Timeline */}
-            <OrderCancellationWorkflowTimeline
-              fulfillmentMethod={fulfillmentMethod}
-              workflowStatus={workflowStatus}
-              workflowId={workflowId}
+        {/* Workflow Timeline */}
+        <AddressChangeWorkflowTimeline
+          fulfillmentMethod={fulfillmentMethod}
+          workflowStatus={workflowStatus}
+          workflowId={workflowId}
+        />
+        {/* Final Outcome Banner */}
+        {workflowStatus === "completed" &&
+          "addressChanged" in restProps &&
+          (restProps.addressChanged ? (
+            <AddressChangeWorkflowOutcomeBanner
+              addressChanged={restProps.addressChanged}
+              newAddress={restProps.newAddress}
             />
-
-            {/* Final Outcome Banner */}
-            {["completed", "canceled", "cannot_cancel"].includes(
-              workflowStatus
-            ) && (
-              <OrderCancellationWorkflowOutcomeBanner
-                workflowCancelled={workflowCancelled}
-                refundProcessed={refundProcessed}
-                refundAmount={refundAmount}
-                failingReason={failingReason}
-              />
-            )}
-          </>
-        ) : (
-          <></>
-        )}
+          ) : (
+            <AddressChangeWorkflowOutcomeBanner
+              addressChanged={restProps.addressChanged}
+              failingReason={restProps.failingReason}
+            />
+          ))}
 
         {/* Retry Button */}
         {workflowStatus === "failed" && (
@@ -124,4 +118,4 @@ const AgentWorkflowCard = ({
   );
 };
 
-export default AgentWorkflowCard;
+export default AddressChangeWorkflowCard;

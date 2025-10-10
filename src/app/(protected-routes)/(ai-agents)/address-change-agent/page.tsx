@@ -68,7 +68,6 @@ const AddressChangeAgent = () => {
           orderNumber="WC-78901"
           customerEmail="michael.johnson@example.com"
           createdAt="12 Feb 2024"
-          workflowCancelled={false}
         />
         <AddressChangeWorkflowCard
           workflowId="2"
@@ -77,7 +76,6 @@ const AddressChangeAgent = () => {
           orderNumber="WC-78901"
           customerEmail="remy@humanfoodbar.com"
           createdAt="12 June 2025"
-          workflowCancelled={false}
         />
         <AddressChangeWorkflowCard
           workflowId="3"
@@ -86,7 +84,6 @@ const AddressChangeAgent = () => {
           orderNumber="WC-78901"
           customerEmail="remy@humanfoodbar.com"
           createdAt="12 June 2025"
-          workflowCancelled={false}
         />
       </AgentWorkflowRoot>
 
@@ -102,9 +99,8 @@ const AddressChangeAgent = () => {
           orderNumber="WC-78901"
           customerEmail="lisa.wang@example.com"
           createdAt="02 Mar 2025"
-          workflowCancelled={true}
-          refundProcessed={true}
-          refundAmount={12.99}
+          addressChanged={true}
+          newAddress="123 New St, New City, NY 10001"
         />
         <AddressChangeWorkflowCard
           workflowId="5"
@@ -113,7 +109,8 @@ const AddressChangeAgent = () => {
           orderNumber="WC-78901"
           customerEmail="lisa.wang@example.com"
           createdAt="02 Mar 2025"
-          workflowCancelled={true}
+          addressChanged={true}
+          newAddress="123 New St, New City, NY 10001"
         />
         <AddressChangeWorkflowCard
           workflowId="6"
@@ -122,8 +119,8 @@ const AddressChangeAgent = () => {
           orderNumber="WC-78901"
           customerEmail="customer@example.com"
           createdAt="12 Sep 2025"
-          workflowCancelled={false}
-          failingReason="Warehouse response: Order WC-54789 has already been picked and packed for shipment. Unfortunately we cannot cancel this order as it is currently being loaded onto the delivery truck. The customer will need to initiate a return once they receive the package."
+          addressChanged={false}
+          failingReason="Order placed outside address change eligibility window."
         />
       </AgentWorkflowRoot>
 

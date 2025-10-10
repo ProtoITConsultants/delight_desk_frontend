@@ -1,9 +1,10 @@
 import { CheckCircle, XCircle } from "lucide-react";
-import getCurrentWorkflowStep from "../../../order-cancellation-agent/services/get-current-step";
-import getWorkflowStepConfig from "../../../order-cancellation-agent/services/get-workflow-step-config";
-import { WORKFLOW_TIMELINE_PROPS } from "../../../order-cancellation-agent/types/workflow-timeline";
+import getCurrentWorkflowStep from "../../services/get-current-step";
+import getWorkflowStepConfig from "../../services/get-workflow-step-config";
+import { WORKFLOW_TIMELINE_PROPS } from "../../../../utils/types/workflow-timeline";
+import { cn } from "@/lib/utils";
 
-const OrderCancellationWorkflowTimeline = ({
+const AddressChangeWorkflowTimeline = ({
   fulfillmentMethod,
   workflowStatus,
   workflowId,
@@ -11,8 +12,9 @@ const OrderCancellationWorkflowTimeline = ({
   // Workflow Steps Config
   const workflowStepConfig = getWorkflowStepConfig({
     fulfillmentMethod,
-    worflowStatus: workflowStatus,
-    workflowCancelled: false,
+    workflowStatus: workflowStatus,
+    isEligible: false,
+    wasUpdated: false,
   });
 
   // Workflow Steps
@@ -22,8 +24,6 @@ const OrderCancellationWorkflowTimeline = ({
   const currentStep = getCurrentWorkflowStep({
     fulfillmentMethod,
     workflowStatus,
-    customerAcknowledgmentSent: false,
-    warehouseReplyReceived: false,
     workflowStep: workflowSteps[0].id,
   });
 
@@ -53,18 +53,18 @@ const OrderCancellationWorkflowTimeline = ({
               >
                 {/* Step circle */}
                 <div
-                  className={`
-                        w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold border-2 relative z-10
-                        ${
-                          isCompleted
-                            ? "bg-green-500 border-green-500 text-white"
-                            : isCurrent && !isFailed
-                            ? "bg-blue-500 border-blue-500 text-white animate-pulse"
-                            : isFailed
-                            ? "bg-red-500 border-red-500 text-white"
-                            : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400"
-                        }
-                      `}
+                  className={cn(
+                    `w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold border-2 relative z-10`,
+                    isCompleted && "bg-green-500 border-green-500 text-white",
+                    isCurrent &&
+                      !isFailed &&
+                      "bg-blue-500 border-blue-500 text-white animate-pulse",
+                    isFailed && "bg-red-500 border-red-500 text-white",
+                    !isCompleted &&
+                      !isCurrent &&
+                      !isFailed &&
+                      "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400"
+                  )}
                 >
                   {isCompleted ? (
                     <CheckCircle className="h-5 w-5" />
@@ -105,4 +105,4 @@ const OrderCancellationWorkflowTimeline = ({
   );
 };
 
-export default OrderCancellationWorkflowTimeline;
+export default AddressChangeWorkflowTimeline;
