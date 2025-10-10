@@ -5,9 +5,13 @@ type CARD_TYPE = "active-workflow" | "completed-workflow";
 
 interface EmptyWorkflowCardProps {
   workflowType: CARD_TYPE;
+  agentType: "order-cancellation-agent" | "address-change-agent";
 }
 
-const EmptyWorkflowCard = ({ workflowType }: EmptyWorkflowCardProps) => {
+const EmptyWorkflowCard = ({
+  workflowType,
+  agentType,
+}: EmptyWorkflowCardProps) => {
   return (
     <Card>
       <CardContent className="text-center py-8 flex flex-col gap-2 items-center">
@@ -20,11 +24,19 @@ const EmptyWorkflowCard = ({ workflowType }: EmptyWorkflowCardProps) => {
           No {workflowType === "active-workflow" ? "Active" : "Completed"}{" "}
           Workflows
         </h3>
-        <p className="text-gray-600 dark:text-gray-400">
-          {workflowType === "active-workflow"
-            ? "Order cancellation automation is running in the background. New workflows will appear here when customers request cancellations."
-            : "No Order Cancellation workflows have been completed yet. Once a workflow is completed, it will appear here."}
-        </p>
+        {agentType === "order-cancellation-agent" ? (
+          <p className="text-gray-600 dark:text-gray-400">
+            {workflowType === "active-workflow"
+              ? "Order cancellation automation is running in the background. New workflows will appear here when customers request cancellations."
+              : "No Order Cancellation workflows have been completed yet. Once a workflow is completed, it will appear here."}
+          </p>
+        ) : (
+          <p className="text-gray-600 dark:text-gray-400">
+            {workflowType === "active-workflow"
+              ? "Address Change automation is running in the background. New workflows will appear here when customers request address changes."
+              : "No Address Change workflows have been completed yet. Once a workflow is completed, it will appear here."}
+          </p>
+        )}
       </CardContent>
     </Card>
   );
