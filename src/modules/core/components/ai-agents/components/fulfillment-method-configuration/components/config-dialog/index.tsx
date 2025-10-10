@@ -10,6 +10,10 @@ import getFulfillmentMethodConfigDialogData from "./services/get-config-dialog-d
 import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
 import HowFulfillmentMethodWorks from "./components/common/how-it-works";
 import FulFillmentMethodConfigFAQs from "./components/common/faqs-section";
+import ShipbobConfiguration from "./components/shipbob-configuration";
+import SelfFulFillmentMethodConfiguration from "./components/self-fulfillment-configuration";
+import ShipStationConfiguration from "./components/shipstation-configuration";
+import WarehouseEmailConfiguration from "./components/warehouse-email-configuration";
 
 const FulfillmentMethodConfigDialog = ({
   dialogType,
@@ -44,6 +48,12 @@ const FulfillmentMethodConfigDialog = ({
             }
           />
           {/* Fulfillment Method Configuration */}
+          {dialogType === "self_fulfillment" && (
+            <SelfFulFillmentMethodConfiguration />
+          )}
+          {dialogType === "shipbob" && <ShipbobConfiguration />}
+          {dialogType === "shipstation" && <ShipStationConfiguration />}
+          {dialogType === "warehouse_email" && <WarehouseEmailConfiguration />}
 
           {/* FAQ Section */}
           <FulFillmentMethodConfigFAQs faqs={faqs} />
