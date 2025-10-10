@@ -62,6 +62,7 @@ const OrderCancellationAgent = () => {
         onRefresh={() => {}}
       >
         <AgentWorkflowCard
+          agentType="order-cancellation-agent"
           workflowId="1"
           workflowStatus="processing"
           fulfillmentMethod="warehouse_email"
@@ -71,6 +72,7 @@ const OrderCancellationAgent = () => {
           workflowCancelled={false}
         />
         <AgentWorkflowCard
+          agentType="order-cancellation-agent"
           workflowId="2"
           workflowStatus="awaiting_warehouse"
           fulfillmentMethod="self_fulfillment"
@@ -80,6 +82,7 @@ const OrderCancellationAgent = () => {
           workflowCancelled={false}
         />
         <AgentWorkflowCard
+          agentType="order-cancellation-agent"
           workflowId="3"
           workflowStatus="failed"
           fulfillmentMethod="self_fulfillment"
@@ -96,6 +99,7 @@ const OrderCancellationAgent = () => {
         sectionHeading="Recently Completed Workflows"
       >
         <AgentWorkflowCard
+          agentType="order-cancellation-agent"
           workflowId="4"
           workflowStatus="completed"
           fulfillmentMethod="shipbob"
@@ -107,6 +111,7 @@ const OrderCancellationAgent = () => {
           refundAmount={12.99}
         />
         <AgentWorkflowCard
+          agentType="order-cancellation-agent"
           workflowId="5"
           workflowStatus="completed"
           fulfillmentMethod="shipbob"
@@ -116,6 +121,7 @@ const OrderCancellationAgent = () => {
           workflowCancelled={true}
         />
         <AgentWorkflowCard
+          agentType="order-cancellation-agent"
           workflowId="6"
           workflowStatus="completed"
           fulfillmentMethod="shipstation"
