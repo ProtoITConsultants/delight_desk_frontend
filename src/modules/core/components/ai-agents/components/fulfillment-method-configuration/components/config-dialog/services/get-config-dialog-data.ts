@@ -9,6 +9,7 @@ const getFulfillmentMethodConfigDialogData = (
     title: methodConfig.title,
     description: methodConfig.description,
     howItWorksSteps: methodConfig.howItWorksSteps,
+    faqs: methodConfig.faqs,
   };
 };
 
