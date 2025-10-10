@@ -4,10 +4,10 @@ import STATUS_CONFIG from "./constants/status-config";
 import FULLFILLMENT_METHODS from "./constants/fullfilement-methods";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
-import WorkflowOutcomeBanner from "./components/outcome-banner";
+import OrderCancellationWorkflowOutcomeBanner from "./components/outcome-banner/order-cancellation-agent";
 import { Button } from "@/components/ui/button";
 import { Eye, RefreshCw } from "lucide-react";
-import WorkflowTimeline from "./components/workflow-timeline";
+import OrderCancellationWorkflowTimeline from "./components/workflow-timeline/order-cancellation-agent";
 
 const AgentWorkflowCard = ({
   workflowStatus,
@@ -20,6 +20,7 @@ const AgentWorkflowCard = ({
   refundAmount,
   failingReason,
   workflowId,
+  agentType,
 }: AGENT_WORKFLOW_PROPS) => {
   // Workflow Config (Status and Icon)
   const config =
@@ -80,23 +81,29 @@ const AgentWorkflowCard = ({
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
-        {/* Workflow Timeline */}
-        <WorkflowTimeline
-          fulfillmentMethod={fulfillmentMethod}
-          workflowStatus={workflowStatus}
-          workflowId={workflowId}
-        />
+        {agentType === "order-cancellation-agent" ? (
+          <>
+            {/* Workflow Timeline */}
+            <OrderCancellationWorkflowTimeline
+              fulfillmentMethod={fulfillmentMethod}
+              workflowStatus={workflowStatus}
+              workflowId={workflowId}
+            />
 
-        {/* Final Outcome Banner */}
-        {["completed", "canceled", "cannot_cancel"].includes(
-          workflowStatus
-        ) && (
-          <WorkflowOutcomeBanner
-            workflowCancelled={workflowCancelled}
-            refundProcessed={refundProcessed}
-            refundAmount={refundAmount}
-            failingReason={failingReason}
-          />
+            {/* Final Outcome Banner */}
+            {["completed", "canceled", "cannot_cancel"].includes(
+              workflowStatus
+            ) && (
+              <OrderCancellationWorkflowOutcomeBanner
+                workflowCancelled={workflowCancelled}
+                refundProcessed={refundProcessed}
+                refundAmount={refundAmount}
+                failingReason={failingReason}
+              />
+            )}
+          </>
+        ) : (
+          <></>
         )}
 
         {/* Retry Button */}

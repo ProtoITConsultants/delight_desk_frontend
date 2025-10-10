@@ -1,9 +1,9 @@
 import { CheckCircle, XCircle } from "lucide-react";
-import getCurrentWorkflowStep from "../../services/get-current-step";
-import getWorkflowStepConfig from "../../services/get-workflow-step-config";
-import { WORKFLOW_TIMELINE_PROPS } from "../../types/workflow-timeline";
+import getCurrentWorkflowStep from "../../../services/get-current-step";
+import getWorkflowStepConfig from "../../../services/get-workflow-step-config";
+import { WORKFLOW_TIMELINE_PROPS } from "../../../types/workflow-timeline";
 
-const WorkflowTimeline = ({
+const OrderCancellationWorkflowTimeline = ({
   fulfillmentMethod,
   workflowStatus,
   workflowId,
@@ -105,4 +105,4 @@ const WorkflowTimeline = ({
   );
 };
 
-export default WorkflowTimeline;
+export default OrderCancellationWorkflowTimeline;

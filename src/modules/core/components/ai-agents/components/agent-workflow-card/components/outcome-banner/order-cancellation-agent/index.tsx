@@ -1,7 +1,7 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
-import { WORKFLOW_OUTCOME_BANNER_PROPS } from "../../types/outcome-banner";
+import { WORKFLOW_OUTCOME_BANNER_PROPS } from "../../../types/outcome-banner";
 
-const WorkflowOutcomeBanner = ({
+const OrderCancellationWorkflowOutcomeBanner = ({
   workflowCancelled,
   refundProcessed,
   refundAmount,
@@ -42,4 +42,4 @@ const WorkflowOutcomeBanner = ({
   );
 };
 
-export default WorkflowOutcomeBanner;
+export default OrderCancellationWorkflowOutcomeBanner;
