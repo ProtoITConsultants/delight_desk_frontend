@@ -1,5 +1,5 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
-import { WORKFLOW_OUTCOME_BANNER_PROPS } from "../../../order-cancellation-agent/types/outcome-banner";
+import { WORKFLOW_OUTCOME_BANNER_PROPS } from "../../types/outcome-banner";
 
 const OrderCancellationWorkflowOutcomeBanner = ({
   workflowCancelled,

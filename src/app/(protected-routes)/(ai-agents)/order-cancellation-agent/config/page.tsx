@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FULLFILLMENT_METHODS from "@/modules/core/components/ai-agents/components/agent-workflow-card/constants/fullfilement-methods";
+import FULLFILLMENT_METHODS from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent/constants/fullfilement-methods";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
 import FulfillmentMethodConfigDialog from "@/modules/core/components/ai-agents/components/fulfillment-method-configuration/components/config-dialog";

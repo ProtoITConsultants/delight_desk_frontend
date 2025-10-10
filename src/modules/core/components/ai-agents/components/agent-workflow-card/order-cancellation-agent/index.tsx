@@ -1,15 +1,15 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AGENT_WORKFLOW_PROPS } from "./order-cancellation-agent/types";
-import STATUS_CONFIG from "./order-cancellation-agent/constants/status-config";
-import FULLFILLMENT_METHODS from "./order-cancellation-agent/constants/fullfilement-methods";
+import { AGENT_WORKFLOW_PROPS } from "./types";
+import STATUS_CONFIG from "./constants/status-config";
+import FULLFILLMENT_METHODS from "./constants/fullfilement-methods";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
-import OrderCancellationWorkflowOutcomeBanner from "./order-cancellation-agent/components/outcome-banner";
+import OrderCancellationWorkflowOutcomeBanner from "./components/outcome-banner";
 import { Button } from "@/components/ui/button";
 import { Eye, RefreshCw } from "lucide-react";
-import OrderCancellationWorkflowTimeline from "./order-cancellation-agent/components/workflow-timeline/order-cancellation-agent";
+import OrderCancellationWorkflowTimeline from "./components/workflow-timeline";
 
-const AgentWorkflowCard = ({
+const OrderCancellationAgentWorkflowCard = ({
   workflowStatus,
   fulfillmentMethod,
   orderNumber,
@@ -20,7 +20,6 @@ const AgentWorkflowCard = ({
   refundAmount,
   failingReason,
   workflowId,
-  agentType,
 }: AGENT_WORKFLOW_PROPS) => {
   // Workflow Config (Status and Icon)
   const config =
@@ -81,29 +80,23 @@ const AgentWorkflowCard = ({
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
-        {agentType === "order-cancellation-agent" ? (
-          <>
-            {/* Workflow Timeline */}
-            <OrderCancellationWorkflowTimeline
-              fulfillmentMethod={fulfillmentMethod}
-              workflowStatus={workflowStatus}
-              workflowId={workflowId}
-            />
+        {/* Workflow Timeline */}
+        <OrderCancellationWorkflowTimeline
+          fulfillmentMethod={fulfillmentMethod}
+          workflowStatus={workflowStatus}
+          workflowId={workflowId}
+        />
 
-            {/* Final Outcome Banner */}
-            {["completed", "canceled", "cannot_cancel"].includes(
-              workflowStatus
-            ) && (
-              <OrderCancellationWorkflowOutcomeBanner
-                workflowCancelled={workflowCancelled}
-                refundProcessed={refundProcessed}
-                refundAmount={refundAmount}
-                failingReason={failingReason}
-              />
-            )}
-          </>
-        ) : (
-          <></>
+        {/* Final Outcome Banner */}
+        {["completed", "canceled", "cannot_cancel"].includes(
+          workflowStatus
+        ) && (
+          <OrderCancellationWorkflowOutcomeBanner
+            workflowCancelled={workflowCancelled}
+            refundProcessed={refundProcessed}
+            refundAmount={refundAmount}
+            failingReason={failingReason}
+          />
         )}
 
         {/* Retry Button */}
@@ -124,4 +117,4 @@ const AgentWorkflowCard = ({
   );
 };
 
-export default AgentWorkflowCard;
+export default OrderCancellationAgentWorkflowCard;

@@ -1,7 +1,7 @@
 import { CheckCircle, XCircle } from "lucide-react";
-import getCurrentWorkflowStep from "../../../order-cancellation-agent/services/get-current-step";
-import getWorkflowStepConfig from "../../../order-cancellation-agent/services/get-workflow-step-config";
-import { WORKFLOW_TIMELINE_PROPS } from "../../../order-cancellation-agent/types/workflow-timeline";
+import getCurrentWorkflowStep from "../../services/get-current-step";
+import getWorkflowStepConfig from "../../services/get-workflow-step-config";
+import { WORKFLOW_TIMELINE_PROPS } from "../../types/workflow-timeline";
 
 const OrderCancellationWorkflowTimeline = ({
   fulfillmentMethod,
