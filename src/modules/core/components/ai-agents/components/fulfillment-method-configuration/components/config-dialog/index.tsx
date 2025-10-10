@@ -6,17 +6,19 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FULFILLMENT_METHOD_DIALOG_PROPS } from "../../utils/types";
-import getDialogHeader from "./services/get-dialog-header";
+import getFulfillmentMethodConfigDialogData from "./services/get-config-dialog-data";
 import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
+import HowFulfillmentMethodWorks from "./components/common/how-it-works";
 
 const FulfillmentMethodConfigDialog = ({
   dialogType,
   isDialogOpen,
   onOpenChange,
 }: FULFILLMENT_METHOD_DIALOG_PROPS) => {
-  const { title, description } = getDialogHeader(
-    dialogType as FULLFILLMENT_METHODS_TYPES
-  );
+  const { title, description, howItWorksSteps } =
+    getFulfillmentMethodConfigDialogData(
+      dialogType as FULLFILLMENT_METHODS_TYPES
+    );
 
   return (
     <Dialog
@@ -32,6 +34,14 @@ const FulfillmentMethodConfigDialog = ({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         {/* Body */}
+        <div className="flex flex-col gap-6">
+          <HowFulfillmentMethodWorks
+            howItWorksSteps={howItWorksSteps}
+            fulfillmentMethodTitle={
+              title.split(" ")[0] as FULLFILLMENT_METHODS_TYPES
+            }
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );
