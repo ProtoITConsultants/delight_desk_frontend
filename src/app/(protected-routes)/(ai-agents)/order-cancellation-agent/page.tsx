@@ -5,7 +5,7 @@ import EmptyWorkflowCard from "@/modules/core/components/ai-agents/components/ag
 import NoFulfillmentMethodConfiguredCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent/components/no-fulfillment-method-config-card";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
-import OrderCancellationWorkflowRoot from "@/modules/protected-routes/ai-agents/order-cancellation/components/agent-workflow-root";
+import AgentWorkflowRoot from "@/modules/protected-routes/ai-agents/common/components/agent-workflow-root";
 import { Bot, Package, Settings } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -55,7 +55,7 @@ const OrderCancellationAgent = () => {
         isChangingAgentSettings={false}
       />
       {/* Active Workflows Section */}
-      <OrderCancellationWorkflowRoot
+      <AgentWorkflowRoot
         workflowType="active"
         sectionHeading="Active Workflows"
         activeWorkflowsCount={2}
@@ -88,10 +88,10 @@ const OrderCancellationAgent = () => {
           createdAt="12 June 2025"
           workflowCancelled={false}
         />
-      </OrderCancellationWorkflowRoot>
+      </AgentWorkflowRoot>
 
       {/* Recently Completed Workflows Section */}
-      <OrderCancellationWorkflowRoot
+      <AgentWorkflowRoot
         workflowType="recently-completed"
         sectionHeading="Recently Completed Workflows"
       >
@@ -125,7 +125,7 @@ const OrderCancellationAgent = () => {
           workflowCancelled={false}
           failingReason="Warehouse response: Order WC-54789 has already been picked and packed for shipment. Unfortunately we cannot cancel this order as it is currently being loaded onto the delivery truck. The customer will need to initiate a return once they receive the package."
         />
-      </OrderCancellationWorkflowRoot>
+      </AgentWorkflowRoot>
 
       {!hasSelectedMethod && (
         <NoFulfillmentMethodConfiguredCard agentType="order-cancellation-agent" />

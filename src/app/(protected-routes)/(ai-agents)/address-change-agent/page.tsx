@@ -1,11 +1,11 @@
 "use client";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
-import AgentWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent";
 import EmptyWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent/components/empty-workflow-card";
 import NoFulfillmentMethodConfiguredCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/order-cancellation-agent/components/no-fulfillment-method-config-card";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
-import OrderCancellationWorkflowRoot from "@/modules/protected-routes/ai-agents/order-cancellation/components/agent-workflow-root";
+import AddressChangeWorkflowCard from "@/modules/protected-routes/ai-agents/address-change/components/agent-workflow-card";
+import AgentWorkflowRoot from "@/modules/protected-routes/ai-agents/common/components/agent-workflow-root";
 import { Bot, MapPin, Settings } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -55,13 +55,13 @@ const AddressChangeAgent = () => {
       />
 
       {/* Active Workflows Card */}
-      <OrderCancellationWorkflowRoot
+      <AgentWorkflowRoot
         workflowType="active"
         sectionHeading="Active Workflows"
         activeWorkflowsCount={2}
         onRefresh={() => {}}
       >
-        <AgentWorkflowCard
+        <AddressChangeWorkflowCard
           workflowId="1"
           workflowStatus="processing"
           fulfillmentMethod="warehouse_email"
@@ -70,7 +70,7 @@ const AddressChangeAgent = () => {
           createdAt="12 Feb 2024"
           workflowCancelled={false}
         />
-        <AgentWorkflowCard
+        <AddressChangeWorkflowCard
           workflowId="2"
           workflowStatus="awaiting_warehouse"
           fulfillmentMethod="self_fulfillment"
@@ -79,7 +79,7 @@ const AddressChangeAgent = () => {
           createdAt="12 June 2025"
           workflowCancelled={false}
         />
-        <AgentWorkflowCard
+        <AddressChangeWorkflowCard
           workflowId="3"
           workflowStatus="failed"
           fulfillmentMethod="self_fulfillment"
@@ -88,14 +88,14 @@ const AddressChangeAgent = () => {
           createdAt="12 June 2025"
           workflowCancelled={false}
         />
-      </OrderCancellationWorkflowRoot>
+      </AgentWorkflowRoot>
 
       {/* Recently Completed Workflows Section */}
-      <OrderCancellationWorkflowRoot
+      <AgentWorkflowRoot
         workflowType="recently-completed"
         sectionHeading="Recently Completed Workflows"
       >
-        <AgentWorkflowCard
+        <AddressChangeWorkflowCard
           workflowId="4"
           workflowStatus="completed"
           fulfillmentMethod="shipbob"
@@ -106,7 +106,7 @@ const AddressChangeAgent = () => {
           refundProcessed={true}
           refundAmount={12.99}
         />
-        <AgentWorkflowCard
+        <AddressChangeWorkflowCard
           workflowId="5"
           workflowStatus="completed"
           fulfillmentMethod="shipbob"
@@ -115,7 +115,7 @@ const AddressChangeAgent = () => {
           createdAt="02 Mar 2025"
           workflowCancelled={true}
         />
-        <AgentWorkflowCard
+        <AddressChangeWorkflowCard
           workflowId="6"
           workflowStatus="completed"
           fulfillmentMethod="shipstation"
@@ -125,7 +125,7 @@ const AddressChangeAgent = () => {
           workflowCancelled={false}
           failingReason="Warehouse response: Order WC-54789 has already been picked and packed for shipment. Unfortunately we cannot cancel this order as it is currently being loaded onto the delivery truck. The customer will need to initiate a return once they receive the package."
         />
-      </OrderCancellationWorkflowRoot>
+      </AgentWorkflowRoot>
 
       {/* No Fulfillment Method Card */}
       {!hasSelectedMethod && (
