@@ -68,7 +68,6 @@ const OrderCancellationAgent = () => {
           orderNumber="WC-78901"
           customerEmail="michael.johnson@example.com"
           createdAt="12 Feb 2024"
-          workflowCancelled={false}
         />
         <OrderCancellationAgentWorkflowCard
           workflowId="2"
@@ -77,7 +76,6 @@ const OrderCancellationAgent = () => {
           orderNumber="WC-78901"
           customerEmail="remy@humanfoodbar.com"
           createdAt="12 June 2025"
-          workflowCancelled={false}
         />
         <OrderCancellationAgentWorkflowCard
           workflowId="3"
@@ -86,7 +84,6 @@ const OrderCancellationAgent = () => {
           orderNumber="WC-78901"
           customerEmail="remy@humanfoodbar.com"
           createdAt="12 June 2025"
-          workflowCancelled={false}
         />
       </AgentWorkflowRoot>
 
@@ -114,6 +111,7 @@ const OrderCancellationAgent = () => {
           customerEmail="lisa.wang@example.com"
           createdAt="02 Mar 2025"
           workflowCancelled={true}
+          refundProcessed={false}
         />
         <OrderCancellationAgentWorkflowCard
           workflowId="6"

@@ -15,11 +15,8 @@ const OrderCancellationAgentWorkflowCard = ({
   orderNumber,
   customerEmail,
   createdAt,
-  workflowCancelled,
-  refundProcessed,
-  refundAmount,
-  failingReason,
   workflowId,
+  ...restProps
 }: AGENT_WORKFLOW_PROPS) => {
   // Workflow Config (Status and Icon)
   const config =
@@ -79,6 +76,7 @@ const OrderCancellationAgentWorkflowCard = ({
           </span>
         </div>
       </CardHeader>
+
       <CardContent className="flex flex-col gap-2">
         {/* Workflow Timeline */}
         <OrderCancellationWorkflowTimeline
@@ -88,16 +86,27 @@ const OrderCancellationAgentWorkflowCard = ({
         />
 
         {/* Final Outcome Banner */}
-        {["completed", "canceled", "cannot_cancel"].includes(
-          workflowStatus
-        ) && (
-          <OrderCancellationWorkflowOutcomeBanner
-            workflowCancelled={workflowCancelled}
-            refundProcessed={refundProcessed}
-            refundAmount={refundAmount}
-            failingReason={failingReason}
-          />
-        )}
+        {workflowStatus === "completed" &&
+          "workflowCancelled" in restProps &&
+          (restProps.workflowCancelled ? (
+            restProps.refundProcessed ? (
+              <OrderCancellationWorkflowOutcomeBanner
+                workflowCancelled={restProps.workflowCancelled}
+                refundProcessed={restProps.refundProcessed}
+                refundAmount={restProps.refundAmount}
+              />
+            ) : (
+              <OrderCancellationWorkflowOutcomeBanner
+                workflowCancelled={restProps.workflowCancelled}
+                refundProcessed={restProps.refundProcessed}
+              />
+            )
+          ) : (
+            <OrderCancellationWorkflowOutcomeBanner
+              workflowCancelled={restProps.workflowCancelled}
+              failingReason={restProps.failingReason}
+            />
+          ))}
 
         {/* Retry Button */}
         {workflowStatus === "failed" && (

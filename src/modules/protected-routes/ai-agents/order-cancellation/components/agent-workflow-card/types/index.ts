@@ -29,18 +29,37 @@ type SHIPSTATION_FULLFILLMENT_STEPS =
   | "process_cancellation"
   | "process_result";
 
-type AGENT_WORKFLOW_PROPS = {
-  workflowId: string;
-  workflowStatus: WORKFLOW_STATUS_TYPE;
-  fulfillmentMethod: FULLFILLMENT_METHODS_TYPES;
-  orderNumber: string;
-  customerEmail: string;
-  createdAt: string;
-  workflowCancelled: boolean;
-  refundProcessed?: boolean;
-  refundAmount?: number;
-  failingReason?: string;
-};
+type AGENT_WORKFLOW_PROPS =
+  | {
+      workflowId: string;
+      workflowStatus: Exclude<WORKFLOW_STATUS_TYPE, "completed">;
+      fulfillmentMethod: FULLFILLMENT_METHODS_TYPES;
+      orderNumber: string;
+      customerEmail: string;
+      createdAt: string;
+    }
+  | ({
+      workflowId: string;
+      workflowStatus: "completed";
+      fulfillmentMethod: FULLFILLMENT_METHODS_TYPES;
+      orderNumber: string;
+      customerEmail: string;
+      createdAt: string;
+    } & (
+      | {
+          workflowCancelled: true;
+          refundProcessed: true;
+          refundAmount: number;
+        }
+      | {
+          workflowCancelled: true;
+          refundProcessed: false;
+        }
+      | {
+          workflowCancelled: false;
+          failingReason: string;
+        }
+    ));
 
 export type {
   AGENT_WORKFLOW_PROPS,
