@@ -1,9 +1,11 @@
 "use client";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
+import AgentWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card";
 import EmptyWorkflowCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/components/empty-workflow-card";
 import NoFulfillmentMethodConfiguredCard from "@/modules/core/components/ai-agents/components/agent-workflow-card/components/no-fulfillment-method-config-card";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
+import OrderCancellationWorkflowRoot from "@/modules/protected-routes/ai-agents/order-cancellation/components/agent-workflow-root";
 import { Bot, MapPin, Settings } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -52,6 +54,86 @@ const AddressChangeAgent = () => {
         isChangingAgentSettings={false}
       />
 
+      {/* Active Workflows Card */}
+      <OrderCancellationWorkflowRoot
+        workflowType="active"
+        sectionHeading="Active Workflows"
+        activeWorkflowsCount={2}
+        onRefresh={() => {}}
+      >
+        <AgentWorkflowCard
+          agentType="address-change-agent"
+          workflowId="1"
+          workflowStatus="processing"
+          fulfillmentMethod="warehouse_email"
+          orderNumber="WC-78901"
+          customerEmail="michael.johnson@example.com"
+          createdAt="12 Feb 2024"
+          workflowCancelled={false}
+        />
+        <AgentWorkflowCard
+          agentType="address-change-agent"
+          workflowId="2"
+          workflowStatus="awaiting_warehouse"
+          fulfillmentMethod="self_fulfillment"
+          orderNumber="WC-78901"
+          customerEmail="remy@humanfoodbar.com"
+          createdAt="12 June 2025"
+          workflowCancelled={false}
+        />
+        <AgentWorkflowCard
+          agentType="address-change-agent"
+          workflowId="3"
+          workflowStatus="failed"
+          fulfillmentMethod="self_fulfillment"
+          orderNumber="WC-78901"
+          customerEmail="remy@humanfoodbar.com"
+          createdAt="12 June 2025"
+          workflowCancelled={false}
+        />
+      </OrderCancellationWorkflowRoot>
+
+      {/* Recently Completed Workflows Section */}
+      <OrderCancellationWorkflowRoot
+        workflowType="recently-completed"
+        sectionHeading="Recently Completed Workflows"
+      >
+        <AgentWorkflowCard
+          agentType="address-change-agent"
+          workflowId="4"
+          workflowStatus="completed"
+          fulfillmentMethod="shipbob"
+          orderNumber="WC-78901"
+          customerEmail="lisa.wang@example.com"
+          createdAt="02 Mar 2025"
+          workflowCancelled={true}
+          refundProcessed={true}
+          refundAmount={12.99}
+        />
+        <AgentWorkflowCard
+          agentType="address-change-agent"
+          workflowId="5"
+          workflowStatus="completed"
+          fulfillmentMethod="shipbob"
+          orderNumber="WC-78901"
+          customerEmail="lisa.wang@example.com"
+          createdAt="02 Mar 2025"
+          workflowCancelled={true}
+        />
+        <AgentWorkflowCard
+          agentType="address-change-agent"
+          workflowId="6"
+          workflowStatus="completed"
+          fulfillmentMethod="shipstation"
+          orderNumber="WC-78901"
+          customerEmail="customer@example.com"
+          createdAt="12 Sep 2025"
+          workflowCancelled={false}
+          failingReason="Warehouse response: Order WC-54789 has already been picked and packed for shipment. Unfortunately we cannot cancel this order as it is currently being loaded onto the delivery truck. The customer will need to initiate a return once they receive the package."
+        />
+      </OrderCancellationWorkflowRoot>
+
+      {/* No Fulfillment Method Card */}
       {!hasSelectedMethod && (
         <NoFulfillmentMethodConfiguredCard agentType="address-change-agent" />
       )}
