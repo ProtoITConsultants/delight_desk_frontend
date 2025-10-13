@@ -1,4 +1,4 @@
-const DIALOG_CONFIG = {
+const ORDER_CANCELLATION_DIALOG_CONFIG = {
   self_fulfillment: {
     title: "Self-Fulfillment Setup",
     description: "Configure automated cancellations for self-fulfilled orders",
@@ -226,4 +226,4 @@ const DIALOG_CONFIG = {
   },
 };
 
-export default DIALOG_CONFIG;
+export default ORDER_CANCELLATION_DIALOG_CONFIG;

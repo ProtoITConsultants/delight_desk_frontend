@@ -16,14 +16,16 @@ import ShipStationConfiguration from "./components/shipstation-configuration";
 import WarehouseEmailConfiguration from "./components/warehouse-email-configuration";
 
 const FulfillmentMethodConfigDialog = ({
+  agentType,
   dialogType,
   isDialogOpen,
   onOpenChange,
 }: FULFILLMENT_METHOD_DIALOG_PROPS) => {
   const { title, description, howItWorksSteps, faqs } =
-    getFulfillmentMethodConfigDialogData(
-      dialogType as FULLFILLMENT_METHODS_TYPES
-    );
+    getFulfillmentMethodConfigDialogData({
+      methodType: dialogType as FULLFILLMENT_METHODS_TYPES,
+      agentType,
+    });
 
   return (
     <Dialog

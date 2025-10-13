@@ -1,22 +1,22 @@
 "use client";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FULLFILLMENT_METHODS from "@/modules/protected-routes/ai-agents/order-cancellation/components/agent-workflow-card/constants/fullfilement-methods";
+import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
-import FulfillmentMethodConfigDialog from "@/modules/core/components/ai-agents/components/fulfillment-method-configuration/components/config-dialog";
-import FulfillmentMethodConfigCard from "@/modules/core/components/ai-agents/components/fulfillment-method-configuration/components/fulfillment-method-card";
+import { Settings } from "lucide-react";
+import FULLFILLMENT_METHODS from "@/modules/protected-routes/ai-agents/address-change/constants/fullfilement-methods";
 import { isConfigMethodEnabled } from "@/modules/core/utils/order-fulfillment-methods/services/config-method-enabled";
 import getConfigMethodStatus from "@/modules/core/utils/order-fulfillment-methods/services/get-config-method-status";
-import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
-import { Settings } from "lucide-react";
-import { useState } from "react";
+import FulfillmentMethodConfigCard from "@/modules/core/components/ai-agents/components/fulfillment-method-configuration/components/fulfillment-method-card";
+import FulfillmentMethodConfigDialog from "@/modules/core/components/ai-agents/components/fulfillment-method-configuration/components/config-dialog";
 
 type CONFIG_DIALOG_DATA = {
   dialogType: FULLFILLMENT_METHODS_TYPES;
   isDialogOpen: boolean;
 };
 
-const OrderCancellationAgentConfig = () => {
+const AddressChangeAgentConfigPage = () => {
   const [currentConfigurationMethod, setCurrentConfigurationMethod] = useState<
     FULLFILLMENT_METHODS_TYPES | ""
   >("");
@@ -43,7 +43,7 @@ const OrderCancellationAgentConfig = () => {
           </div>
         }
         title="Fulfillment Method Configuration"
-        description="Choose how you want to handle order cancellation requests. Once selected, this will run in the background."
+        description="Choose how you want to handle address change requests. Once selected, this will run in the background."
       />
       {/* Body */}
       <Card>
@@ -52,7 +52,7 @@ const OrderCancellationAgentConfig = () => {
             Choose Your Fulfillment Method
           </CardTitle>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Select how you want to handle order cancellations to get started
+            Select how you want to handle address change requests to get started
             with automation.
           </p>
         </CardHeader>
@@ -104,7 +104,7 @@ const OrderCancellationAgentConfig = () => {
 
       {/* Configuration Dialog */}
       <FulfillmentMethodConfigDialog
-        agentType="order_cancellation"
+        agentType="address_change"
         dialogType={configDialogData.dialogType}
         isDialogOpen={configDialogData.isDialogOpen}
         onOpenChange={(value) => {
@@ -118,4 +118,4 @@ const OrderCancellationAgentConfig = () => {
   );
 };
 
-export default OrderCancellationAgentConfig;
+export default AddressChangeAgentConfigPage;
