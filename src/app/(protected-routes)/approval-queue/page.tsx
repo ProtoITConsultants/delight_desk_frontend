@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import ApprovalQueueHeader from "@/modules/protected-routes/approval-queue/components/approval-queue-header";
 import ApprovalQueueRoot from "@/modules/protected-routes/approval-queue/components/approval-queue-root";
+import ApprovalQueueTabs from "@/modules/protected-routes/approval-queue/components/approval-queue-tabs";
 import { RefreshCw } from "lucide-react";
 
 const ApprovalQueuePage = () => {
@@ -27,6 +28,8 @@ const ApprovalQueuePage = () => {
           </Button>
         }
       />
+      {/* Content */}
+      <ApprovalQueueTabs />
     </ApprovalQueueRoot>
   );
 };
