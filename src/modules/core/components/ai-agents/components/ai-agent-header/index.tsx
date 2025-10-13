@@ -15,7 +15,7 @@ const AiAgentHeader = ({
       <div className="flex items-start gap-3">
         {Icon}
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold text-gray-900 leading-4">
+          <h1 className="text-2xl font-bold text-gray-900 sm:leading-4 leading-6">
             {title}
           </h1>
           <p className="text-gray-600 leading-normal">{description}</p>

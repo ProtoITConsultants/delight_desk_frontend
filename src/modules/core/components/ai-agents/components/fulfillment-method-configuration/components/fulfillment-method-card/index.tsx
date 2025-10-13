@@ -24,16 +24,16 @@ const FulfillmentMethodConfigCard = ({
   return (
     <Card
       className={cn(
-        `cursor-pointer transition-all hover:shadow-md py-4 px-6`,
+        `cursor-pointer transition-all hover:shadow-md md:py-4 md:px-6 p-4`,
         cardColorClassName,
         isCurrentConfiguredMethod && "ring-2 ring-green-500"
       )}
     >
       <CardContent className="p-0">
-        <div className="flex items-start gap-3">
-          <MethodIcon className="h-6 w-6 mt-1" />
+        <div className="flex items-start gap-3 w-full">
+          <MethodIcon className="h-6 w-6 mt-1 hidden md:block" />
           <div className="flex-1 flex flex-col gap-2">
-            <div className="flex items-center justify-between">
+            <div className="flex sm:items-center sm:justify-between gap-2 flex-col sm:flex-row">
               <h3 className="font-semibold">{methodTitle}</h3>
               <Badge
                 variant={
@@ -68,51 +68,6 @@ const FulfillmentMethodConfigCard = ({
                 </li>
               ))}
             </ul>
-            {/* Configuration interface when editing */}
-            {/* {isEditingMethod === method.id && (
-              <div className="mt-3 pt-3 border-t space-y-3">
-                {method.id === "warehouse_email" && (
-                  <div>
-                    <Label htmlFor="warehouse-email">
-                      Warehouse Email Address
-                    </Label>
-                    <Input
-                      id="warehouse-email"
-                      type="email"
-                      placeholder="warehouse@company.com"
-                      value={editingValues.warehouseEmail || ""}
-                      onChange={(e) =>
-                        setEditingValues({
-                          ...editingValues,
-                          warehouseEmail: e.target.value,
-                        })
-                      }
-                      className="mt-1"
-                    />
-                  </div>
-                )}
-                <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    onClick={handleSaveConfiguration}
-                    disabled={updateMethodConfigMutation.isPending}
-                    className="flex-1"
-                  >
-                    {updateMethodConfigMutation.isPending
-                      ? "Saving..."
-                      : "Save"}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleCancelEdit}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            )} */}
 
             {/* Action buttons when not editing */}
             <div className="pt-3 border-t">
@@ -120,23 +75,25 @@ const FulfillmentMethodConfigCard = ({
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full"
+                  className="w-full gap-1 sm:gap-2"
                   onClick={onClickConfigMethod}
                 >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Configure {methodTitle}
+                  <Settings className="h-4 w-4" />
+                  <span className="line-clamp-1">Configure {methodTitle}</span>
                 </Button>
               ) : (
                 <Button
                   type="button"
-                  className="w-full"
+                  className="w-full gap-1 sm:gap-2"
                   onClick={onActivateConfigMethod}
                   disabled={areActionButtonsDisabled}
                 >
-                  <Settings className="h-4 w-4 mr-2" />
-                  {areActionButtonsDisabled
-                    ? "Activating..."
-                    : `Activate ${methodTitle}`}
+                  <Settings className="h-4 w-4" />
+                  <span className="line-clamp-1">
+                    {areActionButtonsDisabled
+                      ? "Activating..."
+                      : `Activate ${methodTitle}`}
+                  </span>
                 </Button>
               )}
             </div>
