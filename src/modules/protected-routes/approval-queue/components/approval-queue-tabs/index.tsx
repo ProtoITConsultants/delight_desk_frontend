@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle2, Clock } from "lucide-react";
 import CompletedActionsTab from "./components/completed-actions-tab";
 import PendingActionsTab from "./components/pending-actions-tab";
+import PendingItemsWarningTip from "./components/pending-items-warning";
 
 const ApprovalQueueTabs = () => {
   const pendingItems = [];
@@ -32,11 +33,15 @@ const ApprovalQueueTabs = () => {
           </Badge>
         </TabsTrigger>
       </TabsList>
+
       {/* Tabs Content */}
-      <TabsContent value="pending" className="mt-6">
+      <TabsContent value="pending" className="flex flex-col gap-4 mt-4">
+        {/* Pending Items Warning */}
+        <PendingItemsWarningTip />
+        {/* Filter Tabs */}
         <PendingActionsTab />
       </TabsContent>
-      <TabsContent value="completed" className="mt-6">
+      <TabsContent value="completed" className="flex flex-col gap-4 mt-4">
         <CompletedActionsTab />
       </TabsContent>
     </Tabs>
