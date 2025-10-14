@@ -21,11 +21,22 @@ const FulfillmentMethodConfigDialog = ({
   isDialogOpen,
   onOpenChange,
 }: FULFILLMENT_METHOD_DIALOG_PROPS) => {
+  // In case of address Change dialog
+  // Need to remove the "shipstation" option
+  // as it is not supported in the address change dialog
+  const params =
+    agentType === "order_cancellation"
+      ? { agentType, methodType: dialogType }
+      : {
+          agentType,
+          methodType: dialogType as Exclude<
+            FULLFILLMENT_METHODS_TYPES,
+            "shipstation"
+          >,
+        };
+
   const { title, description, howItWorksSteps, faqs } =
-    getFulfillmentMethodConfigDialogData({
-      methodType: dialogType as FULLFILLMENT_METHODS_TYPES,
-      agentType,
-    });
+    getFulfillmentMethodConfigDialogData(params);
 
   return (
     <Dialog
@@ -44,6 +55,7 @@ const FulfillmentMethodConfigDialog = ({
         <div className="flex flex-col gap-6">
           {/* How it Works Section */}
           <HowFulfillmentMethodWorks
+            agentType={agentType}
             howItWorksSteps={howItWorksSteps}
             fulfillmentMethodTitle={
               title.split(" ")[0] as FULLFILLMENT_METHODS_TYPES

@@ -2,6 +2,7 @@ import { Info } from "lucide-react";
 import { HOW_FULFILLMENT_METHOD_WORKS_PROPS } from "../../../../../utils/types";
 
 const HowFulfillmentMethodWorks = ({
+  agentType,
   fulfillmentMethodTitle,
   howItWorksSteps,
 }: HOW_FULFILLMENT_METHOD_WORKS_PROPS) => {
@@ -9,7 +10,11 @@ const HowFulfillmentMethodWorks = ({
     <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
       <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center">
         <Info className="h-4 w-4 mr-2" />
-        How the {fulfillmentMethodTitle} Order Cancellation Workflow Works
+        How the {fulfillmentMethodTitle}{" "}
+        {agentType === "order_cancellation"
+          ? "Order Cancellation"
+          : "Address Change"}{" "}
+        Workflow Works
       </h3>
       <div className="space-y-3 text-sm text-blue-800 dark:text-blue-200">
         {howItWorksSteps.map((step, index) => (
