@@ -6,6 +6,9 @@ import ShipStationConnectionalModal from "@/modules/protected-routes/connections
 import { Store, Mail, Info } from "lucide-react";
 import WooCommerceConnectionModal from "@/modules/protected-routes/connections-page/components/modals/WooCommerceConnectionModal";
 import ManageConnectionModal from "@/modules/protected-routes/connections-page/components/modals/ManageConnectionModal";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { api } from "@/lib/api";
 
 type connectionModalType = {
   isModalOpen: boolean;
@@ -29,6 +32,25 @@ const ConnectionsPage = () => {
     isModalOpen: false,
     type: "",
   });
+
+  const {
+    data: connectionsData,
+    isError,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["connections"],
+    queryFn: () => {
+      return api.user_connections.getUserConnections();
+    },
+  });
+
+  if (isError) {
+    toast.error("Error fetching connections", {
+      description: error.message || "",
+    });
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
@@ -49,7 +71,9 @@ const ConnectionsPage = () => {
               <Store className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
           }
-          connectionEstablished={true}
+          connectionEstablished={
+            connectionsData?.wooCommerceConnection ? true : false
+          }
           onCreateConnection={() =>
             setWooCommerceDialog({
               isModalOpen: true,
@@ -62,6 +86,7 @@ const ConnectionsPage = () => {
               type: "manage-connection",
             });
           }}
+          isFetchingDetails={isPending}
         />
       </ConnectionCard.Root>
       {/* Email Connections */}
@@ -79,7 +104,9 @@ const ConnectionsPage = () => {
               <Mail className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
           }
-          connectionEstablished={true}
+          connectionEstablished={
+            connectionsData?.gmailConnection ? true : false
+          }
           onCreateConnection={() =>
             setGmailDialog({
               isModalOpen: true,
@@ -92,7 +119,8 @@ const ConnectionsPage = () => {
               type: "manage-connection",
             });
           }}
-        />{" "}
+          isFetchingDetails={isPending}
+        />
         {/* Outlook Connection */}
         <ConnectionCard.Item
           title="Outlook"
@@ -102,7 +130,9 @@ const ConnectionsPage = () => {
               <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
           }
-          connectionEstablished={false}
+          connectionEstablished={
+            connectionsData?.outlookConnection ? true : false
+          }
           onCreateConnection={() =>
             setGmailDialog({
               isModalOpen: true,
@@ -115,6 +145,7 @@ const ConnectionsPage = () => {
               type: "manage-connection",
             });
           }}
+          isFetchingDetails={isPending}
         />
       </ConnectionCard.Root>
       {/* Fulfillment Integration */}
@@ -142,9 +173,12 @@ const ConnectionsPage = () => {
               </svg>
             </div>
           }
-          connectionEstablished={false}
+          connectionEstablished={
+            connectionsData?.shipbobConnection ? true : false
+          }
           onCreateConnection={() => {}}
           onManageConnection={() => {}}
+          isFetchingDetails={isPending}
         />
         {/* Shipstation Connection */}
         <ConnectionCard.Item
@@ -161,7 +195,9 @@ const ConnectionsPage = () => {
               </svg>
             </div>
           }
-          connectionEstablished={false}
+          connectionEstablished={
+            connectionsData?.shipstationConnection ? true : false
+          }
           onCreateConnection={() =>
             setShipstationDialog({
               isModalOpen: true,
@@ -174,6 +210,7 @@ const ConnectionsPage = () => {
               type: "manage-connection",
             })
           }
+          isFetchingDetails={isPending}
         />
 
         {/* Callout for users without ShipBob/Shipstation */}
