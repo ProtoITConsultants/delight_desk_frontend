@@ -76,6 +76,28 @@ const ConnectionsPage = () => {
     },
   });
 
+  // Disconnect Outlook
+  const disconnectOutlookMutation = useMutation({
+    mutationFn: () => api.user_connections.disconnectOutlookAccount(),
+    onSuccess: () => {
+      toast.success("Account Disconnected!", {
+        description: "Outlook account disconnected successfully!",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["connections"],
+      });
+      setGmailDialog({
+        isModalOpen: false,
+        type: "",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to disconnect account!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
@@ -132,10 +154,7 @@ const ConnectionsPage = () => {
           connectionEstablished={
             connectionsData?.gmailConnection ? true : false
           }
-          onCreateConnection={() =>
-            (window.location.href =
-              "https://api.delightdesk.io/google-oauth/login")
-          }
+          onCreateConnection={() => api.user_connections.addGmailConnection()}
           onManageConnection={() => {
             setGmailDialog({
               isModalOpen: true,
@@ -143,6 +162,7 @@ const ConnectionsPage = () => {
             });
           }}
           isFetchingDetails={isPending}
+          disabled={connectionsData?.outlookConnection ? true : false}
         />
         {/* Outlook Connection */}
         <ConnectionCard.Item
@@ -156,12 +176,7 @@ const ConnectionsPage = () => {
           connectionEstablished={
             connectionsData?.outlookConnection ? true : false
           }
-          onCreateConnection={() =>
-            setGmailDialog({
-              isModalOpen: true,
-              type: "create-connection",
-            })
-          }
+          onCreateConnection={() => api.user_connections.addOutlookConnection()}
           onManageConnection={() => {
             setGmailDialog({
               isModalOpen: true,
@@ -169,6 +184,7 @@ const ConnectionsPage = () => {
             });
           }}
           isFetchingDetails={isPending}
+          disabled={connectionsData?.gmailConnection ? true : false}
         />
       </ConnectionCard.Root>
       {/* Fulfillment Integration */}
@@ -304,6 +320,26 @@ const ConnectionsPage = () => {
         email={connectionsData?.gmailConnection?.email}
         onDisconnectAccount={() => disconnectGmailMutation.mutate()}
         isDisconnecting={disconnectGmailMutation.isPending}
+      />
+      <ManageConnectionModal
+        isModalOpen={
+          gmailDialog.isModalOpen && gmailDialog.type === "manage-connection"
+        }
+        onCloseModal={() =>
+          setGmailDialog({
+            isModalOpen: false,
+            type: "",
+          })
+        }
+        type="outlook"
+        status={
+          connectionsData?.outlookConnection?.status === "connected"
+            ? "active"
+            : "inactive"
+        }
+        email={connectionsData?.outlookConnection?.email}
+        onDisconnectAccount={() => disconnectOutlookMutation.mutate()}
+        isDisconnecting={disconnectOutlookMutation.isPending}
       />
       {/* For Now I would have two separate Modals for each connection */}
       <ManageConnectionModal

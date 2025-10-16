@@ -23,7 +23,7 @@ export class UserConnections {
 
   // add gmail connection
   addGmailConnection = () => {
-    return (window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/${USER_CONNECTIONS.ADD_GMAIL_CONNECTION_URL}`);
+    return (window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${USER_CONNECTIONS.ADD_GMAIL_CONNECTION_URL}`);
   };
   // disconnect gmail connection
   disconnectGmailAccount = async () => {
@@ -38,7 +38,14 @@ export class UserConnections {
   // ------------------------------
 
   // add outlook connection
-  addOutlookConnection = async () => {};
+  addOutlookConnection = async () => {
+    return (window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${USER_CONNECTIONS.ADD_OUTLOOK_CONNECTION_URL}`);
+  };
   // disconnect outlook connection
-  disconnectOutlookAccount = async () => {};
+  disconnectOutlookAccount = async () => {
+    const res = apiService.delete(
+      USER_CONNECTIONS.DISCONNECT_OUTLOOK_CONNECTION_URL
+    );
+    return res;
+  };
 }
