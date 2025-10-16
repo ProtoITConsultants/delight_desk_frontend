@@ -15,6 +15,11 @@ type connectionModalType = {
   type: "create-connection" | "manage-connection" | "";
 };
 
+type emailConnectionModalType = {
+  isModalOpen: boolean;
+  type: "gmail" | "outlook" | null;
+};
+
 const ConnectionsPage = () => {
   // Hooks
   const queryClient = useQueryClient();
@@ -30,10 +35,11 @@ const ConnectionsPage = () => {
       type: "",
     });
 
-  const [gmailDialog, setGmailDialog] = useState<connectionModalType>({
-    isModalOpen: false,
-    type: "",
-  });
+  const [manageEmailConnectionDialog, setManageEmailConnectionDialog] =
+    useState<emailConnectionModalType>({
+      isModalOpen: false,
+      type: null,
+    });
 
   // Get User Connections - Query
   const {
@@ -64,9 +70,9 @@ const ConnectionsPage = () => {
       queryClient.invalidateQueries({
         queryKey: ["connections"],
       });
-      setGmailDialog({
+      setManageEmailConnectionDialog({
         isModalOpen: false,
-        type: "",
+        type: null,
       });
     },
     onError: (error) => {
@@ -86,9 +92,9 @@ const ConnectionsPage = () => {
       queryClient.invalidateQueries({
         queryKey: ["connections"],
       });
-      setGmailDialog({
+      setManageEmailConnectionDialog({
         isModalOpen: false,
-        type: "",
+        type: null,
       });
     },
     onError: (error) => {
@@ -156,9 +162,9 @@ const ConnectionsPage = () => {
           }
           onCreateConnection={() => api.user_connections.addGmailConnection()}
           onManageConnection={() => {
-            setGmailDialog({
+            setManageEmailConnectionDialog({
               isModalOpen: true,
-              type: "manage-connection",
+              type: "gmail",
             });
           }}
           isFetchingDetails={isPending}
@@ -178,9 +184,9 @@ const ConnectionsPage = () => {
           }
           onCreateConnection={() => api.user_connections.addOutlookConnection()}
           onManageConnection={() => {
-            setGmailDialog({
+            setManageEmailConnectionDialog({
               isModalOpen: true,
-              type: "manage-connection",
+              type: "outlook",
             });
           }}
           isFetchingDetails={isPending}
@@ -303,12 +309,13 @@ const ConnectionsPage = () => {
       {/* Manage Connections Modal */}
       <ManageConnectionModal
         isModalOpen={
-          gmailDialog.isModalOpen && gmailDialog.type === "manage-connection"
+          manageEmailConnectionDialog.isModalOpen &&
+          manageEmailConnectionDialog.type === "gmail"
         }
         onCloseModal={() =>
-          setGmailDialog({
+          setManageEmailConnectionDialog({
             isModalOpen: false,
-            type: "",
+            type: null,
           })
         }
         type="gmail"
@@ -323,12 +330,13 @@ const ConnectionsPage = () => {
       />
       <ManageConnectionModal
         isModalOpen={
-          gmailDialog.isModalOpen && gmailDialog.type === "manage-connection"
+          manageEmailConnectionDialog.isModalOpen &&
+          manageEmailConnectionDialog.type === "outlook"
         }
         onCloseModal={() =>
-          setGmailDialog({
+          setManageEmailConnectionDialog({
             isModalOpen: false,
-            type: "",
+            type: null,
           })
         }
         type="outlook"
