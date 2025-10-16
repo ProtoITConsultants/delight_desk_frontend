@@ -62,7 +62,7 @@ export function AppSidebar() {
                       <SidebarMenuButton
                         className={cn(
                           isAiAgentsActive
-                            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
+                            ? "text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                           "w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]"
                         )}

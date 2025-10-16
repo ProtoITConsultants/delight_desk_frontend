@@ -32,8 +32,12 @@ const AI_AGENTS_NAVIGATION = [
   { name: "Product Agent", href: "/product-agent", icon: Brain },
   { name: "Returns Agent", href: "/returns-agent", icon: Package },
   { name: "Promo Code Agent", href: "/promo-code-agent", icon: Tag },
-  { name: "Address Change Agent", href: "/address-change", icon: MapPin },
-  { name: "Cancellation Agent", href: "/order-cancellations", icon: Package },
+  { name: "Address Change Agent", href: "/address-change-agent", icon: MapPin },
+  {
+    name: "Cancellation Agent",
+    href: "/order-cancellation-agent",
+    icon: Package,
+  },
 ];
 
 // Settings navigation - setup/admin/maintenance features

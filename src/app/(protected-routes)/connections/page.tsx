@@ -6,13 +6,23 @@ import ShipStationConnectionalModal from "@/modules/protected-routes/connections
 import { Store, Mail, Info } from "lucide-react";
 import WooCommerceConnectionModal from "@/modules/protected-routes/connections-page/components/modals/WooCommerceConnectionModal";
 import ManageConnectionModal from "@/modules/protected-routes/connections-page/components/modals/ManageConnectionModal";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { api } from "@/lib/api";
 
 type connectionModalType = {
   isModalOpen: boolean;
   type: "create-connection" | "manage-connection" | "";
 };
 
+type emailConnectionModalType = {
+  isModalOpen: boolean;
+  type: "gmail" | "outlook" | null;
+};
+
 const ConnectionsPage = () => {
+  // Hooks
+  const queryClient = useQueryClient();
   // Local States
   const [shipstationDialog, setShipstationDialog] =
     useState<connectionModalType>({
@@ -25,10 +35,75 @@ const ConnectionsPage = () => {
       type: "",
     });
 
-  const [gmailDialog, setGmailDialog] = useState<connectionModalType>({
-    isModalOpen: false,
-    type: "",
+  const [manageEmailConnectionDialog, setManageEmailConnectionDialog] =
+    useState<emailConnectionModalType>({
+      isModalOpen: false,
+      type: null,
+    });
+
+  // Get User Connections - Query
+  const {
+    data: connectionsData,
+    isError,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["connections"],
+    queryFn: () => {
+      return api.user_connections.getUserConnections();
+    },
   });
+
+  if (isError) {
+    toast.error("Error fetching connections", {
+      description: error.message || "",
+    });
+  }
+
+  // Disconnect Gmail
+  const disconnectGmailMutation = useMutation({
+    mutationFn: () => api.user_connections.disconnectGmailAccount(),
+    onSuccess: () => {
+      toast.success("Account Disconnected!", {
+        description: "Gmail account disconnected successfully!",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["connections"],
+      });
+      setManageEmailConnectionDialog({
+        isModalOpen: false,
+        type: null,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to disconnect account!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
+
+  // Disconnect Outlook
+  const disconnectOutlookMutation = useMutation({
+    mutationFn: () => api.user_connections.disconnectOutlookAccount(),
+    onSuccess: () => {
+      toast.success("Account Disconnected!", {
+        description: "Outlook account disconnected successfully!",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["connections"],
+      });
+      setManageEmailConnectionDialog({
+        isModalOpen: false,
+        type: null,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to disconnect account!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
@@ -49,7 +124,9 @@ const ConnectionsPage = () => {
               <Store className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
           }
-          connectionEstablished={true}
+          connectionEstablished={
+            connectionsData?.wooCommerceConnection ? true : false
+          }
           onCreateConnection={() =>
             setWooCommerceDialog({
               isModalOpen: true,
@@ -62,6 +139,7 @@ const ConnectionsPage = () => {
               type: "manage-connection",
             });
           }}
+          isFetchingDetails={isPending}
         />
       </ConnectionCard.Root>
       {/* Email Connections */}
@@ -79,20 +157,19 @@ const ConnectionsPage = () => {
               <Mail className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
           }
-          connectionEstablished={true}
-          onCreateConnection={() =>
-            setGmailDialog({
-              isModalOpen: true,
-              type: "create-connection",
-            })
+          connectionEstablished={
+            connectionsData?.gmailConnection ? true : false
           }
+          onCreateConnection={() => api.user_connections.addGmailConnection()}
           onManageConnection={() => {
-            setGmailDialog({
+            setManageEmailConnectionDialog({
               isModalOpen: true,
-              type: "manage-connection",
+              type: "gmail",
             });
           }}
-        />{" "}
+          isFetchingDetails={isPending}
+          disabled={connectionsData?.outlookConnection ? true : false}
+        />
         {/* Outlook Connection */}
         <ConnectionCard.Item
           title="Outlook"
@@ -102,19 +179,18 @@ const ConnectionsPage = () => {
               <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
           }
-          connectionEstablished={false}
-          onCreateConnection={() =>
-            setGmailDialog({
-              isModalOpen: true,
-              type: "create-connection",
-            })
+          connectionEstablished={
+            connectionsData?.outlookConnection ? true : false
           }
+          onCreateConnection={() => api.user_connections.addOutlookConnection()}
           onManageConnection={() => {
-            setGmailDialog({
+            setManageEmailConnectionDialog({
               isModalOpen: true,
-              type: "manage-connection",
+              type: "outlook",
             });
           }}
+          isFetchingDetails={isPending}
+          disabled={connectionsData?.gmailConnection ? true : false}
         />
       </ConnectionCard.Root>
       {/* Fulfillment Integration */}
@@ -142,9 +218,12 @@ const ConnectionsPage = () => {
               </svg>
             </div>
           }
-          connectionEstablished={false}
+          connectionEstablished={
+            connectionsData?.shipbobConnection ? true : false
+          }
           onCreateConnection={() => {}}
           onManageConnection={() => {}}
+          isFetchingDetails={isPending}
         />
         {/* Shipstation Connection */}
         <ConnectionCard.Item
@@ -161,7 +240,9 @@ const ConnectionsPage = () => {
               </svg>
             </div>
           }
-          connectionEstablished={false}
+          connectionEstablished={
+            connectionsData?.shipstationConnection ? true : false
+          }
           onCreateConnection={() =>
             setShipstationDialog({
               isModalOpen: true,
@@ -174,6 +255,7 @@ const ConnectionsPage = () => {
               type: "manage-connection",
             })
           }
+          isFetchingDetails={isPending}
         />
 
         {/* Callout for users without ShipBob/Shipstation */}
@@ -227,19 +309,45 @@ const ConnectionsPage = () => {
       {/* Manage Connections Modal */}
       <ManageConnectionModal
         isModalOpen={
-          gmailDialog.isModalOpen && gmailDialog.type === "manage-connection"
+          manageEmailConnectionDialog.isModalOpen &&
+          manageEmailConnectionDialog.type === "gmail"
         }
         onCloseModal={() =>
-          setGmailDialog({
+          setManageEmailConnectionDialog({
             isModalOpen: false,
-            type: "",
+            type: null,
           })
         }
         type="gmail"
-        status="active"
-        tokenStatus="valid"
-        lastSynced="1 hour ago"
-        email="rcmartin2525@gmail"
+        status={
+          connectionsData?.gmailConnection?.status === "connected"
+            ? "active"
+            : "inactive"
+        }
+        email={connectionsData?.gmailConnection?.email}
+        onDisconnectAccount={() => disconnectGmailMutation.mutate()}
+        isDisconnecting={disconnectGmailMutation.isPending}
+      />
+      <ManageConnectionModal
+        isModalOpen={
+          manageEmailConnectionDialog.isModalOpen &&
+          manageEmailConnectionDialog.type === "outlook"
+        }
+        onCloseModal={() =>
+          setManageEmailConnectionDialog({
+            isModalOpen: false,
+            type: null,
+          })
+        }
+        type="outlook"
+        status={
+          connectionsData?.outlookConnection?.status === "connected"
+            ? "active"
+            : "inactive"
+        }
+        email={connectionsData?.outlookConnection?.email}
+        onDisconnectAccount={() => disconnectOutlookMutation.mutate()}
+        isDisconnecting={disconnectOutlookMutation.isPending}
       />
       {/* For Now I would have two separate Modals for each connection */}
       <ManageConnectionModal
@@ -256,7 +364,8 @@ const ConnectionsPage = () => {
         type="wooCommerce"
         status="active"
         storeURL="https://example.com"
-        wooCommerceConnectionType="api-keys"
+        onDisconnectAccount={() => {}}
+        isDisconnecting={false}
       />
     </div>
   );

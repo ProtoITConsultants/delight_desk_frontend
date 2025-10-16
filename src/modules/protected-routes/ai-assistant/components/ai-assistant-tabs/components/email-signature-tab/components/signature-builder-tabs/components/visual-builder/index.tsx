@@ -27,8 +27,13 @@ import { Separator } from "@/components/ui/separator";
 import FileUploader from "@/modules/core/components/file-uploader";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import React, { useEffect } from "react";
+import { useSignatureBuilder } from "../../../../utils/context/signature-builder-context";
+import { generateSignaturePreview } from "../../../../utils/services/generateSignaturePreview";
 
 const VisualSignatureBuilder = () => {
+  const { setSignatureHtml } = useSignatureBuilder();
+
   const form = useForm({
     resolver: zodResolver(VISUAL_BUILDER_FORM_SCHEMA),
     defaultValues: {
@@ -49,6 +54,14 @@ const VisualSignatureBuilder = () => {
   const isUploading = null;
 
   const onSubmit = () => {};
+
+  const values = form.watch();
+
+  useEffect(() => {
+    const preview = generateSignaturePreview(values);
+
+    setSignatureHtml(preview);
+  }, [values, setSignatureHtml]);
 
   return (
     <Form {...form}>
@@ -198,10 +211,13 @@ const VisualSignatureBuilder = () => {
                   {/* Photo Management When Exists */}
                   {!field.value ? (
                     <FileUploader
-                      maxFileSize={2097152} // 2MB
-                      onGetUploadParameters={() => {}}
-                      onComplete={() => {}}
-                      buttonClassName="w-full"
+                      triggerClassName="w-full"
+                      fileType="image"
+                      dialogHeading="Upload Profile Photo"
+                      dialogDescription="This will appear in your email signature"
+                      onSaveSelectedFile={(file) => {
+                        field.onChange(file);
+                      }}
                     >
                       <div className="flex items-center gap-2">
                         <Camera className="h-4 w-4" />
@@ -235,16 +251,19 @@ const VisualSignatureBuilder = () => {
 
                       <div className="flex gap-2">
                         <FileUploader
-                          maxFileSize={2097152} // 2MB
-                          onGetUploadParameters={() => {}}
-                          onComplete={() => {}}
-                          buttonClassName="flex-1"
+                          triggerClassName="w-full"
+                          fileType="image"
+                          dialogHeading="Upload Profile Photo"
+                          dialogDescription="This will appear in your email signature"
+                          onSaveSelectedFile={(file) => {
+                            field.onChange(file);
+                          }}
                         >
-                          <div className="flex items-center justify-center gap-2">
+                          <div className="flex items-center gap-2">
                             <Camera className="h-4 w-4" />
                             {isUploading === "photo"
                               ? "Uploading..."
-                              : "Replace Photo"}
+                              : "Upload Profile Photo"}
                           </div>
                         </FileUploader>
 

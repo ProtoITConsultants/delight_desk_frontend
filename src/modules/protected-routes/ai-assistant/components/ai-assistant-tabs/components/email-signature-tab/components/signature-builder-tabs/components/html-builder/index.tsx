@@ -14,8 +14,12 @@ import { HTML_BUILDER_FORM_SCHEMA } from "../../schema/html-builder";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import React from "react";
+import { useSignatureBuilder } from "../../../../utils/context/signature-builder-context";
 
 const HTMLSignatureBuilder = () => {
+  const { setSignatureHtml } = useSignatureBuilder();
+
   const form = useForm({
     resolver: zodResolver(HTML_BUILDER_FORM_SCHEMA),
     defaultValues: {
@@ -23,11 +27,19 @@ const HTMLSignatureBuilder = () => {
     },
   });
 
+  // watch form changes
+  const htmlContent = form.watch("htmlContent");
+
   const onSubmit = () => {};
 
   const saveUserSignature = {
     isPending: true,
   };
+
+  // update preview whenever textarea changes
+  React.useEffect(() => {
+    setSignatureHtml(htmlContent || "");
+  }, [htmlContent, setSignatureHtml]);
 
   return (
     <Form {...form}>
