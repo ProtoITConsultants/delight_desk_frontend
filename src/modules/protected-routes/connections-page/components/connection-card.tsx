@@ -16,6 +16,7 @@ type CardItemProps = Omit<ConnectionCardProps, "children"> & {
   onCreateConnection: () => void;
   onManageConnection: () => void;
   isFetchingDetails: boolean; // When Fetching Connection Details
+  disabled?: boolean;
 };
 
 // Root Card Container
@@ -43,6 +44,7 @@ const Item = ({
   onCreateConnection,
   onManageConnection,
   isFetchingDetails,
+  disabled = false,
 }: CardItemProps) => (
   <div className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors space-y-3">
     {/* Content */}
@@ -95,8 +97,9 @@ const Item = ({
     ) : (
       <Button
         size="sm"
-        className="w-full h-9"
+        className="w-full h-9 disabled:hover:cursor-not-allowed"
         onClick={() => onCreateConnection()}
+        disabled={disabled}
       >
         Connect {title}
       </Button>
