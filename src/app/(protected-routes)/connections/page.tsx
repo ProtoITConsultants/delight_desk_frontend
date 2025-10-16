@@ -6,7 +6,7 @@ import ShipStationConnectionalModal from "@/modules/protected-routes/connections
 import { Store, Mail, Info } from "lucide-react";
 import WooCommerceConnectionModal from "@/modules/protected-routes/connections-page/components/modals/WooCommerceConnectionModal";
 import ManageConnectionModal from "@/modules/protected-routes/connections-page/components/modals/ManageConnectionModal";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 
@@ -16,6 +16,8 @@ type connectionModalType = {
 };
 
 const ConnectionsPage = () => {
+  // Hooks
+  const queryClient = useQueryClient();
   // Local States
   const [shipstationDialog, setShipstationDialog] =
     useState<connectionModalType>({
@@ -33,6 +35,7 @@ const ConnectionsPage = () => {
     type: "",
   });
 
+  // Get User Connections - Query
   const {
     data: connectionsData,
     isError,
@@ -50,6 +53,28 @@ const ConnectionsPage = () => {
       description: error.message || "",
     });
   }
+
+  // Disconnect Gmail
+  const disconnectGmailMutation = useMutation({
+    mutationFn: () => api.user_connections.disconnectGmailAccount(),
+    onSuccess: () => {
+      toast.success("Account Disconnected!", {
+        description: "Gmail account disconnected successfully!",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["connections"],
+      });
+      setGmailDialog({
+        isModalOpen: false,
+        type: "",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to disconnect account!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
@@ -108,10 +133,8 @@ const ConnectionsPage = () => {
             connectionsData?.gmailConnection ? true : false
           }
           onCreateConnection={() =>
-            setGmailDialog({
-              isModalOpen: true,
-              type: "create-connection",
-            })
+            (window.location.href =
+              "https://api.delightdesk.io/google-oauth/login")
           }
           onManageConnection={() => {
             setGmailDialog({
@@ -273,10 +296,14 @@ const ConnectionsPage = () => {
           })
         }
         type="gmail"
-        status="active"
-        tokenStatus="valid"
-        lastSynced="1 hour ago"
-        email="rcmartin2525@gmail"
+        status={
+          connectionsData?.gmailConnection?.status === "connected"
+            ? "active"
+            : "inactive"
+        }
+        email={connectionsData?.gmailConnection?.email}
+        onDisconnectAccount={() => disconnectGmailMutation.mutate()}
+        isDisconnecting={disconnectGmailMutation.isPending}
       />
       {/* For Now I would have two separate Modals for each connection */}
       <ManageConnectionModal
@@ -293,7 +320,8 @@ const ConnectionsPage = () => {
         type="wooCommerce"
         status="active"
         storeURL="https://example.com"
-        wooCommerceConnectionType="api-keys"
+        onDisconnectAccount={() => {}}
+        isDisconnecting={false}
       />
     </div>
   );

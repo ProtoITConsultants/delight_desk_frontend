@@ -12,8 +12,6 @@ import {
   Info,
   Mail,
   Package,
-  RefreshCw,
-  Shield,
   Store,
   Truck,
   Unlink,
@@ -25,12 +23,11 @@ type ManageConnectionModalProps = {
   type: "wooCommerce" | "gmail" | "outlook" | "shipbob" | "shipstation";
   status: "active" | "inactive";
   // WooCommerce Specific
-  wooCommerceConnectionType?: "oauth" | "api-keys";
   storeURL?: string;
-  // Used for Gmail, Outlook and WooCommerce
-  tokenStatus?: "valid" | "invalid";
-  lastSynced?: string;
+  // Email Specific
   email?: string;
+  onDisconnectAccount: () => void;
+  isDisconnecting: boolean;
 };
 
 const connectionIcons: Record<
@@ -48,27 +45,12 @@ const ManageConnectionModal = ({
   isModalOpen,
   onCloseModal,
   type,
-  wooCommerceConnectionType,
   storeURL,
   status,
-  tokenStatus,
-  lastSynced,
   email,
+  onDisconnectAccount,
+  isDisconnecting,
 }: ManageConnectionModalProps) => {
-  // TODO: Create Disconnect Mutation
-  const handleDisconnect = () => {};
-
-  // TODO: Create Refresh Token Mutation
-  const handleRefreshToken = () => {};
-
-  const refreshGmailMutation = {
-    isPending: false,
-  };
-
-  const disconnectGmailMutation = {
-    isPending: false,
-  };
-
   const Icon = connectionIcons[type];
 
   return (
@@ -119,79 +101,25 @@ const ManageConnectionModal = ({
               )}
               {/* Gmail and Outlook - Email and Last Sync */}
               {["gmail", "outlook"].includes(type) && (
-                <>
-                  {/* Email */}
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">
-                      Email:
-                    </span>
-                    <span className="font-medium">{email}</span>
-                  </div>
-                  {/* Last Synced */}
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">
-                      Last Sync:
-                    </span>
-                    <span className="font-medium">{lastSynced || "N/A"}</span>
-                  </div>
-                </>
-              )}
-              {/* Gmail, Outlook and WooCommerce - Token Validity Status */}
-              {(["gmail", "outlook"].includes(type) ||
-                (type === "wooCommerce" &&
-                  wooCommerceConnectionType === "oauth")) && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600 dark:text-gray-400">
-                    Token Status:
+                    Email:
                   </span>
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "rounded-full",
-                      tokenStatus === "valid"
-                        ? "text-green-600 border-green-300"
-                        : "text-gray-600 border-gray-300"
-                    )}
-                  >
-                    <Shield className="w-3 h-3" />
-                    {tokenStatus === "valid" ? "Valid" : "Invalid"}
-                  </Badge>
+                  <span className="font-medium">{email}</span>
                 </div>
               )}
             </div>
           </div>
           {/* Action Buttons */}
           <div className="flex flex-col gap-2">
-            {(["gmail", "outlook"].includes(type) ||
-              (type === "wooCommerce" &&
-                wooCommerceConnectionType === "oauth")) && (
-              <Button
-                variant="outline"
-                className="w-full justify-center items-center"
-                onClick={() => handleRefreshToken()}
-                //   disabled={refreshGmailMutation.isPending}
-              >
-                <RefreshCw
-                  className={`w-4 h-4 mr-2 ${
-                    refreshGmailMutation.isPending ? "animate-spin" : ""
-                  }`}
-                />
-                {refreshGmailMutation.isPending
-                  ? "Refreshing..."
-                  : "Refresh Token"}
-              </Button>
-            )}
-
             <Button
               variant="destructive"
               className="w-full justify-center items-center"
-              onClick={() => handleDisconnect()}
-              disabled={disconnectGmailMutation.isPending}
+              onClick={onDisconnectAccount}
+              disabled={isDisconnecting}
             >
               <Unlink className="w-4 h-4 mr-2" />
-              {disconnectGmailMutation.isPending
-                ? "Disconnecting..."
-                : "Disconnect Account"}
+              {isDisconnecting ? "Disconnecting..." : "Disconnect Account"}
             </Button>
           </div>
         </div>

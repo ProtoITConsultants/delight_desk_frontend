@@ -15,7 +15,7 @@ type CardItemProps = Omit<ConnectionCardProps, "children"> & {
   connectionEstablished: boolean;
   onCreateConnection: () => void;
   onManageConnection: () => void;
-  isFetchingDetails: boolean;
+  isFetchingDetails: boolean; // When Fetching Connection Details
 };
 
 // Root Card Container

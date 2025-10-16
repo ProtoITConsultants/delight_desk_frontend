@@ -1,7 +1,11 @@
 const GET_CONNECTIONS_URL = "/connections";
+const ADD_GMAIL_CONNECTION_URL = "/google-oauth/login";
+const DISCONNECT_GMAIL_CONNECTION_URL = "/google-oauth/disconnect";
 
 const USER_CONNECTIONS = {
   GET_CONNECTIONS_URL,
+  ADD_GMAIL_CONNECTION_URL,
+  DISCONNECT_GMAIL_CONNECTION_URL,
 };
 
 export default USER_CONNECTIONS;
