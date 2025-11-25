@@ -1,4 +1,4 @@
-const GET_CONNECTIONS_URL = "/connections";
+const GET_CONNECTIONS_URL = "/users/connections";
 // Gmail Connection
 const ADD_GMAIL_CONNECTION_URL = "/google-oauth/login";
 const DISCONNECT_GMAIL_CONNECTION_URL = "/google-oauth/disconnect";
