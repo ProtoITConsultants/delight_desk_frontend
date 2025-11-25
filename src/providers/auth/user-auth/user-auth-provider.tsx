@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect } from "react";
 import { toast } from "sonner";
-import { is } from "zod/v4/locales";
 
 type UserAuthContextType = {
   userData: AUTHENTICATE_USER_DTO_RESPONSE | undefined;
