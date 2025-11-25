@@ -8,13 +8,14 @@ import { useMutation } from "@tanstack/react-query";
 import AuthAPIs from "@/modules/auth/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useUserAuth } from "@/providers/auth/user-auth/user-auth-provider";
+import { Skeleton } from "../ui/skeleton";
 
 const DashboardNavbar = () => {
   // Toggle Sidebar as Drawer
   const { toggleSidebar } = useSidebar();
   const router = useRouter();
-
-  const isAdmin = true;
+  const { userData, isAuthenticating } = useUserAuth();
 
   const logout = useMutation({
     mutationFn: AuthAPIs.logout,
@@ -65,19 +66,23 @@ const DashboardNavbar = () => {
           {/* Right side navigation */}
           <div className="flex items-center gap-1">
             {/* Admin Button - Only visible to specific admin users */}
-            {isAdmin && (
-              <>
-                <Link
-                  href="/admin"
-                  className="flex items-center gap-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 h-9 rounded-md font-medium text-sm"
-                >
-                  <Shield className="h-4 w-4" />
-                  <span className="hidden sm:inline">Admin</span>
-                </Link>
+            {isAuthenticating ? (
+              <Skeleton className="w-20 h-9 rounded-md" />
+            ) : (
+              userData?.role === "admin" && (
+                <>
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 h-9 rounded-md font-medium text-sm"
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span className="hidden sm:inline">Admin</span>
+                  </Link>
 
-                {/* Separator */}
-                <div className="w-px h-6 bg-gray-300 mx-1"></div>
-              </>
+                  {/* Separator */}
+                  <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                </>
+              )
             )}
 
             {/* Get Help Button */}
