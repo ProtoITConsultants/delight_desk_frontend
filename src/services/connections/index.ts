@@ -4,6 +4,10 @@ import {
   GET_CONNECTION_RESPONSE,
 } from "./utils/get-connection-details";
 import USER_CONNECTIONS from "./constants";
+import {
+  WOOCOMMERCE_CONNECTION_THROUGH_OAUTH_PARAMS,
+  WOOCOMMERCE_CONNECTION_THROUGH_SECRET_KEYS_PARAMS,
+} from "./utils/woocommerce-connection";
 
 export class UserConnections {
   // get user connections
@@ -46,6 +50,30 @@ export class UserConnections {
     const res = apiService.delete(
       USER_CONNECTIONS.DISCONNECT_OUTLOOK_CONNECTION_URL
     );
+    return res;
+  };
+
+  // ------------------------------
+  // WooCommerce Connection API Functions
+  // ------------------------------
+
+  // add WooCommerce connection - OAuth
+  addWooCommerceConnectionThroughOAuth = ({
+    storeUrl,
+  }: WOOCOMMERCE_CONNECTION_THROUGH_OAUTH_PARAMS) => {
+    return apiService.post(USER_CONNECTIONS.WOOCOMMERCE_OAUTH_URL, {
+      storeUrl,
+    });
+  };
+  // add WooCommerce connection - Secret Keys
+  addWooCommerceConnectionThroughSecretKeys = (
+    params: WOOCOMMERCE_CONNECTION_THROUGH_SECRET_KEYS_PARAMS
+  ) => {
+    return apiService.post(USER_CONNECTIONS.WOOCOMMERCE_API_URL, params);
+  };
+  // disconnect WooCommerce connection
+  disconnectWooCommerceAccount = async () => {
+    const res = apiService.delete(USER_CONNECTIONS.WOOCOMMERCE_DISCONNECT_URL);
     return res;
   };
 }
