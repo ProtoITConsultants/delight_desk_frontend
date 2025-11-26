@@ -1,8 +1,30 @@
+"use client";
+import AdminPageSkeleton from "@/modules/protected-routes/admin-dashboard/components/admin-page-skeleton";
 import SelectedUserPreview from "@/modules/protected-routes/admin-dashboard/components/selected-user-preview";
 import UsersList from "@/modules/protected-routes/admin-dashboard/components/users-list";
 import { UsersListProvider } from "@/modules/protected-routes/admin-dashboard/utils/hooks/use-users-list";
+import { useUserAuth } from "@/providers/auth/user-auth/user-auth-provider";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const AdminDashboardPage = () => {
+  const { userData, isAuthenticating, isAuthenticated } = useUserAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated && userData?.role !== "admin") {
+      toast.error("Unauthorized access!", {
+        description: "You can't access this page.",
+      });
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, userData, router]);
+
+  if (isAuthenticating) {
+    return <AdminPageSkeleton />;
+  }
+
   return (
     <div className="max-w-7xl mx-auto p-6 flex flex-col gap-6">
       {/* Header */}
