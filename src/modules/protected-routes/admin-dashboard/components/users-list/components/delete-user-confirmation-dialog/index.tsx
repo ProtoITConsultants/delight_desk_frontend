@@ -22,7 +22,7 @@ const DeleteUserConfirmationDialog = ({
   user: USER_DATA_TYPE_FOR_ADMIN_DTO;
 }) => {
   const queryClient = useQueryClient();
-  const { searchQuery } = useUsersList();
+  const { searchQuery, setSelectedUser } = useUsersList();
 
   const deleteUser = useMutation({
     mutationFn: () => api.admin_service.deleteSpecificUser({ userId: user.id }),
@@ -31,6 +31,7 @@ const DeleteUserConfirmationDialog = ({
       toast.success("Success!", {
         description: "User deleted successfully.",
       });
+      setSelectedUser(null);
     },
     onError: (error) => {
       toast.error("Failed to delete user!", {

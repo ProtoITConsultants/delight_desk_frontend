@@ -50,7 +50,7 @@ export const UsersListProvider: React.FC<{ children: React.ReactNode }> = ({
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
+  const { data, fetchNextPage, hasNextPage, isPending, isError, error } =
     useInfiniteQuery<
       GET_ALL_USERS_DTO_RESPONSE, // type of each page
       Error,
@@ -92,13 +92,12 @@ export const UsersListProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }
 
-  console.log("Data", data?.pages[0]?.users_data);
-
   return (
     <UsersListContext.Provider
       value={{
-        usersList: (data && data?.pages[0]?.users_data) || [],
-        isFetchingUsers: isLoading,
+        usersList:
+          (data && data?.pages.flatMap((page) => page.users_data)) || [],
+        isFetchingUsers: isPending,
         hasNextPage,
         fetchNextPage,
         searchQuery,
