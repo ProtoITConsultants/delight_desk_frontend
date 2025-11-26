@@ -53,7 +53,7 @@ const SelectedUserPreview = () => {
           <UserInfoItem
             type="text"
             label="Username"
-            value={user?.userName ?? ""}
+            value={`${user?.firstName} ${user?.lastName}` || ""}
           />
           {/* Email */}
           <UserInfoItem type="text" label="Email" value={user?.email ?? ""} />
@@ -61,7 +61,7 @@ const SelectedUserPreview = () => {
           <UserInfoItem
             type="date"
             label="Last Login"
-            value={user?.lastLogin ?? ""}
+            value={user?.lastLoginAt ?? ""}
           />
           {/* Status */}
           <div className="flex flex-col gap-1">
@@ -73,7 +73,9 @@ const SelectedUserPreview = () => {
           {/* Subscription Type */}
           <div className="flex flex-col gap-1">
             <Label className="text-sm font-medium">Subscription Plan</Label>
-            <Badge variant="outline">{user?.subscriptionPlan ?? "N/A"}</Badge>
+            <Badge variant="outline">
+              {user?.subscriptionPlanName ?? "N/A"}
+            </Badge>
           </div>
         </CardContent>
       </Card>
@@ -89,7 +91,7 @@ const SelectedUserPreview = () => {
               <span className="text-sm">Email Provider</span>
             </div>
             <Badge variant="outline">
-              {user?.connectedEmailProvider || "None"}
+              {user?.oauthAccount?.provider || "None"}
             </Badge>
           </div>
           <div className="flex items-center justify-between">
@@ -97,7 +99,9 @@ const SelectedUserPreview = () => {
               <ShoppingBag className="h-4 w-4" />
               <span className="text-sm">Store Platform</span>
             </div>
-            <Badge variant="outline">{user?.connectedStore || "None"}</Badge>
+            <Badge variant="outline">
+              {user?.storeConnection?.platform || "None"}
+            </Badge>
           </div>
         </CardContent>
       </Card>
