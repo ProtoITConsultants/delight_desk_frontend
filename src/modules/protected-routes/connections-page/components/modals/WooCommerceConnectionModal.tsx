@@ -8,8 +8,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAddWooCommerceStoreConnectionThroughOAuth } from "@/hooks/services/connections/woocommerce/add-store-connection-with-oauth/use-add-store-connection-with-oauth";
 import { useAddWooCommerceStoreConnectionThroughSecrets } from "@/hooks/services/connections/woocommerce/add-store-connection/use-add-woocommerce-store-connection";
-import { api } from "@/lib/api";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 // import { TimezoneSelect } from "../timezone-select";
@@ -26,6 +26,11 @@ const WooCommerceConnectionModal = ({
   // Hooks
   const { connectWooCommerceStore, isConnectingWooCommerceStore } =
     useAddWooCommerceStoreConnectionThroughSecrets();
+
+  const {
+    connectWooCommerceStoreWithOAuth,
+    isConnectingWooCommerceStoreWithOAuth,
+  } = useAddWooCommerceStoreConnectionThroughOAuth();
 
   const [wooConnectionMethod, setWooConnectionMethod] = useState("oauth");
   const [wooCommerceStoreURL, setWooCommerceStoreURL] = useState("");
@@ -171,12 +176,15 @@ const WooCommerceConnectionModal = ({
             {wooConnectionMethod === "oauth" ? (
               <Button
                 onClick={() =>
-                  api.user_connections.addWooCommerceConnectionThroughOAuth({
+                  connectWooCommerceStoreWithOAuth({
                     storeUrl: wooCommerceStoreURL,
                   })
                 }
                 className="w-full"
-                disabled={!wooCommerceStoreURL.trim()}
+                disabled={
+                  !wooCommerceStoreURL.trim() ||
+                  isConnectingWooCommerceStoreWithOAuth
+                }
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Connect with OAuth

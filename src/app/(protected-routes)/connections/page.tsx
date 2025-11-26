@@ -9,31 +9,30 @@ import ManageConnectionModal from "@/modules/protected-routes/connections-page/c
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
-
-type connectionModalType = {
-  isModalOpen: boolean;
-  type: "create-connection" | "manage-connection" | "";
-};
+import { useDisconnectWooCommerceStore } from "@/hooks/services/connections/woocommerce/disconnect-store/use-disconnect-woocommerce-store";
+import {
+  ConnectionsDialogsProvider,
+  useConnectionsDialogs,
+} from "@/providers/connections/connections-dialogs-provider";
 
 type emailConnectionModalType = {
   isModalOpen: boolean;
   type: "gmail" | "outlook" | null;
 };
 
-const ConnectionsPage = () => {
+const ConnectionsPageContent = () => {
   // Hooks
   const queryClient = useQueryClient();
+  const { disconnectWooCommerceStore, isRemovingWooCommerceStore } =
+    useDisconnectWooCommerceStore();
+  const {
+    wooCommerceDialog,
+    setWooCommerceDialog,
+    shipstationDialog,
+    setShipstationDialog,
+  } = useConnectionsDialogs();
+
   // Local States
-  const [shipstationDialog, setShipstationDialog] =
-    useState<connectionModalType>({
-      isModalOpen: false,
-      type: "",
-    });
-  const [wooCommerceDialog, setWooCommerceDialog] =
-    useState<connectionModalType>({
-      isModalOpen: false,
-      type: "",
-    });
 
   const [manageEmailConnectionDialog, setManageEmailConnectionDialog] =
     useState<emailConnectionModalType>({
@@ -363,11 +362,19 @@ const ConnectionsPage = () => {
         }
         type="wooCommerce"
         status="active"
-        storeURL="https://example.com"
-        onDisconnectAccount={() => {}}
-        isDisconnecting={false}
+        storeURL={connectionsData?.wooCommerceConnection?.storeUrl || "N/A"}
+        onDisconnectAccount={() => disconnectWooCommerceStore()}
+        isDisconnecting={isRemovingWooCommerceStore}
       />
     </div>
+  );
+};
+
+const ConnectionsPage = () => {
+  return (
+    <ConnectionsDialogsProvider>
+      <ConnectionsPageContent />
+    </ConnectionsDialogsProvider>
   );
 };
 

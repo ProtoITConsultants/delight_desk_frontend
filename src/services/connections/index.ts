@@ -6,6 +6,7 @@ import {
 import USER_CONNECTIONS from "./constants";
 import {
   WOOCOMMERCE_CONNECTION_THROUGH_OAUTH_PARAMS,
+  WOOCOMMERCE_CONNECTION_THROUGH_OAUTH_RESPONSE,
   WOOCOMMERCE_CONNECTION_THROUGH_SECRET_KEYS_PARAMS,
 } from "./utils/woocommerce-connection";
 
@@ -58,12 +59,20 @@ export class UserConnections {
   // ------------------------------
 
   // add WooCommerce connection - OAuth
-  addWooCommerceConnectionThroughOAuth = ({
+  addWooCommerceConnectionThroughOAuth = async ({
     storeUrl,
   }: WOOCOMMERCE_CONNECTION_THROUGH_OAUTH_PARAMS) => {
-    return apiService.post(USER_CONNECTIONS.WOOCOMMERCE_OAUTH_URL, {
-      storeUrl,
-    });
+    const res =
+      await apiService.post<WOOCOMMERCE_CONNECTION_THROUGH_OAUTH_RESPONSE>(
+        USER_CONNECTIONS.WOOCOMMERCE_OAUTH_URL,
+        {
+          storeUrl,
+        }
+      );
+
+    return {
+      redirectUrl: res.redirectUrl,
+    };
   };
   // add WooCommerce connection - Secret Keys
   addWooCommerceConnectionThroughSecretKeys = (

@@ -12,3 +12,6 @@ export type WOOCOMMERCE_CONNECTION_THROUGH_SECRET_KEYS_PARAMS =
   };
 
 // Response Types
+export type WOOCOMMERCE_CONNECTION_THROUGH_OAUTH_RESPONSE = {
+  redirectUrl: string;
+};
