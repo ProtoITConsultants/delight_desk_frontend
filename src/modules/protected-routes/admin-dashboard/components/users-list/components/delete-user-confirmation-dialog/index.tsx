@@ -9,14 +9,36 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { USER_TYPE } from "@/modules/protected-routes/admin-dashboard/utils/types";
+import { api } from "@/lib/api";
+import { useUsersList } from "@/modules/protected-routes/admin-dashboard/utils/hooks/use-users-list";
+import { USER_DATA_TYPE_FOR_ADMIN_DTO } from "@/services/admin/utils/common/types/user-data";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
-const DeleteUserConfirmationDialog = ({ user }: { user: USER_TYPE }) => {
-  // TODO: Create Delete User Mutation
-  const deleteUserMutation = {
-    isPending: false,
-  };
+const DeleteUserConfirmationDialog = ({
+  user,
+}: {
+  user: USER_DATA_TYPE_FOR_ADMIN_DTO;
+}) => {
+  const queryClient = useQueryClient();
+  const { searchQuery } = useUsersList();
+
+  const deleteUser = useMutation({
+    mutationFn: () => api.admin_service.deleteSpecificUser({ userId: user.id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users-data", searchQuery] });
+      toast.success("Success!", {
+        description: "User deleted successfully.",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete user!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -63,7 +85,7 @@ const DeleteUserConfirmationDialog = ({ user }: { user: USER_TYPE }) => {
               Email: {user?.email || "N/A"}
             </p>
             <p className="text-sm text-gray-600">
-              Subscription Plan: {user?.subscriptionPlan || "Free"}
+              Subscription Plan: {user?.subscriptionPlanName || "N/A"}
             </p>
             <p className="text-sm text-gray-600">
               Status: {user?.isActive ? "Active" : "Inactive"}
@@ -72,14 +94,16 @@ const DeleteUserConfirmationDialog = ({ user }: { user: USER_TYPE }) => {
         </div>
         <div className="flex justify-end gap-3">
           <DialogTrigger asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" disabled={deleteUser.isPending}>
+              Cancel
+            </Button>
           </DialogTrigger>
           <Button
-            onClick={() => {}}
+            onClick={() => deleteUser.mutate()}
             variant="destructive"
-            disabled={deleteUserMutation.isPending}
+            disabled={deleteUser.isPending}
           >
-            {deleteUserMutation.isPending ? "Deleting..." : "Delete User"}
+            {deleteUser.isPending ? "Deleting..." : "Delete User"}
           </Button>
         </div>
       </DialogContent>
