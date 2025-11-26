@@ -1,54 +1,33 @@
 "use client";
 import { createContext, useContext, useState } from "react";
-import { USER_TYPE } from "../types";
+import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  GET_ALL_USERS_DTO_RESPONSE,
+  GET_ALL_USERS_PARAMS,
+} from "@/services/admin/utils/get-all-users";
+import { api } from "@/lib/api";
+import { USER_DATA_TYPE_FOR_ADMIN_DTO } from "@/services/admin/utils/common/types/user-data";
+import { toast } from "sonner";
+
+const PAGE_LIMIT = 10;
 
 type UsersListContextType = {
-  usersList: USER_TYPE[];
-  filteredUsers: USER_TYPE[];
+  usersList: USER_DATA_TYPE_FOR_ADMIN_DTO[];
+  isFetchingUsers: boolean;
+  hasNextPage: boolean;
+  fetchNextPage: () => void;
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   selectedUser: string | null;
   setSelectedUser: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-// Dummy Data
-const UsersData: USER_TYPE[] = [
-  {
-    id: "1",
-    userName: "John Doe",
-    email: "jhon.doe@protogroup.co",
-    subscriptionPlan: "Basic",
-    isActive: false,
-    connectedEmailProvider: "gmail",
-    connectedStore: "woocommerce",
-    lastLogin: "2023-01-01T12:00:00.000Z",
-  },
-  {
-    id: "2",
-    userName: "Muhammad Babar",
-    email: "m.babar@protogroup.co",
-    subscriptionPlan: "Premium",
-    isActive: true,
-    connectedEmailProvider: "outlook",
-    connectedStore: null,
-    lastLogin: null,
-  },
-  {
-    id: "3",
-    userName: "Nabeel Khan",
-    email: "nabeel@protogroup.co",
-    subscriptionPlan: "Basic",
-    isActive: true,
-    connectedEmailProvider: null,
-    connectedStore: null,
-    lastLogin: null,
-  },
-];
-
 // Create context with default value
 const UsersListContext = createContext<UsersListContextType>({
   usersList: [],
-  filteredUsers: [],
+  isFetchingUsers: false,
+  hasNextPage: false,
+  fetchNextPage: () => {},
   searchQuery: "",
   setSearchQuery: () => {},
   selectedUser: null,
@@ -69,20 +48,58 @@ export const UsersListProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const filteredUsers = UsersData.filter((user) => {
-    return (
-      user.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+  const { data, fetchNextPage, hasNextPage, isPending, isError, error } =
+    useInfiniteQuery<
+      GET_ALL_USERS_DTO_RESPONSE, // type of each page
+      Error,
+      InfiniteData<GET_ALL_USERS_DTO_RESPONSE>, // can omit, let TS infer
+      readonly unknown[], // type of queryKey
+      GET_ALL_USERS_PARAMS // type of pageParam
+    >({
+      queryKey: ["users-data", searchQuery],
+      queryFn: async ({ pageParam }) => {
+        const params: GET_ALL_USERS_PARAMS = pageParam || {
+          page: 1,
+          limit: PAGE_LIMIT,
+          searchQuery,
+        };
+        const response = await api.admin_service.getAllUsers(params);
+        return response;
+      },
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.hasNext) {
+          return {
+            page: allPages.length + 1,
+            limit: PAGE_LIMIT,
+            searchQuery,
+          };
+        }
+        return undefined;
+      },
+      initialPageParam: {
+        page: 1,
+        limit: PAGE_LIMIT,
+        searchQuery,
+      },
+    });
+
+  if (isError) {
+    console.log("Error fetching data", isError);
+    toast.error("Failed to fetch users!", {
+      description: error?.message || "Something went wrong",
+    });
+  }
 
   return (
     <UsersListContext.Provider
       value={{
-        usersList: UsersData,
-        filteredUsers,
+        usersList:
+          (data && data?.pages.flatMap((page) => page.users_data)) || [],
+        isFetchingUsers: isPending,
+        hasNextPage,
+        fetchNextPage,
         searchQuery,
         setSearchQuery,
         selectedUser,

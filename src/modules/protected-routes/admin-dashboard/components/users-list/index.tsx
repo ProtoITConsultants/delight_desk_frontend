@@ -1,24 +1,21 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, UserPlus, Users } from "lucide-react";
+import { Search, Users } from "lucide-react";
 import { useUsersList } from "../../utils/hooks/use-users-list";
 import UserCard from "./components/user-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const UsersList = () => {
-  const { searchQuery, setSearchQuery, filteredUsers } = useUsersList();
-
-  const demoUserMutation = {
-    isPending: false,
-  };
+  const { searchQuery, setSearchQuery, usersList, isFetchingUsers } =
+    useUsersList();
 
   return (
     <Card className="pb-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="h-4 w-4" />
-          Users ({filteredUsers.length})
+          Users ({usersList.length})
         </CardTitle>
         <div className="flex flex-col gap-2 mt-2">
           <div className="relative">
@@ -30,7 +27,7 @@ const UsersList = () => {
               className="pl-10"
             />
           </div>
-          <Button
+          {/* <Button
             onClick={() => {}}
             disabled={demoUserMutation.isPending}
             size="sm"
@@ -48,16 +45,22 @@ const UsersList = () => {
                 Create New User
               </>
             )}
-          </Button>
+          </Button> */}
         </div>
       </CardHeader>
       {/* Users List */}
       <CardContent className="px-0 max-h-96 overflow-y-auto">
-        {filteredUsers.length < 1 ? (
+        {isFetchingUsers ? (
+          <div className="flex flex-col gap-2 px-6">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Skeleton key={index} className="h-12 w-full" />
+            ))}
+          </div>
+        ) : usersList.length < 1 ? (
           <div className="p-4 text-center text-gray-500">No users found</div>
         ) : (
           <div className="divide-y">
-            {filteredUsers.map((user) => (
+            {usersList.map((user) => (
               <UserCard key={user.id} {...user} />
             ))}
           </div>
