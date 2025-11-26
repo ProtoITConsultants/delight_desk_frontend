@@ -8,9 +8,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAddWooCommerceStoreConnectionThroughSecrets } from "@/hooks/services/connections/woocommerce/add-store-connection/use-add-woocommerce-store-connection";
+import { api } from "@/lib/api";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
-import { TimezoneSelect } from "../timezone-select";
+// import { TimezoneSelect } from "../timezone-select";
+
 type WooCommerceConnectionModalProps = {
   isModalOpen: boolean;
   onCloseModal: () => void;
@@ -20,16 +23,16 @@ const WooCommerceConnectionModal = ({
   isModalOpen,
   onCloseModal,
 }: WooCommerceConnectionModalProps) => {
-  const [wooCommerceStoreURL, setWooCommerceStoreURL] = useState("");
+  // Hooks
+  const { connectWooCommerceStore, isConnectingWooCommerceStore } =
+    useAddWooCommerceStoreConnectionThroughSecrets();
+
   const [wooConnectionMethod, setWooConnectionMethod] = useState("oauth");
+  const [wooCommerceStoreURL, setWooCommerceStoreURL] = useState("");
   const [wooApiKey, setWooApiKey] = useState("");
   const [wooApiSecret, setWooApiSecret] = useState("");
-  const [wooTimezone, setWooTimezone] = useState("America/New_York");
-  const timezoneDetected = false;
-
-  // TODO: Add Tanstack - Mutation here
-  const handleWooCommerceConnect = () => {};
-  const handleWooCommerceAPIConnect = () => {};
+  // const [wooTimezone, setWooTimezone] = useState("America/New_York");
+  // const timezoneDetected = false;
 
   return (
     <Dialog open={isModalOpen} onOpenChange={() => onCloseModal()}>
@@ -54,7 +57,7 @@ const WooCommerceConnectionModal = ({
           </div>
 
           {/* Timezone Select */}
-          <TimezoneSelect
+          {/* <TimezoneSelect
             label="Store Timezone"
             value={wooTimezone}
             onValueChange={setWooTimezone}
@@ -64,7 +67,7 @@ const WooCommerceConnectionModal = ({
                 ? "Auto-detected from your WooCommerce store"
                 : "Used for accurate order processing and delivery predictions"
             }
-          />
+          /> */}
 
           {/* Connection Method Selection */}
           <div className="space-y-2">
@@ -161,12 +164,17 @@ const WooCommerceConnectionModal = ({
               variant="outline"
               onClick={() => onCloseModal()}
               className="w-full"
+              disabled={isConnectingWooCommerceStore}
             >
               Cancel
             </Button>
             {wooConnectionMethod === "oauth" ? (
               <Button
-                onClick={handleWooCommerceConnect}
+                onClick={() =>
+                  api.user_connections.addWooCommerceConnectionThroughOAuth({
+                    storeUrl: wooCommerceStoreURL,
+                  })
+                }
                 className="w-full"
                 disabled={!wooCommerceStoreURL.trim()}
               >
@@ -175,9 +183,20 @@ const WooCommerceConnectionModal = ({
               </Button>
             ) : (
               <Button
-                onClick={handleWooCommerceAPIConnect}
+                onClick={() =>
+                  connectWooCommerceStore({
+                    storeUrl: wooCommerceStoreURL,
+                    consumerKey: wooApiKey,
+                    consumerSecret: wooApiSecret,
+                  })
+                }
                 className="w-full"
-                disabled={!wooApiKey.trim() || !wooApiSecret.trim()}
+                disabled={
+                  !wooApiKey.trim() ||
+                  !wooApiSecret.trim() ||
+                  !wooCommerceStoreURL.trim() ||
+                  isConnectingWooCommerceStore
+                }
               >
                 Connect with API Key
               </Button>
