@@ -9,6 +9,7 @@ import TestAiAgent from "@/modules/core/components/ai-agents/components/test-ai-
 import WhatAgentHandles from "@/modules/core/components/ai-agents/components/what-agent-handles";
 import AGENT_WORKFLOW_STEPS from "@/modules/core/components/ai-agents/constants/how-agent-works";
 import WHAT_AGENT_HANDLES from "@/modules/core/components/ai-agents/constants/what-agent-handles";
+import WoocommerceTrackingConfig from "@/modules/protected-routes/ai-agents/wismo-agent/woocommerce-tracking-config";
 import { Bot, Truck } from "lucide-react";
 import { useState } from "react";
 
@@ -16,6 +17,7 @@ const WismoAgentPage = () => {
   const [isAgentEnabled, setIsAgentEnabled] = useState(false);
   const [isAgentModerated, setIsAgentModerated] = useState(false);
   const [aiAgentTestQuery, setAiAgentTestQuery] = useState<string>("");
+  const [hasTrackingPlugin, setHasTrackingPlugin] = useState<boolean>(true);
 
   return (
     <AiAgentRoot>
@@ -28,6 +30,10 @@ const WismoAgentPage = () => {
         }
         title="WISMO Agent"
         description="Where Is My Order - Automate order status and shipping inquiries"
+      />
+      <WoocommerceTrackingConfig
+        hasTrackingPlugin={hasTrackingPlugin}
+        setHasTrackingPlugin={setHasTrackingPlugin}
       />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <AgentSettings
