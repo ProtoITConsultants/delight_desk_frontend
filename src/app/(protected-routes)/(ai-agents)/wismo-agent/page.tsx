@@ -9,7 +9,7 @@ import TestAiAgent from "@/modules/core/components/ai-agents/components/test-ai-
 import WhatAgentHandles from "@/modules/core/components/ai-agents/components/what-agent-handles";
 import AGENT_WORKFLOW_STEPS from "@/modules/core/components/ai-agents/constants/how-agent-works";
 import WHAT_AGENT_HANDLES from "@/modules/core/components/ai-agents/constants/what-agent-handles";
-import WoocommerceTrackingConfig from "@/modules/protected-routes/ai-agents/wismo-agent/woocommerce-tracking-config";
+import WoocommerceTrackingConfig from "@/modules/protected-routes/ai-agents/wismo-agent/components/woocommerce-tracking-config";
 import { Bot, Truck } from "lucide-react";
 import { useState } from "react";
 
