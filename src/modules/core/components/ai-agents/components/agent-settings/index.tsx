@@ -22,7 +22,7 @@ const AgentSettings = ({
   onChangeAgentConfiguration,
   agentNeedsModeration,
   onChangeAgentModeration,
-  isChangingAgentSettings = false,
+  disableAgentSettings = false,
 }: AI_AGENT_SETTINGS_PROPS) => {
   return (
     <Card>
@@ -50,7 +50,7 @@ const AgentSettings = ({
           <Switch
             checked={isAgentEnabled}
             onCheckedChange={onChangeAgentConfiguration}
-            disabled={isChangingAgentSettings}
+            disabled={disableAgentSettings}
             data-testid="switch-enable-agent"
           />
         </div>
@@ -68,7 +68,7 @@ const AgentSettings = ({
           <Switch
             checked={agentNeedsModeration}
             onCheckedChange={onChangeAgentModeration}
-            disabled={isChangingAgentSettings || !isAgentEnabled}
+            disabled={disableAgentSettings || !isAgentEnabled}
             data-testid="switch-requires-moderation"
           />
         </div>
