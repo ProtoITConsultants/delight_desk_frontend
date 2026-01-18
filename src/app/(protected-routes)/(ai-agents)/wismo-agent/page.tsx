@@ -1,6 +1,8 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
+import { useWismoAgentTrackingBanner } from "@/hooks/services/ai-agents/wismo-agent/use-wismo-agent-tracking-banner";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
@@ -9,13 +11,25 @@ import TestAiAgent from "@/modules/core/components/ai-agents/components/test-ai-
 import WhatAgentHandles from "@/modules/core/components/ai-agents/components/what-agent-handles";
 import AGENT_WORKFLOW_STEPS from "@/modules/core/components/ai-agents/constants/how-agent-works";
 import WHAT_AGENT_HANDLES from "@/modules/core/components/ai-agents/constants/what-agent-handles";
+import WoocommerceTrackingConfig from "@/modules/protected-routes/ai-agents/wismo-agent/components/woocommerce-tracking-config";
+import { useAiAgents } from "@/providers/ai-agents";
 import { Bot, Truck } from "lucide-react";
 import { useState } from "react";
 
 const WismoAgentPage = () => {
-  const [isAgentEnabled, setIsAgentEnabled] = useState(false);
-  const [isAgentModerated, setIsAgentModerated] = useState(false);
   const [aiAgentTestQuery, setAiAgentTestQuery] = useState<string>("");
+  const {
+    aiAgentsSettings: { wismo },
+  } = useAiAgents();
+
+  const { updateAIAgentSettings, isUpdating } =
+    useUpdateSpecificAIAgentSettings();
+  const {
+    shouldShowTrackingBanner,
+    updateHasTrackingPlugin,
+    hasTrackingPlugin,
+    setHasTrackingPlugin,
+  } = useWismoAgentTrackingBanner();
 
   return (
     <AiAgentRoot>
@@ -29,24 +43,53 @@ const WismoAgentPage = () => {
         title="WISMO Agent"
         description="Where Is My Order - Automate order status and shipping inquiries"
       />
+      {shouldShowTrackingBanner && (
+        <WoocommerceTrackingConfig
+          hasTrackingPlugin={hasTrackingPlugin}
+          setHasTrackingPlugin={setHasTrackingPlugin}
+        />
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <AgentSettings
           agentName="WISMO Agent"
           agentIcon={<Bot className="h-5 w-5" />}
           agentDescription="Configure how the WISMO Agent handles order status inquiries"
           enableAgentButtonDescription="Automatically respond to order status and shipping inquiries"
-          isAgentEnabled={isAgentEnabled}
+          isAgentEnabled={wismo.isEnabled}
           onChangeAgentConfiguration={() => {
-            if (isAgentEnabled) {
-              setIsAgentEnabled(false);
-              setIsAgentModerated(false);
+            if (wismo?.isEnabled) {
+              updateAIAgentSettings({
+                params: {
+                  agentId: wismo.id,
+                  isEnabled: false,
+                  requiresModeration: false,
+                },
+                onSuccessCallback: () => {
+                  updateHasTrackingPlugin(false);
+                },
+              });
             } else {
-              setIsAgentEnabled(true);
+              updateAIAgentSettings({
+                params: {
+                  agentId: wismo.id,
+                  isEnabled: true,
+                },
+                onSuccessCallback: () => {
+                  updateHasTrackingPlugin(true);
+                },
+              });
             }
           }}
-          agentNeedsModeration={isAgentModerated}
-          onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-          isChangingAgentSettings={false}
+          agentNeedsModeration={wismo.requiresModeration}
+          onChangeAgentModeration={() =>
+            updateAIAgentSettings({
+              params: {
+                agentId: wismo.id,
+                requiresModeration: !wismo.requiresModeration,
+              },
+            })
+          }
+          disableAgentSettings={isUpdating || !hasTrackingPlugin}
         />
         {/* Test AI Agent - Interactive Agent Preview */}
         <TestAiAgent
@@ -65,20 +108,9 @@ const WismoAgentPage = () => {
               </p>
             </div>
           }
-          onActionButtonClick={() => {}}
           isActionButtonDisabled={!aiAgentTestQuery.trim()}
-          isGeneratingResponse={false}
-          emailResponse={{
-            type: "ai-agent-test",
-            fromEmail: "hello@humanfoodbar.com",
-            subject: "Re: Order Status",
-            content: `<p>Your subscription has been paused! Reply back "reactivate" anytime and we will turn it back on for you.<br/><br/>Need help with something else? I'm here to assist with any subscription questions you might have.</p>`,
-            signature: {
-              agentName: "Kai",
-              agentTitle: "AI Customer Service Agent",
-              companyName: "Human Food Bar",
-            },
-          }}
+          query={aiAgentTestQuery}
+          responsePreviewType="ai-agent-test"
         />
       </div>
       {/* What Agent Handles */}
@@ -86,7 +118,7 @@ const WismoAgentPage = () => {
       {/* How Agent Works */}
       <HowAgentWorks
         agentWorkflowSteps={AGENT_WORKFLOW_STEPS.WISMO_AGENT}
-        agentRequiresModeration={isAgentModerated}
+        agentRequiresModeration={wismo.requiresModeration}
       />
     </AiAgentRoot>
   );

@@ -11,6 +11,7 @@ import { Loader2, Send, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import EmailResponseSamplePreview from "../email-response-preview";
+import { useTestWismoAgent } from "@/hooks/services/ai-agents/wismo-agent/use-test-wismo-agent";
 
 const TestAiAgent = ({
   className,
@@ -18,11 +19,12 @@ const TestAiAgent = ({
   contentClassName,
   InputField,
   actionButtonTitle,
-  onActionButtonClick,
   isActionButtonDisabled,
-  isGeneratingResponse,
-  emailResponse,
+  query,
+  responsePreviewType,
 }: TEST_AI_AGENT_PROPS) => {
+  const { isTesting, testWismoAgent, agentResponse } = useTestWismoAgent();
+
   return (
     <Card className={cn(className)}>
       <CardHeader>
@@ -42,12 +44,16 @@ const TestAiAgent = ({
         {InputField}
         {/* Action Button */}
         <Button
-          onClick={onActionButtonClick}
+          onClick={() =>
+            testWismoAgent({
+              query,
+            })
+          }
           disabled={isActionButtonDisabled}
           className="w-full"
           data-testid="button-generate-response"
         >
-          {isGeneratingResponse ? (
+          {isTesting ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               Generating Response...
@@ -60,7 +66,12 @@ const TestAiAgent = ({
           )}
         </Button>
         {/* AI Response Preview */}
-        {emailResponse && <EmailResponseSamplePreview {...emailResponse} />}
+        {agentResponse && (
+          <EmailResponseSamplePreview
+            {...agentResponse}
+            responsePreviewType={responsePreviewType}
+          />
+        )}
       </CardContent>
     </Card>
   );

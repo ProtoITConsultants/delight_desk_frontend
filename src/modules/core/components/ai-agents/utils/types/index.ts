@@ -1,3 +1,5 @@
+import { TestWismoAgentResponse } from "@/services/ai-agents/utils/wismo-agent";
+
 // Agent Page Root
 type AI_AGENT_ROOT_PROPS = {
   className?: string;
@@ -27,7 +29,7 @@ type AI_AGENT_SETTINGS_PROPS = {
   onChangeAgentConfiguration: () => void;
   agentNeedsModeration: boolean;
   onChangeAgentModeration: () => void;
-  isChangingAgentSettings: boolean;
+  disableAgentSettings: boolean;
 };
 
 // What Agent Handles
@@ -52,20 +54,10 @@ type HOW_AGENT_WORKS_PROPS = {
 };
 
 // AI Response Preview
-type AI_AGENT_RESPONSE_SIGNATURE_TYPE = {
-  agentName: string;
-  agentTitle: string;
-  companyName: string;
-};
-
-type AI_RESPONSE_PREVIEW_PROPS = {
+interface AI_RESPONSE_PREVIEW_PROPS extends TestWismoAgentResponse {
   className?: string;
-  type: "default" | "ai-agent-test";
-  fromEmail: string;
-  subject: string;
-  content: string;
-  signature: AI_AGENT_RESPONSE_SIGNATURE_TYPE;
-};
+  responsePreviewType: "default" | "ai-agent-test";
+}
 
 // Test AI Agent
 type TEST_AI_AGENT_PROPS = {
@@ -74,10 +66,9 @@ type TEST_AI_AGENT_PROPS = {
   contentClassName?: string;
   InputField: React.ReactNode;
   actionButtonTitle?: string;
-  onActionButtonClick: () => void;
   isActionButtonDisabled: boolean;
-  isGeneratingResponse: boolean;
-  emailResponse?: AI_RESPONSE_PREVIEW_PROPS;
+  query: string;
+  responsePreviewType: "default" | "ai-agent-test";
 };
 
 // Agent Training Data
