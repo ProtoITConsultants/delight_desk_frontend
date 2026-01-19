@@ -45,22 +45,22 @@ const SubscriptionAgentPage = () => {
           }}
           agentNeedsModeration={isAgentModerated}
           onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-          isChangingAgentSettings={false}
+          disableAgentSettings={false}
           settingsTip="Keep moderation enabled for billing-related requests to ensure accuracy and prevent unauthorized changes."
         />
         {/* Email Response Preview */}
         <EmailResponseSamplePreview
+          responsePreviewType="default"
+          from="hello@humanfoodbar.com"
+          to="hello@humanfoodbar.com"
           {...{
             type: "default",
             fromEmail: "hello@humanfoodbar.com",
             subject: "Re: Subscription Management",
-            content: `<p>Your subscription has been paused! Reply back "reactivate" anytime and we will turn it back on for you.<br/><br/>Need help with something else? I'm here to assist with any subscription questions you might have.</p>`,
-            signature: {
-              agentName: "Kai",
-              agentTitle: "AI Customer Service Agent",
-              companyName: "Human Food Bar",
-            },
+            body: `<p>Your subscription has been paused! Reply back "reactivate" anytime and we will turn it back on for you.<br/><br/>Need help with something else? I'm here to assist with any subscription questions you might have.</p>`,
+            signature: `Kai<br/>AI Customer Service Agent<br/>Human Food Bar`,
           }}
+          hasTracking={false}
         />
       </div>
 

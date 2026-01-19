@@ -42,20 +42,20 @@ const ReturnsAgentPage = () => {
           }}
           agentNeedsModeration={isAgentModerated}
           onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-          isChangingAgentSettings={false}
+          disableAgentSettings={false}
         />
         <EmailResponseSamplePreview
+          responsePreviewType="default"
+          from="hello@humanfoodbar.com"
+          to="hello@humanfoodbar.com"
           {...{
             type: "default",
             fromEmail: "hello@humanfoodbar.com",
             subject: "Re: Return Request Approved",
-            content: `<p>I understand you'd like to return your recent order.<br/><br/>Based on our return policy, your order #12345 is eligible for a full refund. Here's what you need to do:<br/><br/><ol><li>Pack your items in their original packaging</li><li>Print the prepaid return label: [Return Label Link]</li><li>Drop off at any USPS location</li></ol><br/><br/>Your refund will be processed within 3-5 business days once we receive your return.<br/><br/>Is there anything else I can help you with regarding your return?</p>`,
-            signature: {
-              agentName: "Kai",
-              agentTitle: "AI Customer Service Agent",
-              companyName: "Human Food Bar",
-            },
+            body: `<p>I understand you'd like to return your recent order.<br/><br/>Based on our return policy, your order #12345 is eligible for a full refund. Here's what you need to do:<br/><br/><ol><li>Pack your items in their original packaging</li><li>Print the prepaid return label: [Return Label Link]</li><li>Drop off at any USPS location</li></ol><br/><br/>Your refund will be processed within 3-5 business days once we receive your return.<br/><br/>Is there anything else I can help you with regarding your return?</p>`,
+            signature: `Kai<br/>AI Customer Service Agent<br/>Human Food Bar`,
           }}
+          hasTracking={false}
         />
       </div>
       <ReturnPolicyConfigRoot>
