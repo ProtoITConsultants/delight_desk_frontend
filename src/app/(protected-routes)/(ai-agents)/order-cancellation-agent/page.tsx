@@ -52,7 +52,7 @@ const OrderCancellationAgent = () => {
         }}
         agentNeedsModeration={isAgentModerated}
         onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-        isChangingAgentSettings={false}
+        disableAgentSettings={false}
       />
       {/* Active Workflows Section */}
       <AgentWorkflowRoot

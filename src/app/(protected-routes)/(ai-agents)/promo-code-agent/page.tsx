@@ -104,7 +104,7 @@ const PromoCodeAgentContent = () => {
         }}
         agentNeedsModeration={isAgentModerated}
         onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-        isChangingAgentSettings={false}
+        disableAgentSettings={false}
       />
 
       {PROMO_CODES_DATA.length === 0 ? (
@@ -123,17 +123,17 @@ const PromoCodeAgentContent = () => {
 
           {/* Email Response Preview */}
           <EmailResponseSamplePreview
+            responsePreviewType="default"
+            from="hello@humanfoodbar.com"
+            to="hello@humanfoodbar.com"
             {...{
               type: "default",
               fromEmail: "hello@humanfoodbar.com",
               subject: "Re: Promo Code Applied",
-              content: `<p>Great news! I found a promo code that applies to your order: SAVE20.<br/><br/>This will give you 20% off your purchase. The discount has been applied and you should see the savings reflected in your order total.<br/><br/>Is there anything else I can help you with regarding your order or our current promotions?</p>`,
-              signature: {
-                agentName: "Kai",
-                agentTitle: "AI Customer Service Agent",
-                companyName: "Human Food Bar",
-              },
+              body: `<p>Great news! I found a promo code that applies to your order: SAVE20.<br/><br/>This will give you 20% off your purchase. The discount has been applied and you should see the savings reflected in your order total.<br/><br/>Is there anything else I can help you with regarding your order or our current promotions?</p>`,
+              signature: `Kai<br/>AI Customer Service Agent<br/>Human Food Bar`,
             }}
+            hasTracking={false}
           />
         </div>
       )}

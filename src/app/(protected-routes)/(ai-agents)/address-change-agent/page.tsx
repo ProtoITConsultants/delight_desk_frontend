@@ -51,7 +51,7 @@ const AddressChangeAgent = () => {
         }}
         agentNeedsModeration={isAgentModerated}
         onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-        isChangingAgentSettings={false}
+        disableAgentSettings={false}
       />
 
       {/* Active Workflows Card */}

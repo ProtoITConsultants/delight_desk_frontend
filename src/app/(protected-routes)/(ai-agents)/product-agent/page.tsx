@@ -46,7 +46,7 @@ const ProductAgentPage = () => {
           }}
           agentNeedsModeration={isAgentModerated}
           onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-          isChangingAgentSettings={false}
+          disableAgentSettings={false}
         />
         {/* Test AI Agent - Interactive Agent Preview */}
         <TestAiAgent
@@ -61,20 +61,9 @@ const ProductAgentPage = () => {
               />
             </div>
           }
-          onActionButtonClick={() => {}}
           isActionButtonDisabled={!aiAgentTestQuery.trim()}
-          isGeneratingResponse={false}
-          emailResponse={{
-            type: "ai-agent-test",
-            fromEmail: "hello@humanfoodbar.com",
-            subject: "Re: Product Inquiry",
-            content: `<p>Hi there!<br/><br/>Thank you for reaching out with your inquiry about our product's use of organic materials. Currently, Human Food Bar uses high-quality ingredients that are naturally sourced and GMO-free.<br/><br/>Please feel free to reach out if you have any more questions or need further assistance.</p>`,
-            signature: {
-              agentName: "Kai",
-              agentTitle: "AI Customer Service Agent",
-              companyName: "Human Food Bar",
-            },
-          }}
+          query={aiAgentTestQuery}
+          responsePreviewType="ai-agent-test"
         />
       </div>
       {/* How Agent Works */}
