@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/select";
 import { AI_IDENTITY_FORM } from "../constants";
 import { Button } from "@/components/ui/button";
+import { useEffect, useRef } from "react";
+import { useAiTeamCenter } from "@/providers/ai-team-center";
 
 // AI Identity Form Validation Schema
 const aiIdentityFormSchema = z.object({
@@ -43,12 +45,16 @@ const aiIdentityFormSchema = z.object({
     message: "Company Name is required.",
   }),
   signatureFooter: z.string().optional(),
-  customSalutation: z.string().min(1, {
-    message: "Custom Salutation is required.",
-  }),
+  customSalutation: z.string().optional(),
 });
 
 const AiIdentity = () => {
+  const {
+    aiIdentity: aiIdentityData,
+    updateAiIdentity,
+    isLoading,
+  } = useAiTeamCenter();
+
   // React Hook Form
   const form = useForm({
     resolver: zodResolver(aiIdentityFormSchema),
@@ -59,15 +65,36 @@ const AiIdentity = () => {
       emailSalutation: "",
       companyName: "",
       signatureFooter: "",
-      customSalutation: "",
     },
   });
 
-  // TODO: Add Tanstack - Mutation here
-  const onSubmit = () => {};
+  const formValues = form.watch();
 
-  const saveConfigMutation = {
-    isPending: false,
+  const formRef = useRef(form);
+  useEffect(() => {
+    if (aiIdentityData) {
+      formRef.current.reset({
+        name: aiIdentityData.aiAgentName || "[Agent Name]",
+        businessType: aiIdentityData.businessType || "[Business Type]",
+        agentTitle: aiIdentityData.aiAgentTitle || "",
+        emailSalutation: aiIdentityData.emailSalutation || "[Email Salutation]",
+        companyName:
+          aiIdentityData.companyNameForEmailSignature || "[Your Company]",
+        signatureFooter: aiIdentityData.signatureFooter || "[Signature Footer]",
+        customSalutation: "",
+      });
+    }
+  }, [aiIdentityData]);
+
+  const onSubmit = () => {
+    updateAiIdentity({
+      aiAgentName: form.getValues("name"),
+      businessType: form.getValues("businessType"),
+      aiAgentTitle: form.getValues("agentTitle"),
+      emailSalutation: form.getValues("emailSalutation"),
+      companyNameForEmailSignature: form.getValues("companyName"),
+      signatureFooter: form.getValues("signatureFooter") || "",
+    });
   };
 
   return (
@@ -103,6 +130,7 @@ const AiIdentity = () => {
                     <FormMessage className="-mt-1 text-xs" />
                   </FormItem>
                 )}
+                disabled={isLoading}
               />
               {/* Business Type */}
               <FormField
@@ -140,6 +168,7 @@ const AiIdentity = () => {
                     </FormDescription>
                   </FormItem>
                 )}
+                disabled={isLoading}
               />
               {/* Agent Title */}
               <FormField
@@ -177,6 +206,7 @@ const AiIdentity = () => {
                     </FormDescription>
                   </FormItem>
                 )}
+                disabled={isLoading}
               />
               {/* Email Salutation (Greeting) */}
               <FormField
@@ -204,7 +234,7 @@ const AiIdentity = () => {
                               <SelectItem value={salutation} key={salutation}>
                                 {salutation}
                               </SelectItem>
-                            )
+                            ),
                           )}
                         </SelectContent>
                       </Select>
@@ -216,6 +246,7 @@ const AiIdentity = () => {
                     </FormDescription>
                   </FormItem>
                 )}
+                disabled={isLoading}
               />
               {/* Signature Company Name */}
               <FormField
@@ -243,6 +274,7 @@ const AiIdentity = () => {
                     </FormDescription>
                   </FormItem>
                 )}
+                disabled={isLoading}
               />
               {/* Signature Footer */}
               <FormField
@@ -274,14 +306,15 @@ const AiIdentity = () => {
                     </div>
                   </FormItem>
                 )}
+                disabled={isLoading}
               />
 
               <Button
-                onClick={() => {}}
-                disabled={saveConfigMutation.isPending}
+                type="submit"
+                disabled={isLoading}
                 className="flex items-center gap-2"
               >
-                {saveConfigMutation.isPending ? (
+                {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Saving...
@@ -297,23 +330,18 @@ const AiIdentity = () => {
           </Form>
           {/* Name Generator */}
           <AiTrainingTab.NameGenerator
-            aiAgentName={form.getValues().name}
+            aiAgentName={formValues.name}
             setAiAgentName={(value) => form.setValue("name", value)}
           />
         </div>
         {/* Signature Preview */}
         <AiTrainingTab.SignaturePreview
-          aiAgentName={form.getValues().name}
-          salutation={form.getValues().emailSalutation || "Best regards"}
-          customSalutation={form.getValues().customSalutation}
-          aiAgentTitle={
-            form.getValues().agentTitle || "AI Customer Service Agent"
-          }
-          signatureCompanyName={form.getValues().companyName}
-          signatureFooter={
-            form.getValues().signatureFooter ||
-            "We use AI to solve customer problems faster. Reply 'Human' for immediate escalation."
-          }
+          aiAgentName={formValues.name}
+          salutation={formValues.emailSalutation}
+          customSalutation={formValues.customSalutation}
+          aiAgentTitle={formValues.agentTitle}
+          signatureCompanyName={formValues.companyName}
+          signatureFooter={formValues.signatureFooter}
         />
       </AiTrainingTab.Body>
     </AiTrainingTab.Root>

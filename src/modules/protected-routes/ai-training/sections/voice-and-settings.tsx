@@ -5,11 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
+import { useAiTeamCenter } from "@/providers/ai-team-center";
+import { BrandVoice } from "@/services/ai-training/types/ai-identity";
 
 type BrandSettings = {
-  brandVoice: "Friendly" | "Professional" | "Sophisticated" | "Custom";
+  brandVoice: BrandVoice;
   customVoice: string;
   useBusinessVerticalGuidance: boolean;
   loyalCustomerGreeting: boolean;
@@ -17,16 +19,16 @@ type BrandSettings = {
   customInstructions: string;
 };
 
-const BRAND_VOICES = [
-  "Friendly",
-  "Professional",
-  "Sophisticated",
-  "Custom",
-] as const;
+const BRAND_VOICES: BrandVoice[] = [
+  BrandVoice.Friendly,
+  BrandVoice.Professional,
+  BrandVoice.Sophisticated,
+  BrandVoice.Custom,
+];
 
 const VoiceAndSettings = () => {
   const [brandSettings, setBrandSettings] = useState<BrandSettings>({
-    brandVoice: "Professional",
+    brandVoice: BrandVoice.Professional,
     customVoice: "",
     allowEmojis: false,
     customInstructions: "",
@@ -34,9 +36,32 @@ const VoiceAndSettings = () => {
     loyalCustomerGreeting: false,
   });
 
-  const saveConfigMutation = {
-    isPending: false,
+  const { aiIdentity, updateAiIdentity, isLoading } = useAiTeamCenter();
+
+  useEffect(() => {
+    if (aiIdentity) {
+      setBrandSettings({
+        brandVoice: aiIdentity.brandVoice,
+        customVoice: aiIdentity.customBrandVoice,
+        allowEmojis: aiIdentity.allowEmojiInResponses,
+        customInstructions: aiIdentity.customInstructions ?? "",
+        useBusinessVerticalGuidance: aiIdentity.industrySpecificGuidance,
+        loyalCustomerGreeting: aiIdentity.thankLoyalCustomers,
+      });
+    }
+  }, [aiIdentity, setBrandSettings]);
+
+  const handleUpdateVoiceAndSetting = () => {
+    updateAiIdentity({
+      brandVoice: brandSettings.brandVoice,
+      customBrandVoice: brandSettings.customVoice,
+      customInstructions: brandSettings.customInstructions,
+      allowEmojiInResponses: brandSettings.allowEmojis,
+      industrySpecificGuidance: brandSettings.useBusinessVerticalGuidance,
+      thankLoyalCustomers: brandSettings.loyalCustomerGreeting,
+    });
   };
+
   return (
     <AiTrainingTab.Root>
       <AiTrainingTab.Header
@@ -63,13 +88,14 @@ const VoiceAndSettings = () => {
                   })
                 }
                 className="text-xs"
+                disabled={isLoading}
               >
                 {item}
               </Button>
             ))}
           </div>
 
-          {brandSettings.brandVoice === "Custom" && (
+          {brandSettings.brandVoice === BrandVoice.Custom && (
             <Input
               placeholder="Describe your custom brand voice (e.g. Warm and conversational like a trusted family doctor, always explaining things clearly without medical jargon)"
               value={brandSettings.customVoice}
@@ -79,6 +105,7 @@ const VoiceAndSettings = () => {
                   customVoice: e.target.value,
                 })
               }
+              disabled={isLoading}
             />
           )}
         </div>
@@ -106,6 +133,7 @@ const VoiceAndSettings = () => {
                 })
               }
               data-testid="toggle-business-guidance"
+              disabled={isLoading}
             />
           </div>
           <p className="text-xs text-gray-500">
@@ -135,6 +163,7 @@ const VoiceAndSettings = () => {
                   loyalCustomerGreeting: !brandSettings.loyalCustomerGreeting,
                 })
               }
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -158,6 +187,7 @@ const VoiceAndSettings = () => {
                   allowEmojis: !brandSettings.allowEmojis,
                 })
               }
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -179,6 +209,7 @@ const VoiceAndSettings = () => {
             }
             rows={4}
             className="resize-none h-30 overflow-auto placeholder:text-sm"
+            disabled={isLoading}
           />
           <p className="text-xs text-gray-500">
             These instructions will be applied to all AI-generated responses
@@ -187,11 +218,11 @@ const VoiceAndSettings = () => {
 
         {/* Submit Button */}
         <Button
-          onClick={() => {}}
-          disabled={saveConfigMutation.isPending}
+          onClick={() => handleUpdateVoiceAndSetting()}
+          disabled={isLoading}
           className="flex items-center gap-2"
         >
-          {saveConfigMutation.isPending ? (
+          {isLoading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
               Saving...
