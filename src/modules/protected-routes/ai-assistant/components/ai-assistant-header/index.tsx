@@ -1,11 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { AI_ASSISTANT_HEADER_TYPES } from "../../types/ai-assistant-header";
+import { useAiAssistant } from "@/providers/ai-assistant";
 import { ArrowUp, Clock } from "lucide-react";
 
-const AiAssistantHeader = ({
-  pendingEscalationItems,
-  highPriorityEscalationItems,
-}: AI_ASSISTANT_HEADER_TYPES) => {
+const AiAssistantHeader = () => {
+  const { escalationStats } = useAiAssistant();
+
   return (
     <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
       <div className="flex flex-col gap-1">
@@ -25,7 +24,7 @@ const AiAssistantHeader = ({
               <div>
                 <p className="text-sm font-medium text-gray-600">Pending</p>
                 <p className="text-xl font-bold text-gray-900">
-                  {pendingEscalationItems}
+                  {escalationStats?.byStatus.pending || 0}
                 </p>
               </div>
             </div>
@@ -43,7 +42,7 @@ const AiAssistantHeader = ({
                   High Priority
                 </p>
                 <p className="text-xl font-bold text-gray-900">
-                  {highPriorityEscalationItems}
+                  {escalationStats?.byPriority.high || 0}
                 </p>
               </div>
             </div>

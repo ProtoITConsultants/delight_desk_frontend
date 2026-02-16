@@ -1,21 +1,23 @@
 "use client";
-import { useEscalationEmails } from "../../utils/context/escalation-emails-filters";
+import { useAiAssistant } from "@/providers/ai-assistant";
 import EscalationEmailCard from "./components/email-card";
 import EscalationEmailsSkeleton from "./components/emails-skeleton";
 
 const EscalationEmailsList = () => {
-  const isPending = false;
-  const { FILTERED_EMAILS } = useEscalationEmails();
-  return isPending ? (
-    <EscalationEmailsSkeleton />
-  ) : FILTERED_EMAILS.length === 0 ? (
+  const { escalationList, isPending } = useAiAssistant();
+
+  if (isPending) {
+    return <EscalationEmailsSkeleton />;
+  }
+
+  return escalationList?.length === 0 ? (
     <div className="p-4 text-center text-gray-500">
       No escalated emails found
     </div>
   ) : (
     <div className="divide-y">
-      {FILTERED_EMAILS.map((email) => (
-        <EscalationEmailCard key={email.id} {...email} />
+      {escalationList?.map((escalation) => (
+        <EscalationEmailCard key={escalation.id} {...escalation} />
       ))}
     </div>
   );

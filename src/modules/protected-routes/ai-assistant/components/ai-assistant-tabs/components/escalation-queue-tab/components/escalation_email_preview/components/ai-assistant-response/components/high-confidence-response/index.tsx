@@ -5,17 +5,25 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Edit, Send, X } from "lucide-react";
-import { useState } from "react";
-import { useEscalationEmails } from "../../../../../escalation-emails-list/utils/context/escalation-emails-filters";
+import { FC, useEffect, useState } from "react";
+import { EscalationType } from "@/modules/protected-routes/ai-assistant/types/ai-assistant-header";
+import { useSendEscalationResponse } from "@/hooks/services/ai-assistant/use-send-escalation-response";
+import { useAiAssistant } from "@/providers/ai-assistant";
 
-const HighConfidenceResponse = () => {
-  const { setFeedbackDialogData } = useEscalationEmails();
+const HighConfidenceResponse: FC<EscalationType> = ({
+  id,
+  aiSuggestedResponseConfidence,
+  aiSuggestedResponse,
+}) => {
+  const { setFeedbackDialogData } = useAiAssistant();
+  const { sendEscalationResponse, isPending } = useSendEscalationResponse();
   const [isEditingResponse, setIsEditingResponse] = useState(false);
+  const [emailResponse, setEmailResponse] = useState("");
+  const [shouldIncludeSignature, setShouldIncludeSignature] = useState(true);
 
-  const selectedEmailDetails = {
-    id: 1,
-    aiConfidence: 0.8,
-  };
+  useEffect(() => {
+    setEmailResponse(aiSuggestedResponse || "");
+  }, [isEditingResponse, aiSuggestedResponse]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -28,14 +36,14 @@ const HighConfidenceResponse = () => {
           <Badge
             variant="outline"
             className={`text-xs ${
-              selectedEmailDetails.aiConfidence >= 0.8
+              aiSuggestedResponseConfidence >= 80
                 ? "bg-green-50 text-green-700 border-green-300"
-                : selectedEmailDetails.aiConfidence >= 0.6
-                ? "bg-yellow-50 text-yellow-700 border-yellow-300"
-                : "bg-red-50 text-red-700 border-red-300"
+                : aiSuggestedResponseConfidence >= 60
+                  ? "bg-yellow-50 text-yellow-700 border-yellow-300"
+                  : "bg-red-50 text-red-700 border-red-300"
             }`}
           >
-            {Math.round(selectedEmailDetails.aiConfidence * 100)}% confident
+            {Math.round(aiSuggestedResponseConfidence)}% confident
           </Badge>
         </div>
       </div>
@@ -44,6 +52,8 @@ const HighConfidenceResponse = () => {
       <Textarea
         className={cn("min-h-32", !isEditingResponse && "hidden")}
         placeholder="Edit the AI response..."
+        value={emailResponse}
+        onChange={(e) => setEmailResponse(e.target.value)}
       />
 
       {/* AI Response Actions */}
@@ -51,12 +61,14 @@ const HighConfidenceResponse = () => {
         {/* Include Email Signature */}
         <div className="flex items-center space-x-2">
           <Checkbox
-            id={`signature-${selectedEmailDetails.id}`}
-            checked={true}
-            onCheckedChange={() => {}}
+            id={`signature-${id}`}
+            checked={shouldIncludeSignature}
+            onCheckedChange={() =>
+              setShouldIncludeSignature(!shouldIncludeSignature)
+            }
           />
           <label
-            htmlFor={`signature-${selectedEmailDetails.id}`}
+            htmlFor={`signature-${id}`}
             className="text-xs text-gray-600 cursor-pointer"
           >
             Include email signature
@@ -66,8 +78,14 @@ const HighConfidenceResponse = () => {
         <div className="flex gap-2">
           <Button
             size="sm"
-            onClick={() => {}}
-            // disabled={approveResponseMutation.isPending}
+            onClick={() =>
+              sendEscalationResponse({
+                escalationId: id,
+                message: emailResponse,
+                includeEmailSignature: shouldIncludeSignature,
+              })
+            }
+            disabled={isPending}
             className="!h-9"
           >
             <Send className="h-3 w-3 mr-1" />
@@ -76,7 +94,12 @@ const HighConfidenceResponse = () => {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setIsEditingResponse(!isEditingResponse)}
+            onClick={() => {
+              if (isEditingResponse) {
+                setEmailResponse(aiSuggestedResponse || "");
+              }
+              setIsEditingResponse((prev) => !prev);
+            }}
             className="!h-9"
           >
             {isEditingResponse ? (
@@ -111,14 +134,10 @@ const HighConfidenceResponse = () => {
       {/* AI Generated Response */}
       <div className={cn("flex flex-col gap-3", isEditingResponse && "hidden")}>
         <div className="p-4 bg-blue-50 border-l-4 border-blue-400 rounded-md">
-          <p className="text-sm whitespace-pre-wrap text-gray-800">
-            Hello, Thank you for reaching out to us at Human Food Bar. We have
-            successfully paused your shipments as requested. Please feel free to
-            contact us whenever you&apos;re ready to resume, and we&apos;ll be
-            happy to assist you. If you have any other questions or need further
-            assistance, don&apos;t hesitate to let us know. Best regards,
-            Customer Service Team
-          </p>
+          <p
+            className="text-sm whitespace-pre-wrap text-gray-800"
+            dangerouslySetInnerHTML={{ __html: aiSuggestedResponse || "" }}
+          />
         </div>
         <div className="text-xs text-gray-500">
           💡 This suggestion is generated from your brand training data. Review

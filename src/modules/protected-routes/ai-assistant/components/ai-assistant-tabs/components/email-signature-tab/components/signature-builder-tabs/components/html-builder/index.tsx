@@ -16,9 +16,13 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { useSignatureBuilder } from "../../../../utils/context/signature-builder-context";
+import { useUpdateEmailSignature } from "@/hooks/services/ai-assistant/use-update-email-signature";
+import { useAiAssistant } from "@/providers/ai-assistant";
 
 const HTMLSignatureBuilder = () => {
   const { setSignatureHtml } = useSignatureBuilder();
+  const { emailSignature } = useAiAssistant();
+  const { updateEmailSignature, isPending } = useUpdateEmailSignature();
 
   const form = useForm({
     resolver: zodResolver(HTML_BUILDER_FORM_SCHEMA),
@@ -30,16 +34,26 @@ const HTMLSignatureBuilder = () => {
   // watch form changes
   const htmlContent = form.watch("htmlContent");
 
-  const onSubmit = () => {};
-
-  const saveUserSignature = {
-    isPending: true,
+  const onSubmit = () => {
+    updateEmailSignature({
+      type: "html",
+      signature: {
+        htmlSignature: htmlContent || "",
+      },
+    });
   };
 
   // update preview whenever textarea changes
   React.useEffect(() => {
     setSignatureHtml(htmlContent || "");
   }, [htmlContent, setSignatureHtml]);
+
+  React.useEffect(() => {
+    if (emailSignature?.html) {
+      form.setValue("htmlContent", emailSignature.html.htmlSignature || "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailSignature]);
 
   return (
     <Form {...form}>
@@ -64,12 +78,12 @@ const HTMLSignatureBuilder = () => {
               </FormDescription>
             </FormItem>
           )}
-          disabled={saveUserSignature.isPending}
+          disabled={isPending}
         />
 
         <Separator />
 
-        <Button onClick={() => {}} className="w-full">
+        <Button disabled={isPending || !htmlContent} className="w-full">
           Save Email Signature
         </Button>
       </form>

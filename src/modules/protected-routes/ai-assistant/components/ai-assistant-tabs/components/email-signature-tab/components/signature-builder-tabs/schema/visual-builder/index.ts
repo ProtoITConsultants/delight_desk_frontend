@@ -8,5 +8,5 @@ export const VISUAL_BUILDER_FORM_SCHEMA = z.object({
   companyUrl: z.string().optional(),
   email: z.string().optional(),
   phone: z.string().optional(),
-  photoUrl: z.string().optional(),
+  // photoUrl: z.string().optional(),
 });

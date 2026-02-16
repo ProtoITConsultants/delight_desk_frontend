@@ -5,7 +5,6 @@ import { VISUAL_BUILDER_FORM_SCHEMA } from "../../schema/visual-builder";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -13,26 +12,19 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import {
-  Building,
-  Camera,
-  Captions,
-  Globe,
-  Mail,
-  Phone,
-  User,
-  X,
-} from "lucide-react";
+import { Building, Captions, Globe, Mail, Phone, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import FileUploader from "@/modules/core/components/file-uploader";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import React, { useEffect } from "react";
 import { useSignatureBuilder } from "../../../../utils/context/signature-builder-context";
 import { generateSignaturePreview } from "../../../../utils/services/generateSignaturePreview";
+import { useAiAssistant } from "@/providers/ai-assistant";
+import { useUpdateEmailSignature } from "@/hooks/services/ai-assistant/use-update-email-signature";
 
 const VisualSignatureBuilder = () => {
   const { setSignatureHtml } = useSignatureBuilder();
+  const { emailSignature } = useAiAssistant();
+  const { updateEmailSignature, isPending } = useUpdateEmailSignature();
 
   const form = useForm({
     resolver: zodResolver(VISUAL_BUILDER_FORM_SCHEMA),
@@ -43,17 +35,24 @@ const VisualSignatureBuilder = () => {
       companyUrl: "",
       email: "",
       phone: "",
-      photoUrl: "",
     },
   });
 
-  const saveUserSignature = {
-    isPending: false,
+  const onSubmit = () => {
+    const values = form.getValues();
+
+    updateEmailSignature({
+      type: "structured",
+      signature: {
+        name: values.name || "",
+        title: values.title || "",
+        company: values.company || "",
+        companyUrl: values.companyUrl || "",
+        email: values.email || "",
+        phoneNumber: values.phone || "",
+      },
+    });
   };
-
-  const isUploading = null;
-
-  const onSubmit = () => {};
 
   const values = form.watch();
 
@@ -62,6 +61,20 @@ const VisualSignatureBuilder = () => {
 
     setSignatureHtml(preview);
   }, [values, setSignatureHtml]);
+
+  useEffect(() => {
+    if (emailSignature) {
+      form.reset({
+        name: emailSignature.structured.name || "",
+        title: emailSignature.structured.title || "",
+        company: emailSignature.structured.company || "",
+        companyUrl: emailSignature.structured.companyUrl || "",
+        email: emailSignature.structured.email || "",
+        phone: emailSignature.structured.phoneNumber || "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailSignature]);
 
   return (
     <Form {...form}>
@@ -83,7 +96,7 @@ const VisualSignatureBuilder = () => {
                 <FormMessage />
               </FormItem>
             )}
-            disabled={saveUserSignature.isPending}
+            disabled={isPending}
           />
           <FormField
             control={form.control}
@@ -104,7 +117,7 @@ const VisualSignatureBuilder = () => {
                 <FormMessage />
               </FormItem>
             )}
-            disabled={saveUserSignature.isPending}
+            disabled={isPending}
           />
         </div>
         {/* Company Information */}
@@ -128,7 +141,7 @@ const VisualSignatureBuilder = () => {
                 <FormMessage />
               </FormItem>
             )}
-            disabled={saveUserSignature.isPending}
+            disabled={isPending}
           />
           <FormField
             control={form.control}
@@ -149,7 +162,7 @@ const VisualSignatureBuilder = () => {
                 <FormMessage />
               </FormItem>
             )}
-            disabled={saveUserSignature.isPending}
+            disabled={isPending}
           />
         </div>
         {/* Contact Information */}
@@ -173,7 +186,7 @@ const VisualSignatureBuilder = () => {
                 <FormMessage />
               </FormItem>
             )}
-            disabled={saveUserSignature.isPending}
+            disabled={isPending}
           />
           <FormField
             control={form.control}
@@ -194,12 +207,12 @@ const VisualSignatureBuilder = () => {
                 <FormMessage />
               </FormItem>
             )}
-            disabled={saveUserSignature.isPending}
+            disabled={isPending}
           />
         </div>
         <Separator />
         {/* Profile Picture */}
-        <div className="space-y-4">
+        {/* <div className="space-y-4">
           <h4 className="font-medium">Profile Photo (Optional)</h4>
           <FormField
             control={form.control}
@@ -208,7 +221,6 @@ const VisualSignatureBuilder = () => {
               <FormItem>
                 <FormLabel>Profile Photo</FormLabel>
                 <FormControl>
-                  {/* Photo Management When Exists */}
                   {!field.value ? (
                     <FileUploader
                       triggerClassName="w-full"
@@ -227,7 +239,6 @@ const VisualSignatureBuilder = () => {
                       </div>
                     </FileUploader>
                   ) : (
-                    // Photo Management When Photo Exists
                     <div className="space-y-3">
                       <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
                         <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -287,13 +298,13 @@ const VisualSignatureBuilder = () => {
                 </FormDescription>
               </FormItem>
             )}
-            disabled={saveUserSignature.isPending}
+            disabled={isPending}
           />
-        </div>
-
+        </div> 
         <Separator />
+        */}
 
-        <Button onClick={() => {}} className="w-full">
+        <Button disabled={isPending} className="w-full">
           Save Email Signature
         </Button>
       </form>

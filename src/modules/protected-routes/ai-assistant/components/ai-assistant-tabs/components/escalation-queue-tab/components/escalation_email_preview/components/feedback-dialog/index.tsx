@@ -7,17 +7,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useEscalationEmails } from "../../../escalation-emails-list/utils/context/escalation-emails-filters";
 import { Bot } from "lucide-react";
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useAiAssistant } from "@/providers/ai-assistant";
 
 // Feedback Dialog - If AI Generated Response is Rejected
 const EscalationEmailResponseFeedbackDialog = () => {
-  const { feedbackDialogData, setFeedbackDialogData } = useEscalationEmails();
+  const { feedbackDialogData, setFeedbackDialogData } = useAiAssistant();
   const [customRejectionReason, setCustomRejectionReason] =
     React.useState<string>("");
   const [rejectionReason, setRejectionReason] = React.useState<string>("");
