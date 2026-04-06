@@ -1,6 +1,7 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import { AiAgentTrainingData } from "@/modules/core/components/ai-agents/components/agent-training-data";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
@@ -8,12 +9,16 @@ import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent
 import HowAgentWorks from "@/modules/core/components/ai-agents/components/how-agent-works";
 import TestAiAgent from "@/modules/core/components/ai-agents/components/test-ai-agent";
 import AGENT_WORKFLOW_STEPS from "@/modules/core/components/ai-agents/constants/how-agent-works";
+import { useAiAgents } from "@/providers/ai-agents";
 import { Bot, Brain } from "lucide-react";
 import { useState } from "react";
 
 const ProductAgentPage = () => {
-  const [isAgentEnabled, setIsAgentEnabled] = useState(false);
-  const [isAgentModerated, setIsAgentModerated] = useState(false);
+  const {
+    aiAgentsSettings: { product },
+  } = useAiAgents();
+  const { updateAIAgentSettings, isUpdating } =
+    useUpdateSpecificAIAgentSettings();
   const [aiAgentTestQuery, setAiAgentTestQuery] = useState<string>("");
 
   return (
@@ -35,18 +40,35 @@ const ProductAgentPage = () => {
           agentIcon={<Bot className="h-5 w-5" />}
           agentDescription="Configure how the Product Agent handles product related inquiries."
           enableAgentButtonDescription="Automatically respond to product features, specifications, compatibility, and brand inquiries."
-          isAgentEnabled={isAgentEnabled}
+          isAgentEnabled={product.isEnabled}
           onChangeAgentConfiguration={() => {
-            if (isAgentEnabled) {
-              setIsAgentEnabled(false);
-              setIsAgentModerated(false);
+            if (product?.isEnabled) {
+              updateAIAgentSettings({
+                params: {
+                  agentId: product.id,
+                  isEnabled: false,
+                  requiresModeration: false,
+                },
+              });
             } else {
-              setIsAgentEnabled(true);
+              updateAIAgentSettings({
+                params: {
+                  agentId: product.id,
+                  isEnabled: true,
+                },
+              });
             }
           }}
-          agentNeedsModeration={isAgentModerated}
-          onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-          disableAgentSettings={false}
+          agentNeedsModeration={product.requiresModeration}
+          onChangeAgentModeration={() =>
+            updateAIAgentSettings({
+              params: {
+                agentId: product.id,
+                requiresModeration: !product.requiresModeration,
+              },
+            })
+          }
+          disableAgentSettings={isUpdating}
         />
         {/* Test AI Agent - Interactive Agent Preview */}
         <TestAiAgent
@@ -69,7 +91,7 @@ const ProductAgentPage = () => {
       {/* How Agent Works */}
       <HowAgentWorks
         agentWorkflowSteps={AGENT_WORKFLOW_STEPS.PRODUCT_AGENT}
-        agentRequiresModeration={isAgentModerated}
+        agentRequiresModeration={product.requiresModeration}
       />
       {/* Agent Training Data */}
       <AiAgentTrainingData

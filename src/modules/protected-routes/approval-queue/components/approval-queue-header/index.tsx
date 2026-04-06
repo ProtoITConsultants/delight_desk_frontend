@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { APPROVAL_QUEUE_HEADER_PROPS } from "../../utils/types/approval-queue-header";
+import { APPROVAL_QUEUE_HEADER_PROPS } from "../../utils/types";
 
 const ApprovalQueueHeader = ({
   className,

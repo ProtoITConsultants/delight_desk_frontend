@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
@@ -12,6 +13,7 @@ import {
   usePromoCodeDialog,
 } from "@/modules/protected-routes/ai-agents/promo-code-agent/utils/context";
 import { PROMO_CODE_TYPES } from "@/modules/protected-routes/ai-agents/promo-code-agent/utils/types/promo-code-card";
+import { useAiAgents } from "@/providers/ai-agents";
 import { Bot, Plus, Tag } from "lucide-react";
 import { useState } from "react";
 
@@ -44,8 +46,11 @@ const PromoCodeAgentContent = () => {
   const { form } = usePromoCodeDialog();
   const [isCreatePromoCodeDialogOpen, setIsCreatePromoCodeDialogOpen] =
     useState(false);
-  const [isAgentEnabled, setIsAgentEnabled] = useState(false);
-  const [isAgentModerated, setIsAgentModerated] = useState(false);
+  const {
+    aiAgentsSettings: { promo_code },
+  } = useAiAgents();
+  const { updateAIAgentSettings, isUpdating } =
+    useUpdateSpecificAIAgentSettings();
 
   return (
     <AiAgentRoot className="max-w-7xl">
@@ -93,18 +98,35 @@ const PromoCodeAgentContent = () => {
         agentIcon={<Bot className="h-5 w-5" />}
         agentDescription="Configure how the Promo Code Agent handles promo code related inquiries."
         enableAgentButtonDescription="Automatically respond to promo code and discount related inquiries."
-        isAgentEnabled={isAgentEnabled}
+        isAgentEnabled={promo_code.isEnabled}
         onChangeAgentConfiguration={() => {
-          if (isAgentEnabled) {
-            setIsAgentEnabled(false);
-            setIsAgentModerated(false);
+          if (promo_code?.isEnabled) {
+            updateAIAgentSettings({
+              params: {
+                agentId: promo_code.id,
+                isEnabled: false,
+                requiresModeration: false,
+              },
+            });
           } else {
-            setIsAgentEnabled(true);
+            updateAIAgentSettings({
+              params: {
+                agentId: promo_code.id,
+                isEnabled: true,
+              },
+            });
           }
         }}
-        agentNeedsModeration={isAgentModerated}
-        onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-        disableAgentSettings={false}
+        agentNeedsModeration={promo_code.requiresModeration}
+        onChangeAgentModeration={() =>
+          updateAIAgentSettings({
+            params: {
+              agentId: promo_code.id,
+              requiresModeration: !promo_code.requiresModeration,
+            },
+          })
+        }
+        disableAgentSettings={isUpdating}
       />
 
       {PROMO_CODES_DATA.length === 0 ? (

@@ -1,11 +1,19 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Bot } from "lucide-react";
-import { useEscalationEmails } from "../../../escalation-emails-list/utils/context/escalation-emails-filters";
 import HighConfidenceResponse from "./components/high-confidence-response";
 import LowConfidenceResponse from "./components/low-confidence-response";
+import { useAiAssistant } from "@/providers/ai-assistant";
 
 const AiAssistantResponse = () => {
-  const { selectedEmailDetails } = useEscalationEmails();
+  const { selectedEscalationDetails } = useAiAssistant();
+
+  const aiConfidence =
+    selectedEscalationDetails?.aiSuggestedResponseConfidence || 0;
+
+  if (!selectedEscalationDetails) {
+    return null;
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -19,14 +27,11 @@ const AiAssistantResponse = () => {
         </p>
       </CardHeader>
       <CardContent>
-        {selectedEmailDetails?.aiSuggestedResponse &&
-        selectedEmailDetails?.aiConfidence &&
-        selectedEmailDetails?.aiConfidence > 0.5 ? (
-          <HighConfidenceResponse />
-        ) : selectedEmailDetails?.aiConfidence &&
-          selectedEmailDetails?.aiConfidence <= 0.5 ? (
-          <LowConfidenceResponse />
-        ) : null}
+        {aiConfidence > 50 ? (
+          <HighConfidenceResponse {...selectedEscalationDetails} />
+        ) : (
+          <LowConfidenceResponse {...selectedEscalationDetails} />
+        )}
       </CardContent>
     </Card>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
@@ -8,12 +9,15 @@ import HowAgentWorks from "@/modules/core/components/ai-agents/components/how-ag
 import WhatAgentHandles from "@/modules/core/components/ai-agents/components/what-agent-handles";
 import AGENT_WORKFLOW_STEPS from "@/modules/core/components/ai-agents/constants/how-agent-works";
 import WHAT_AGENT_HANDLES from "@/modules/core/components/ai-agents/constants/what-agent-handles";
+import { useAiAgents } from "@/providers/ai-agents";
 import { Bot, CreditCard } from "lucide-react";
-import { useState } from "react";
 
 const SubscriptionAgentPage = () => {
-  const [isAgentEnabled, setIsAgentEnabled] = useState(false);
-  const [isAgentModerated, setIsAgentModerated] = useState(false);
+  const {
+    aiAgentsSettings: { subscription },
+  } = useAiAgents();
+  const { updateAIAgentSettings, isUpdating } =
+    useUpdateSpecificAIAgentSettings();
   return (
     <AiAgentRoot>
       {/* Header */}
@@ -34,18 +38,35 @@ const SubscriptionAgentPage = () => {
           agentIcon={<Bot className="h-5 w-5" />}
           agentDescription="Configure how the Subscription Agent handles billing and plan inquiries."
           enableAgentButtonDescription="Automatically respond to billing and subscription change requests."
-          isAgentEnabled={isAgentEnabled}
+          isAgentEnabled={subscription.isEnabled}
           onChangeAgentConfiguration={() => {
-            if (isAgentEnabled) {
-              setIsAgentEnabled(false);
-              setIsAgentModerated(false);
+            if (subscription?.isEnabled) {
+              updateAIAgentSettings({
+                params: {
+                  agentId: subscription.id,
+                  isEnabled: false,
+                  requiresModeration: false,
+                },
+              });
             } else {
-              setIsAgentEnabled(true);
+              updateAIAgentSettings({
+                params: {
+                  agentId: subscription.id,
+                  isEnabled: true,
+                },
+              });
             }
           }}
-          agentNeedsModeration={isAgentModerated}
-          onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-          disableAgentSettings={false}
+          agentNeedsModeration={subscription.requiresModeration}
+          onChangeAgentModeration={() =>
+            updateAIAgentSettings({
+              params: {
+                agentId: subscription.id,
+                requiresModeration: !subscription.requiresModeration,
+              },
+            })
+          }
+          disableAgentSettings={isUpdating}
           settingsTip="Keep moderation enabled for billing-related requests to ensure accuracy and prevent unauthorized changes."
         />
         {/* Email Response Preview */}
@@ -69,7 +90,7 @@ const SubscriptionAgentPage = () => {
       {/* How Agent Works */}
       <HowAgentWorks
         agentWorkflowSteps={AGENT_WORKFLOW_STEPS.SUBSCRIPTION_AGENT}
-        agentRequiresModeration={isAgentModerated}
+        agentRequiresModeration={subscription.requiresModeration}
       />
     </AiAgentRoot>
   );

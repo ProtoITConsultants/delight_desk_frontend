@@ -1,21 +1,20 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { ESCALATION_EMAIL_PREVIEW_PROPS } from "../../types/escalation-email-preview";
-import { useEscalationEmails } from "../escalation-emails-list/utils/context/escalation-emails-filters";
 import { Card } from "@/components/ui/card";
 import { Mail } from "lucide-react";
 import EmailPreviewHeader from "./components/email-preview-header";
 import EmailPreviewContent from "./components/email-preview-content";
 import AiAssistantResponse from "./components/ai-assistant-response";
 import EmailPreviewActions from "./components/email-preview-actions";
+import { useAiAssistant } from "@/providers/ai-assistant";
 
 const EscalationEmailPreview = ({
   className,
 }: ESCALATION_EMAIL_PREVIEW_PROPS) => {
-  const { selectedEmailForPreview, selectedEmailDetails } =
-    useEscalationEmails();
+  const { selectedEscalationDetails } = useAiAssistant();
 
-  return selectedEmailForPreview && selectedEmailDetails ? (
+  return selectedEscalationDetails ? (
     <div className={cn("flex flex-col gap-4", className)}>
       {/* Email Header */}
       <EmailPreviewHeader />

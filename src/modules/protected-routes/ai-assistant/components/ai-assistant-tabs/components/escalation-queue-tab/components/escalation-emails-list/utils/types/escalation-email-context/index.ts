@@ -1,4 +1,4 @@
-import { ESCALATED_EMAIL_TYPE } from "../escalation-email";
+import { EscalationType } from "@/modules/protected-routes/ai-assistant/types/ai-assistant-header";
 
 type FEEDBACK_DIALOG_DATA_TYPE = {
   isOpen: boolean;
@@ -24,9 +24,9 @@ type ESCALATION_EMAILS_FILTERS_CONTEXT_TYPE = {
   selectedEmails: Set<string>;
   setSelectedEmails: React.Dispatch<React.SetStateAction<Set<string>>>;
   // Filtered Emails Array
-  FILTERED_EMAILS: ESCALATED_EMAIL_TYPE[];
+  FILTERED_EMAILS: EscalationType[];
   // selectedEmailDetails
-  selectedEmailDetails: ESCALATED_EMAIL_TYPE | null | undefined;
+  selectedEmailDetails: EscalationType | null | undefined;
   // Feedback Dialog
   feedbackDialogData: FEEDBACK_DIALOG_DATA_TYPE;
   setFeedbackDialogData: React.Dispatch<

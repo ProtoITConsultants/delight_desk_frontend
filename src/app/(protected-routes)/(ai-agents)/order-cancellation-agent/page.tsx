@@ -7,12 +7,16 @@ import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent
 import AgentWorkflowRoot from "@/modules/protected-routes/ai-agents/common/components/agent-workflow-root";
 import { Bot, Package, Settings } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import OrderCancellationAgentWorkflowCard from "@/modules/protected-routes/ai-agents/order-cancellation/components/agent-workflow-card";
+import { useAiAgents } from "@/providers/ai-agents";
+import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 
 const OrderCancellationAgent = () => {
-  const [isAgentEnabled, setIsAgentEnabled] = useState(false);
-  const [isAgentModerated, setIsAgentModerated] = useState(false);
+  const {
+    aiAgentsSettings: { order_cancellation },
+  } = useAiAgents();
+  const { updateAIAgentSettings, isUpdating } =
+    useUpdateSpecificAIAgentSettings();
 
   const hasSelectedMethod = false;
 
@@ -41,18 +45,35 @@ const OrderCancellationAgent = () => {
         agentIcon={<Bot className="h-5 w-5" />}
         agentDescription="Enable automatic order cancellation handling for incoming customer emails. The agent will process cancellation requests based on your configured fulfillment method."
         enableAgentButtonDescription="Process order cancellation requests automatically."
-        isAgentEnabled={isAgentEnabled}
+        isAgentEnabled={order_cancellation.isEnabled}
         onChangeAgentConfiguration={() => {
-          if (isAgentEnabled) {
-            setIsAgentEnabled(false);
-            setIsAgentModerated(false);
+          if (order_cancellation?.isEnabled) {
+            updateAIAgentSettings({
+              params: {
+                agentId: order_cancellation.id,
+                isEnabled: false,
+                requiresModeration: false,
+              },
+            });
           } else {
-            setIsAgentEnabled(true);
+            updateAIAgentSettings({
+              params: {
+                agentId: order_cancellation.id,
+                isEnabled: true,
+              },
+            });
           }
         }}
-        agentNeedsModeration={isAgentModerated}
-        onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-        disableAgentSettings={false}
+        agentNeedsModeration={order_cancellation.requiresModeration}
+        onChangeAgentModeration={() =>
+          updateAIAgentSettings({
+            params: {
+              agentId: order_cancellation.id,
+              requiresModeration: !order_cancellation.requiresModeration,
+            },
+          })
+        }
+        disableAgentSettings={isUpdating}
       />
       {/* Active Workflows Section */}
       <AgentWorkflowRoot

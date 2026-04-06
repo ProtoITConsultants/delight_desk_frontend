@@ -2,13 +2,18 @@
 import { Button } from "@/components/ui/button";
 import ApprovalQueueHeader from "@/modules/protected-routes/approval-queue/components/approval-queue-header";
 import ApprovalQueueRoot from "@/modules/protected-routes/approval-queue/components/approval-queue-root";
-import ApprovalQueueTabs from "@/modules/protected-routes/approval-queue/components/approval-queue-tabs";
+import ApprovalQueueItemsList from "@/modules/protected-routes/approval-queue/components/approval-queue-items-list";
+import { ApprovalQueueItemsFilter } from "@/modules/protected-routes/approval-queue/components/approval-queue-items-list/components/approval-queue-items-filter";
+import {
+  ApprovalQueueProvider,
+  useApprovalQueueContext,
+} from "@/providers/approval-queue";
 import { RefreshCw } from "lucide-react";
 
-const ApprovalQueuePage = () => {
+const ApprovalQueuePageContent = () => {
+  const { refetch, isRefetching } = useApprovalQueueContext();
   return (
     <ApprovalQueueRoot>
-      {/* Header */}
       <ApprovalQueueHeader
         title="Approval Queue"
         description="Review and approve AI Agent actions, such as sending responses, processing refunds, or changing subscriptions."
@@ -18,19 +23,28 @@ const ApprovalQueuePage = () => {
             variant="outline"
             size="sm"
             className="flex items-center gap-2"
-            onClick={() => {}}
+            onClick={refetch}
           >
             <RefreshCw
-              className={`h-4 w-4`}
-              //   className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
+              className={`h-4 w-4 ${isRefetching ? "animate-spin" : ""}`}
             />
             Refresh
           </Button>
         }
       />
+
       {/* Content */}
-      <ApprovalQueueTabs />
+      <ApprovalQueueItemsFilter />
+      <ApprovalQueueItemsList />
     </ApprovalQueueRoot>
+  );
+};
+
+const ApprovalQueuePage = () => {
+  return (
+    <ApprovalQueueProvider>
+      <ApprovalQueuePageContent />
+    </ApprovalQueueProvider>
   );
 };
 

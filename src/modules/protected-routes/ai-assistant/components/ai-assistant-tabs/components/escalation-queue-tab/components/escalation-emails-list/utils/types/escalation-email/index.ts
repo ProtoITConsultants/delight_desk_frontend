@@ -21,16 +21,4 @@ type ESCALATED_EMAIL_TYPE = {
   resolvedAt?: string;
 };
 
-// Email Card Props
-type ESCALATION_EMAIL_CARD_PROPS = Pick<
-  ESCALATED_EMAIL_TYPE,
-  | "id"
-  | "subject"
-  | "customerEmail"
-  | "priority"
-  | "status"
-  | "reason"
-  | "createdAt"
->;
-
-export type { ESCALATED_EMAIL_TYPE, ESCALATION_EMAIL_CARD_PROPS };
+export type { ESCALATED_EMAIL_TYPE };

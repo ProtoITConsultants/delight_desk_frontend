@@ -8,11 +8,15 @@ import AddressChangeWorkflowCard from "@/modules/protected-routes/ai-agents/addr
 import AgentWorkflowRoot from "@/modules/protected-routes/ai-agents/common/components/agent-workflow-root";
 import { Bot, MapPin, Settings } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
+import { useAiAgents } from "@/providers/ai-agents";
 
 const AddressChangeAgent = () => {
-  const [isAgentEnabled, setIsAgentEnabled] = useState(false);
-  const [isAgentModerated, setIsAgentModerated] = useState(false);
+  const {
+    aiAgentsSettings: { address_change },
+  } = useAiAgents();
+  const { updateAIAgentSettings, isUpdating } =
+    useUpdateSpecificAIAgentSettings();
   const hasSelectedMethod = false;
 
   return (
@@ -39,19 +43,36 @@ const AddressChangeAgent = () => {
         agentName="Address Change Agent"
         agentIcon={<Bot className="h-5 w-5" />}
         agentDescription="Enable automatic address change handling for incoming customer emails. The agent will process address change requests based on your configured fulfillment method."
-        enableAgentButtonDescription="Process order cancellation requests automatically."
-        isAgentEnabled={isAgentEnabled}
+        enableAgentButtonDescription="Process address change requests automatically."
+        isAgentEnabled={address_change.isEnabled}
         onChangeAgentConfiguration={() => {
-          if (isAgentEnabled) {
-            setIsAgentEnabled(false);
-            setIsAgentModerated(false);
+          if (address_change?.isEnabled) {
+            updateAIAgentSettings({
+              params: {
+                agentId: address_change.id,
+                isEnabled: false,
+                requiresModeration: false,
+              },
+            });
           } else {
-            setIsAgentEnabled(true);
+            updateAIAgentSettings({
+              params: {
+                agentId: address_change.id,
+                isEnabled: true,
+              },
+            });
           }
         }}
-        agentNeedsModeration={isAgentModerated}
-        onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-        disableAgentSettings={false}
+        agentNeedsModeration={address_change.requiresModeration}
+        onChangeAgentModeration={() =>
+          updateAIAgentSettings({
+            params: {
+              agentId: address_change.id,
+              requiresModeration: !address_change.requiresModeration,
+            },
+          })
+        }
+        disableAgentSettings={isUpdating}
       />
 
       {/* Active Workflows Card */}
