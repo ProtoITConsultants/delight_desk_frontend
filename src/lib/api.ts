@@ -2,6 +2,7 @@ import { AdminService } from "@/services/admin";
 import { AIAgentsService } from "@/services/ai-agents";
 import { AiAssistantService } from "@/services/ai-assistant";
 import { AiTrainingService } from "@/services/ai-training";
+import { ApprovalQueueService } from "@/services/approval-queue";
 import { UserAuthenticationService } from "@/services/auth";
 import { UserConnections } from "@/services/connections";
 
@@ -12,6 +13,7 @@ const admin_service = new AdminService();
 const ai_agents_service = new AIAgentsService();
 const ai_team_center_service = new AiTrainingService();
 const ai_assistant_service = new AiAssistantService();
+const approval_queue_service = new ApprovalQueueService();
 
 export const api = {
   user_connections,
@@ -20,4 +22,5 @@ export const api = {
   ai_agents_service,
   ai_team_center_service,
   ai_assistant_service,
+  approval_queue_service,
 };

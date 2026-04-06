@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import QueryProvider from "@/providers/query-provider";
+import "@mantine/core/styles.css";
+import { MantineProvider } from "@mantine/core";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,7 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <MantineProvider>{children}</MantineProvider>
+        </QueryProvider>
         <Toaster richColors theme="light" duration={3000} />
       </body>
     </html>

@@ -1,16 +1,20 @@
 "use client";
+import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
 import EmailResponseSamplePreview from "@/modules/core/components/ai-agents/components/email-response-preview";
 import ReturnPolicyConfigForm from "@/modules/protected-routes/ai-agents/returns-agent/components/return-policy-config-form";
 import ReturnPolicyConfigRoot from "@/modules/protected-routes/ai-agents/returns-agent/components/return-policy-root";
+import { useAiAgents } from "@/providers/ai-agents";
 import { Bot, Package } from "lucide-react";
-import { useState } from "react";
 
 const ReturnsAgentPage = () => {
-  const [isAgentEnabled, setIsAgentEnabled] = useState(false);
-  const [isAgentModerated, setIsAgentModerated] = useState(false);
+  const {
+    aiAgentsSettings: { returns },
+  } = useAiAgents();
+  const { updateAIAgentSettings, isUpdating } =
+    useUpdateSpecificAIAgentSettings();
 
   return (
     <AiAgentRoot className="max-w-7xl">
@@ -31,18 +35,35 @@ const ReturnsAgentPage = () => {
           agentIcon={<Bot className="h-5 w-5" />}
           agentDescription="Configure how the Returns Agent handles return and refund requests."
           enableAgentButtonDescription="Automatically process return and refund requests."
-          isAgentEnabled={isAgentEnabled}
+          isAgentEnabled={returns.isEnabled}
           onChangeAgentConfiguration={() => {
-            if (isAgentEnabled) {
-              setIsAgentEnabled(false);
-              setIsAgentModerated(false);
+            if (returns?.isEnabled) {
+              updateAIAgentSettings({
+                params: {
+                  agentId: returns.id,
+                  isEnabled: false,
+                  requiresModeration: false,
+                },
+              });
             } else {
-              setIsAgentEnabled(true);
+              updateAIAgentSettings({
+                params: {
+                  agentId: returns.id,
+                  isEnabled: true,
+                },
+              });
             }
           }}
-          agentNeedsModeration={isAgentModerated}
-          onChangeAgentModeration={() => setIsAgentModerated(!isAgentModerated)}
-          disableAgentSettings={false}
+          agentNeedsModeration={returns.requiresModeration}
+          onChangeAgentModeration={() =>
+            updateAIAgentSettings({
+              params: {
+                agentId: returns.id,
+                requiresModeration: !returns.requiresModeration,
+              },
+            })
+          }
+          disableAgentSettings={isUpdating}
         />
         <EmailResponseSamplePreview
           responsePreviewType="default"
