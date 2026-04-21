@@ -1,4 +1,8 @@
 import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
+import {
+  FulfillmentMethodSettings,
+  UpdateFulfillmentMethodSettingsParams,
+} from "@/services/ai-agents/utils/fulfillment-method";
 
 // Fulfillment Method Card
 type FULFILLMENT_METHOD_CARD_PROPS = {
@@ -25,6 +29,12 @@ type FULFILLMENT_METHOD_DIALOG_PROPS = {
   dialogType: FULLFILLMENT_METHODS_TYPES;
   isDialogOpen: boolean;
   onOpenChange: (value: boolean) => void;
+  fulfillmentSettings: FulfillmentMethodSettings | undefined;
+  isSavingSettings: boolean;
+  onSaveFulfillmentSettings: (
+    params: UpdateFulfillmentMethodSettingsParams,
+    onSuccess?: () => void
+  ) => void;
 };
 
 // How It Works Section Props

@@ -49,43 +49,43 @@ const STAT_CARDS = [
 // AI Agents
 const AI_AGENTS = [
   {
-    id: "wismo-agent",
+    id: "wismo",
     name: "WISMO Agent",
     icon: Truck,
     href: "/wismo-agent",
   },
   {
-    id: "subscription-agent",
+    id: "subscription",
     name: "Subscription Agent",
     icon: Bot,
     href: "/subscription-agent",
   },
   {
-    id: "returns-agent",
+    id: "returns",
     name: "Returns Agent",
     icon: Package,
     href: "/returns-agent",
   },
   {
-    id: "promo-code-agent",
+    id: "promo_code",
     name: "Promo Code Agent",
     icon: Tag,
     href: "/promo-code-agent",
   },
   {
-    id: "product-agent",
+    id: "product",
     name: "Product Agent",
     icon: Brain,
     href: "/product-agent",
   },
   {
-    id: "address-change-agent",
+    id: "address_change",
     name: "Address Change Agent",
     icon: MapPin,
     href: "/address-change",
   },
   {
-    id: "cancellation-agent",
+    id: "order_cancellation",
     name: "Cancellation Agent",
     icon: Package,
     href: "/order-cancellations",

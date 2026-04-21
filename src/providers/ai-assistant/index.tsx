@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/lib/api";
 import { FEEDBACK_DIALOG_DATA_TYPE } from "@/modules/protected-routes/ai-assistant/components/ai-assistant-tabs/components/escalation-queue-tab/components/escalation-emails-list/utils/types/escalation-email-context";
 import {

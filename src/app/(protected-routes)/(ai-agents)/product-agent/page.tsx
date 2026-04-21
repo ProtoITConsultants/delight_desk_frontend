@@ -7,7 +7,7 @@ import { AiAgentTrainingData } from "@/modules/core/components/ai-agents/compone
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
 import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
 import HowAgentWorks from "@/modules/core/components/ai-agents/components/how-agent-works";
-import TestAiAgent from "@/modules/core/components/ai-agents/components/test-ai-agent";
+import TestProductAgent from "@/modules/core/components/ai-agents/components/test-ai-agent/product-agent";
 import AGENT_WORKFLOW_STEPS from "@/modules/core/components/ai-agents/constants/how-agent-works";
 import { useAiAgents } from "@/providers/ai-agents";
 import { Bot, Brain } from "lucide-react";
@@ -71,7 +71,7 @@ const ProductAgentPage = () => {
           disableAgentSettings={isUpdating}
         />
         {/* Test AI Agent - Interactive Agent Preview */}
-        <TestAiAgent
+        <TestProductAgent
           instructions="Enter a customer question to see how your Product Agent responds using your training data."
           InputField={
             <div className="flex flex-col gap-2">

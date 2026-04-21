@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardHeader,
@@ -19,7 +18,6 @@ type AgentCardProps = {
   onChangeAgentStatus: () => void;
   isToggling: boolean;
   configurationLink: string;
-  ruleCount: number;
 };
 
 const AgentsSkeleton = () => (
@@ -30,13 +28,7 @@ const AgentsSkeleton = () => (
   </div>
 );
 
-const Root = ({
-  children,
-  pendingApprovals,
-}: {
-  children: React.ReactNode;
-  pendingApprovals: number;
-}) => (
+const Root = ({ children }: { children: React.ReactNode }) => (
   <Card className="rounded-lg">
     <CardHeader>
       <CardTitle className="flex items-center justify-between">
@@ -44,9 +36,6 @@ const Root = ({
           <Bot className="h-5 w-5" />
           AI Agents
         </div>
-        <Badge variant="secondary" className="rounded-full">
-          {pendingApprovals}
-        </Badge>
       </CardTitle>
       <CardDescription>
         Manage your specialized AI agents for automated customer support
@@ -64,7 +53,6 @@ const AgentCard = ({
   onChangeAgentStatus,
   isToggling,
   configurationLink,
-  ruleCount,
 }: AgentCardProps) => (
   <Card
     id={id}
@@ -100,20 +88,11 @@ const AgentCard = ({
       </div>
     </CardHeader>
     <CardContent>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {ruleCount > 0 && (
-            <Badge variant="secondary" className="text-xs rounded-full">
-              {ruleCount} rules
-            </Badge>
-          )}
-        </div>
-        <Link href={configurationLink}>
-          <span className="text-sm text-primary hover:text-primary/80 cursor-pointer">
-            Configure →
-          </span>
-        </Link>
-      </div>
+      <Link href={configurationLink}>
+        <span className="text-sm text-primary hover:text-primary/80 cursor-pointer">
+          Configure →
+        </span>
+      </Link>
     </CardContent>
   </Card>
 );

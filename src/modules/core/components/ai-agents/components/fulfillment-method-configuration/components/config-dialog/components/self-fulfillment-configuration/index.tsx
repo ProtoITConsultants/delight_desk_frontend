@@ -1,6 +1,24 @@
 import { CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  FulfillmentMethodType,
+  UpdateFulfillmentMethodSettingsParams,
+} from "@/services/ai-agents/utils/fulfillment-method";
 
-const SelfFulFillmentMethodConfiguration = () => {
+type SelfFulFillmentMethodConfigurationProps = {
+  isSavingSettings: boolean;
+  onSuccessSave: () => void;
+  onSaveFulfillmentSettings: (
+    params: UpdateFulfillmentMethodSettingsParams,
+    onSuccess?: () => void,
+  ) => void;
+};
+
+const SelfFulFillmentMethodConfiguration = ({
+  isSavingSettings,
+  onSaveFulfillmentSettings,
+  onSuccessSave,
+}: SelfFulFillmentMethodConfigurationProps) => {
   return (
     <div className="flex flex-col gap-4">
       {/* Heading */}
@@ -32,6 +50,18 @@ const SelfFulFillmentMethodConfiguration = () => {
           <li>• Professional customer communication</li>
         </ul>
       </div>
+      <Button
+        onClick={() => {
+          onSaveFulfillmentSettings(
+            { method: FulfillmentMethodType.SELF },
+            onSuccessSave,
+          );
+        }}
+        disabled={isSavingSettings}
+        className="w-full"
+      >
+        {isSavingSettings ? "Saving..." : "Set as Active Method"}
+      </Button>
     </div>
   );
 };
