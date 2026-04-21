@@ -1,0 +1,7 @@
+const GET_DASHBOARD_ANALYTICS = "/dashboard/analytics";
+
+const DASHBOARD_ENDPOINTS = {
+  GET_DASHBOARD_ANALYTICS,
+};
+
+export default DASHBOARD_ENDPOINTS;

@@ -9,6 +9,7 @@ const AiPerformance = () => {
         heading="AI Response Playground"
         icon={<PlayCircle className="h-5 w-5 text-purple-600" />}
         description="Test your trained AI by asking questions and see how it responds using your brand voice and training content."
+        isComingSoon
       />
       <AiTrainingTab.Body>
         <AiTrainingTab.AiPerformanceTestForm />

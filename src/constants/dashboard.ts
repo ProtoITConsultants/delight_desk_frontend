@@ -8,41 +8,43 @@ import {
   Tag,
   Brain,
   MapPin,
+  CheckCircle2,
 } from "lucide-react";
 
 // Time Range Options - Header
 const TIME_RANGE_OPTIONS = [
   { value: "today", label: "Today" },
-  { value: "7days", label: "Last 7 Days" },
-  { value: "30days", label: "Last 30 Days" },
-  { value: "365days", label: "Last 365 Days" },
+  { value: "last_7_days", label: "Last 7 Days" },
+  { value: "last_30_days", label: "Last 30 Days" },
+  { value: "last_365_days", label: "Last 365 Days" },
 ];
 
 // Stat Cards
 const STAT_CARDS = [
   {
     label: "AI Agent Actions Completed",
-    value: "0",
     colorClass: "text-green-600",
     icon: Bot,
   },
   {
     label: "AI Assistant Tickets Resolved",
-    value: "12",
     colorClass: "text-blue-600",
     icon: User,
   },
   {
     label: "Total Emails Received",
-    value: "1,234",
     colorClass: "text-gray-900",
     icon: Mail,
   },
   {
     label: "Time Saved",
-    value: "1,234",
     colorClass: "text-purple-600",
     icon: Clock,
+  },
+  {
+    label: "Average Actions / Resolved Ticket",
+    colorClass: "text-orange-600",
+    icon: CheckCircle2,
   },
 ];
 

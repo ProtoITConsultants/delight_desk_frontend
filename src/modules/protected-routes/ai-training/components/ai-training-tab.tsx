@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useAiTeamCenter } from "@/providers/ai-team-center";
+import { ProductKnowledgeSourceStatus } from "@/services/ai-training/types/product-knowledge";
 
 const Root = ({ children }: { children: React.ReactNode }) => (
   <Card>{children}</Card>
@@ -30,14 +31,21 @@ const Header = ({
   description,
   rightSection,
   tip,
+  isComingSoon = false,
 }: {
   heading: string;
   icon: React.ReactNode;
   description: string;
   rightSection?: React.ReactNode;
   tip?: string;
+  isComingSoon?: boolean;
 }) => (
   <CardHeader>
+    {isComingSoon && (
+      <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+        Coming Soon
+      </Badge>
+    )}
     <CardTitle className="flex items-start justify-between gap-6">
       <div className="space-y-2">
         {/* Heading & Icon */}
@@ -218,70 +226,88 @@ const NameGenerator = ({
 const SourceURLInput = ({
   sourceURL,
   setSourceURL,
+  onAddSourceURL,
+  isAddingSourceURL,
 }: {
   sourceURL: string;
   setSourceURL: React.Dispatch<React.SetStateAction<string>>; // Dispatch function to update the sourceURL state
-}) => (
-  <div className="flex gap-2">
-    <Input
-      placeholder="https://yoursite.com/faq"
-      value={sourceURL}
-      onChange={(e) => setSourceURL(e.target.value)}
-      onKeyDown={
-        (e) => e.key === "Enter" && sourceURL.trim()
-        // !addUrlMutation.isPending &&
-        // handleAddUrl()
-      }
-      // disabled={addUrlMutation.isPending}
-    />
-    <Button
-      // onClick={handleAddUrl}
-      onClick={() => {}}
-      // disabled={addUrlMutation.isPending || !sourceURL.trim()}
-      disabled={!sourceURL.trim()}
-    >
-      {/* {addUrlMutation.isPending ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : (
-        <Plus className="h-4 w-4" />
-      )} */}
-      <Plus className="h-4 w-4" />
-    </Button>
-  </div>
-);
+  onAddSourceURL: () => Promise<void>;
+  isAddingSourceURL: boolean;
+}) => {
+  const handleSubmit = async () => {
+    if (!sourceURL.trim() || isAddingSourceURL) {
+      return;
+    }
+    await onAddSourceURL();
+  };
+
+  return (
+    <div className="flex gap-2">
+      <Input
+        placeholder="https://yoursite.com/faq"
+        value={sourceURL}
+        onChange={(e) => setSourceURL(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            void handleSubmit();
+          }
+        }}
+        disabled={isAddingSourceURL}
+      />
+      <Button
+        onClick={() => {
+          void handleSubmit();
+        }}
+        disabled={isAddingSourceURL || !sourceURL.trim()}
+      >
+        {isAddingSourceURL ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Plus className="h-4 w-4" />
+        )}
+      </Button>
+    </div>
+  );
+};
 
 const AiKnowledgeSourceCard = ({
-  url,
+  id,
+  title,
+  sourceUrl,
   status,
-  pageCount,
-  lastCrawled,
+  errorMessage,
+  onDelete,
+  isDeleting,
 }: {
-  url: string;
-  status: string;
-  pageCount?: number;
-  lastCrawled?: string;
+  id: string;
+  title: string;
+  sourceUrl: string | null;
+  status: ProductKnowledgeSourceStatus;
+  errorMessage?: string;
+  onDelete: (sourceId: string) => void;
+  isDeleting?: boolean;
 }) => {
   // Helper functions
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status: ProductKnowledgeSourceStatus) => {
     switch (status) {
-      case "completed":
+      case "ready":
         return <CheckCircle className="h-4 w-4 text-green-600" />;
       case "failed":
         return <AlertCircle className="h-4 w-4 text-red-600" />;
-      case "crawling":
+      case "processing":
         return <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />;
       default:
         return <Globe className="h-4 w-4 text-gray-400" />;
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: ProductKnowledgeSourceStatus) => {
     switch (status) {
-      case "completed":
+      case "ready":
         return "bg-green-100 text-green-800";
       case "failed":
         return "bg-red-100 text-red-800";
-      case "crawling":
+      case "processing":
         return "bg-blue-100 text-blue-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -293,7 +319,12 @@ const AiKnowledgeSourceCard = ({
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {getStatusIcon(status)}
         <div className="w-full">
-          <p className="font-medium text-sm line-clamp-1">{url}</p>
+          <p className="font-medium text-sm line-clamp-1">{title}</p>
+          {sourceUrl && (
+            <p className="text-xs text-gray-500 line-clamp-1 mt-1">
+              {sourceUrl}
+            </p>
+          )}
           <div className="flex items-center gap-2 flex-wrap mt-1">
             <Badge
               variant="secondary"
@@ -301,15 +332,9 @@ const AiKnowledgeSourceCard = ({
             >
               {status}
             </Badge>
-            {pageCount && (
-              <span className="text-xs text-gray-500">
-                {pageCount} pages crawled
-              </span>
-            )}
-            {status === "completed" && lastCrawled && (
-              <span className="text-xs text-green-600">
-                {/* ✓ Crawled {new Date(lastCrawled).toLocaleString()} */}✓
-                Crawled {lastCrawled}
+            {status === "failed" && errorMessage && (
+              <span className="text-xs text-red-600 line-clamp-1">
+                {errorMessage}
               </span>
             )}
           </div>
@@ -318,53 +343,35 @@ const AiKnowledgeSourceCard = ({
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => {}}
+        onClick={() => onDelete(id)}
         className="!p-0"
-        // disabled={removeUrlMutation.isPending}
+        disabled={isDeleting}
       >
-        <Trash2 className="h-4 w-4" />
+        {isDeleting ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Trash2 className="h-4 w-4" />
+        )}
       </Button>
     </div>
   );
 };
 
 const ManuallyAddedSourceCard = ({
+  id,
   title,
   createdAt,
-  contentLength,
+  onDelete,
+  isDeleting,
 }: {
+  id: string;
   title: string;
   createdAt: string;
-  contentLength: number;
+  onDelete: (sourceId: string) => void;
+  isDeleting?: boolean;
 }) => {
   return (
-    // <div className="flex items-center justify-between p-4 border rounded-lg bg-white">
-    //   <div className="flex items-center gap-3 flex-1 min-w-0">
-    //     <div className="bg-blue-100 rounded-full p-2">
-    //       <FileText className="h-4 w-4 text-blue-600" />
-    //     </div>
-    //     <div className="flex-1 min-w-0">
-    //       <p className="font-medium text-sm truncate">{title}</p>
-    //       <div className="flex items-center gap-2 mt-1">
-    //         <Badge variant="outline" className="text-xs">
-    //           Manual
-    //         </Badge>
-    //         <span className="text-xs text-gray-500">
-    //           Added {new Date(createdAt).toLocaleDateString()}
-    //         </span>
-    //       </div>
-    //     </div>
-    //   </div>
-    //   <Button
-    //     variant="ghost"
-    //     size="sm"
-    //     // onClick={() => deleteManualContentMutation.mutate(content.id)}
-    //     // disabled={deleteManualContentMutation.isPending}
-    //     className="text-red-600 hover:text-red-700"
-    //   >
-    //     <Trash2 className="h-4 w-4" />
-    //   </Button>
-    // </div>
+    // <di
     <div className="flex items-center justify-between p-3 border rounded-lg bg-blue-50 border-blue-200">
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <MessageSquare className="h-4 w-4 text-blue-600" />
@@ -379,9 +386,6 @@ const ManuallyAddedSourceCard = ({
             >
               manual content
             </Badge>
-            <span className="text-xs text-blue-700">
-              {contentLength} characters
-            </span>
             <span className="text-xs text-blue-600">
               ✓ Added {new Date(createdAt).toLocaleDateString()}
             </span>
@@ -391,17 +395,30 @@ const ManuallyAddedSourceCard = ({
       <Button
         variant="ghost"
         size="sm"
-        // onClick={() => deleteManualContentMutation.mutate(content.id)}
-        // disabled={deleteManualContentMutation.isPending}
+        onClick={() => onDelete(id)}
+        disabled={isDeleting}
         className="text-red-600 hover:text-red-700"
       >
-        <Trash2 className="h-4 w-4" />
+        {isDeleting ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Trash2 className="h-4 w-4" />
+        )}
       </Button>
     </div>
   );
 };
 
-const ManuallContentForm = () => {
+const ManuallContentForm = ({
+  onAddManualContent,
+  isAddingManualContent,
+}: {
+  onAddManualContent: (data: {
+    title: string;
+    content: string;
+  }) => Promise<boolean>;
+  isAddingManualContent: boolean;
+}) => {
   const [showManualInputForm, setShowManualInputForm] = useState(false);
   const [manualContent, setManualContent] = useState<{
     title: string;
@@ -410,6 +427,33 @@ const ManuallContentForm = () => {
     title: "",
     content: "",
   });
+
+  const resetForm = () => {
+    setShowManualInputForm(false);
+    setManualContent({
+      title: "",
+      content: "",
+    });
+  };
+
+  const handleAddManualContent = async () => {
+    if (
+      !manualContent.title.trim() ||
+      manualContent.content.trim().length <= 20 ||
+      isAddingManualContent
+    ) {
+      return;
+    }
+
+    const isSuccess = await onAddManualContent({
+      title: manualContent.title.trim(),
+      content: manualContent.content.trim(),
+    });
+    if (isSuccess) {
+      resetForm();
+    }
+  };
+
   return (
     <>
       {/* Trigger */}
@@ -432,6 +476,7 @@ const ManuallContentForm = () => {
               size="sm"
               onClick={() => setShowManualInputForm((prev) => !prev)}
               className="bg-white hover:bg-gray-50"
+              disabled={isAddingManualContent}
             >
               {showManualInputForm
                 ? "Hide Manual Input"
@@ -459,6 +504,7 @@ const ManuallContentForm = () => {
                   title: e.target.value,
                 })
               }
+              minLength={20}
               className="bg-white"
             />
           </div>
@@ -481,31 +527,29 @@ const ManuallContentForm = () => {
           <div className="flex justify-end gap-2">
             <Button
               variant="outline"
-              onClick={() => {
-                setShowManualInputForm(false);
-                setManualContent({
-                  title: "",
-                  content: "",
-                });
-              }}
+              onClick={resetForm}
+              disabled={isAddingManualContent}
             >
               Cancel
             </Button>
             <Button
-              // onClick={handleAddManualContent}
+              onClick={() => {
+                void handleAddManualContent();
+              }}
               disabled={
-                !manualContent.title.trim() || !manualContent.content.trim()
+                !manualContent.title.trim() ||
+                manualContent.content.trim().length <= 20 ||
+                isAddingManualContent
               }
             >
-              {/* {addManualContentMutation.isPending ? (
+              {isAddingManualContent ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Adding...
+                  Saving...
                 </>
               ) : (
-                "Add Content"
-              )} */}
-              Add Content
+                "Save Content"
+              )}
             </Button>
           </div>
         </CardContent>
