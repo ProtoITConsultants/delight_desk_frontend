@@ -10,6 +10,15 @@ import {
   TestWismoAgentParams,
   TestWismoAgentResponse,
 } from "./utils/wismo-agent";
+import {
+  TestProductAgentParams,
+  TestProductAgentResponse,
+} from "./utils/product-agent";
+import {
+  GetFulfillmentMethodSettingsResponse,
+  UpdateFulfillmentMethodSettingsParams,
+  UpdateFulfillmentMethodSettingsResponse,
+} from "./utils/fulfillment-method";
 
 export class AIAgentsService {
   // Fetch All Agents' Settings
@@ -49,6 +58,35 @@ export class AIAgentsService {
       AI_AGENTS_SETTINGS.TEST_WISMO_AGENT_URL,
       { query },
     );
+    return response;
+  };
+
+  // Test Product Agent
+  testProductAgent = async ({ query }: TestProductAgentParams) => {
+    const response = await apiService.post<TestProductAgentResponse>(
+      AI_AGENTS_SETTINGS.TEST_PRODUCT_AGENT_URL,
+      { query },
+    );
+    return response;
+  };
+
+  // Get Fulfillment Method Settings
+  getFulfillmentMethodSettings = async () => {
+    const response = await apiService.get<GetFulfillmentMethodSettingsResponse>(
+      AI_AGENTS_SETTINGS.FULFILLMENT_METHOD_SETTINGS_URL,
+    );
+    return response;
+  };
+
+  // Update Fulfillment Method Settings
+  updateFulfillmentMethodSettings = async (
+    params: UpdateFulfillmentMethodSettingsParams,
+  ) => {
+    const response =
+      await apiService.patch<UpdateFulfillmentMethodSettingsResponse>(
+        AI_AGENTS_SETTINGS.FULFILLMENT_METHOD_SETTINGS_URL,
+        params,
+      );
     return response;
   };
 }

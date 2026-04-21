@@ -1,8 +1,6 @@
 "use client";
-import { CheckCircle, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
 import DashboardHeader from "@/modules/protected-routes/dashboard/components/DashboardHeader";
-import TimeRangeSelector from "@/modules/protected-routes/dashboard/components/TimeRangeSelector";
 import { useState } from "react";
 import DASHBOARD from "@/constants/dashboard";
 import StatCard from "@/modules/protected-routes/dashboard/components/StatCard";
@@ -17,77 +15,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AIAssistantQueue from "@/modules/protected-routes/dashboard/components/AIAssistantQueue";
-import ActivityLog, {
-  ActivityLogCardProps,
-} from "@/modules/protected-routes/dashboard/components/ActivityLog";
-
-const ESCALATION_QUEUE_TEMP_EMAILS = [
-  {
-    escalationQueueId: "1",
-    priority: "low",
-    customerEmailSubject: "Re: Smarter Compliance for Growing Food Brands",
-    customerEmail: "Krystle Law <krystle.law@getsieveapp.com>",
-    customerEmailBody:
-      "General inquiry requiring human review: The email is a follow-up from a business representative seeking to discuss compliance solutions with the recipient. There is no indication of a customer service issue or request for assistance related to orders, payments, or subscriptions. The intent is to initiate a business conversation rather than address a specific customer service concern.",
-    createdAt: "26/8/2025, 11:33:43 PM",
-  },
-  {
-    escalationQueueId: "2",
-    priority: "high",
-    customerEmailSubject: "Re: Inulin sensitivity and returns info",
-    customerEmail: "Lysa Robb <lysa.robb@gmail.com>",
-    customerEmailBody:
-      "General inquiry requiring human review: The email is a follow-up from a business representative seeking to discuss compliance solutions with the recipient. There is no indication of a customer service issue or request for assistance related to orders, payments, or subscriptions. The intent is to initiate a business conversation rather than address a specific customer service concern.",
-    createdAt: "26/8/2025, 11:33:43 PM",
-  },
-  {
-    escalationQueueId: "3",
-    priority: "medium",
-    customerEmailSubject: "Re: Order #18907 Confirmation",
-    customerEmail: "B B <cd2155@hotmail.com>",
-    customerEmailBody:
-      "General inquiry requiring human review: The customer initially requested an update to their shipping address to ensure delivery. The follow-up email confirms that the change was made, indicating the customer's concern was about the shipping address.",
-    createdAt: "26/8/2025, 6:46:51 PM",
-  },
-];
-
-const ACTIVIY_LOGS_TEMP: ActivityLogCardProps[] = [
-  {
-    id: "1",
-    executedBy: "human",
-    customerEmail: "rcmartin2525@gmail.com",
-    details:
-      "You successfully found order 19044 for customer rcmartin2525@gmail.com. Status: completed",
-    status: "completed",
-    createdAt: "1:00:25 AM",
-  },
-  {
-    id: "2",
-    executedBy: "ai",
-    customerEmail: "rcmartin2525@gmail.com",
-    details:
-      "AI successfully found order 19044 for customer rcmartin2525@gmail.com. Status: completed",
-    status: "failed",
-    createdAt: "1:00:01 AM",
-  },
-  {
-    id: "3",
-    executedBy: "human",
-    customerEmail: "ARPOWER17@gmail.com",
-    details:
-      "AI successfully found order 19006 for customer ARPOWER17@gmail.com. Status: completed",
-    status: "pending",
-    createdAt: "1:00:25 AM",
-  },
-];
+import { useAiAgents } from "@/providers/ai-agents";
+import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
+import { useAiAssistant } from "@/providers/ai-assistant";
 
 const Dashboard = () => {
   // Local States
-  const [timeRange, setTimeRange] = useState("today");
   const [queuePriorityFilter, setQueuePriorityFilter] = useState("all");
 
-  const agentsLoading = false;
-  const escalationsLoading = false;
+  const { aiAgentsSettings, isFetchingAgentsSettings } = useAiAgents();
+  const { updateAIAgentSettings, isUpdating } =
+    useUpdateSpecificAIAgentSettings();
+
+  const { escalationList, isPending: isFetchingEscalationList } =
+    useAiAssistant();
+
+  const dashboardAgents = DASHBOARD.AI_AGENTS.map((agent) => ({
+    ...agent,
+    agentType: agent.id,
+    apiId:
+      aiAgentsSettings[agent.id as keyof typeof aiAgentsSettings]?.id ?? "",
+    isEnabled:
+      aiAgentsSettings[agent.id as keyof typeof aiAgentsSettings]?.isEnabled ??
+      false,
+  }));
+  const filteredEscalations = (escalationList ?? []).filter(
+    (escalation) =>
+      queuePriorityFilter === "all" ||
+      escalation.priority === queuePriorityFilter,
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
@@ -95,20 +51,7 @@ const Dashboard = () => {
         title="Mission Control"
         description=" Advanced command center for intelligent email automation and
           escalation management"
-      >
-        <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            console.log("Refresh Data");
-          }}
-          className="w-full sm:w-auto"
-        >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
-        </Button>
-      </DashboardHeader>
+      />
 
       {/* Metrics Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -124,25 +67,30 @@ const Dashboard = () => {
       </div>
 
       {/* AI Agents - Quick Actions */}
-      <AIAgents.Root pendingApprovals={330}>
-        {agentsLoading ? (
+      <AIAgents.Root>
+        {isFetchingAgentsSettings ? (
           <AIAgents.AgentsSkeleton />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {DASHBOARD.AI_AGENTS.map((agent) => {
+            {dashboardAgents.map((agent) => {
               return (
                 <AIAgents.AgentCard
-                  key={agent.id}
-                  id={agent.id}
+                  key={agent.agentType}
+                  id={agent.agentType}
                   name={agent.name}
                   Icon={agent.icon}
-                  isEnabled={false}
+                  isEnabled={agent.isEnabled}
                   onChangeAgentStatus={() =>
-                    console.log("Agent Status Changed")
+                    agent.apiId &&
+                    updateAIAgentSettings({
+                      params: {
+                        agentId: agent.apiId,
+                        isEnabled: !agent.isEnabled,
+                      },
+                    })
                   }
-                  isToggling={false}
+                  isToggling={isUpdating}
                   configurationLink={agent.href}
-                  ruleCount={10}
                 />
               );
             })}
@@ -150,60 +98,63 @@ const Dashboard = () => {
         )}
       </AIAgents.Root>
 
+      {/* AI Assistant Queue */}
+      <DashboardCardsRoot
+        title={
+          <>
+            <span>AI Assistant Queue</span>
+            <Badge variant="secondary" className="rounded-full">
+              {escalationList?.length ?? 0}
+            </Badge>
+          </>
+        }
+        description="Items requiring human attention"
+        headerRightSection={
+          <Select
+            value={queuePriorityFilter}
+            onValueChange={setQueuePriorityFilter}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="urgent">🔴 Urgent</SelectItem>
+              <SelectItem value="high">🟠 High</SelectItem>
+              <SelectItem value="medium">🟡 Medium</SelectItem>
+              <SelectItem value="low">🔵 Low</SelectItem>
+            </SelectContent>
+          </Select>
+        }
+      >
+        {isFetchingEscalationList ? (
+          <AIAssistantQueue.EmailCardsSkeleton />
+        ) : filteredEscalations.length === 0 ? (
+          <div className="p-4 text-center text-gray-500">
+            <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
+            All caught up!
+          </div>
+        ) : (
+          <div className="space-y-3 p-4">
+            {filteredEscalations.map((escalation) => (
+              <AIAssistantQueue.EmailCard
+                key={escalation.id}
+                escalationQueueId={escalation.id}
+                priority={escalation.priority}
+                customerEmailSubject={escalation.email.subject}
+                customerEmail={escalation.email.fromEmail}
+                customerEmailBody={
+                  escalation.reason || escalation.email.snippet
+                }
+                createdAt={escalation.createdAt}
+              />
+            ))}
+          </div>
+        )}
+      </DashboardCardsRoot>
+
       {/* AI Assistant Queue & Activity Log */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* AI Assistant Queue */}
-        <DashboardCardsRoot
-          title={
-            <>
-              <span>AI Assistant Queue</span>
-              <Badge variant="secondary" className="rounded-full">
-                26
-              </Badge>
-            </>
-          }
-          description="Items requiring human attention"
-          headerRightSection={
-            <Select
-              value={queuePriorityFilter}
-              onValueChange={setQueuePriorityFilter}
-            >
-              <SelectTrigger className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="urgent">🔴 Urgent</SelectItem>
-                <SelectItem value="high">🟠 High</SelectItem>
-                <SelectItem value="medium">🟡 Medium</SelectItem>
-                <SelectItem value="low">🔵 Low</SelectItem>
-              </SelectContent>
-            </Select>
-          }
-        >
-          {escalationsLoading ? (
-            <AIAssistantQueue.EmailCardsSkeleton />
-          ) : ESCALATION_QUEUE_TEMP_EMAILS.length === 0 ? (
-            <div className="p-4 text-center text-gray-500">
-              <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
-              All caught up!
-            </div>
-          ) : (
-            <div className="space-y-3 p-4">
-              {ESCALATION_QUEUE_TEMP_EMAILS.filter(
-                (escalation) =>
-                  queuePriorityFilter === "all" ||
-                  escalation.priority === queuePriorityFilter
-              ).map((escalation) => (
-                <AIAssistantQueue.EmailCard
-                  key={escalation.escalationQueueId}
-                  {...escalation}
-                />
-              ))}
-            </div>
-          )}
-        </DashboardCardsRoot>
-        {/* Activity Log */}
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <DashboardCardsRoot
           title={
             <>
@@ -227,7 +178,7 @@ const Dashboard = () => {
             </div>
           )}
         </DashboardCardsRoot>
-      </div>
+      </div> */}
     </div>
   );
 };

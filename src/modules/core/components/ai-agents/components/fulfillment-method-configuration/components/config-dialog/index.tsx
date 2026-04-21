@@ -20,6 +20,9 @@ const FulfillmentMethodConfigDialog = ({
   dialogType,
   isDialogOpen,
   onOpenChange,
+  fulfillmentSettings,
+  isSavingSettings,
+  onSaveFulfillmentSettings,
 }: FULFILLMENT_METHOD_DIALOG_PROPS) => {
   // In case of address Change dialog
   // Need to remove the "shipstation" option
@@ -63,11 +66,36 @@ const FulfillmentMethodConfigDialog = ({
           />
           {/* Fulfillment Method Configuration */}
           {dialogType === "self_fulfillment" && (
-            <SelfFulFillmentMethodConfiguration />
+            <SelfFulFillmentMethodConfiguration
+              isSavingSettings={isSavingSettings}
+              onSaveFulfillmentSettings={onSaveFulfillmentSettings}
+              onSuccessSave={() => onOpenChange(false)}
+            />
           )}
-          {dialogType === "shipbob" && <ShipbobConfiguration />}
-          {dialogType === "shipstation" && <ShipStationConfiguration />}
-          {dialogType === "warehouse_email" && <WarehouseEmailConfiguration />}
+          {dialogType === "shipbob" && (
+            <ShipbobConfiguration
+              fulfillmentSettings={fulfillmentSettings}
+              isSavingSettings={isSavingSettings}
+              onSaveFulfillmentSettings={onSaveFulfillmentSettings}
+              onSuccessSave={() => onOpenChange(false)}
+            />
+          )}
+          {dialogType === "shipstation" && (
+            <ShipStationConfiguration
+              fulfillmentSettings={fulfillmentSettings}
+              isSavingSettings={isSavingSettings}
+              onSaveFulfillmentSettings={onSaveFulfillmentSettings}
+              onSuccessSave={() => onOpenChange(false)}
+            />
+          )}
+          {dialogType === "warehouse_email" && (
+            <WarehouseEmailConfiguration
+              fulfillmentSettings={fulfillmentSettings}
+              isSavingSettings={isSavingSettings}
+              onSaveFulfillmentSettings={onSaveFulfillmentSettings}
+              onSuccessSave={() => onOpenChange(false)}
+            />
+          )}
 
           {/* FAQ Section */}
           <FulFillmentMethodConfigFAQs faqs={faqs} />

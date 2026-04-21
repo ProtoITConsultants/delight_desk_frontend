@@ -8,6 +8,9 @@ import FulfillmentMethodConfigCard from "@/modules/core/components/ai-agents/com
 import { isConfigMethodEnabled } from "@/modules/core/utils/order-fulfillment-methods/services/config-method-enabled";
 import getConfigMethodStatus from "@/modules/core/utils/order-fulfillment-methods/services/get-config-method-status";
 import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
+import { useFulfillmentMethodSettings } from "@/hooks/services/ai-agents/use-fulfillment-method-settings";
+import { useUpdateFulfillmentMethodSettings } from "@/hooks/services/ai-agents/use-update-fulfillment-method-settings";
+import { FulfillmentMethodType } from "@/services/ai-agents/utils/fulfillment-method";
 import { Settings } from "lucide-react";
 import { useState } from "react";
 
@@ -17,20 +20,79 @@ type CONFIG_DIALOG_DATA = {
 };
 
 const OrderCancellationAgentConfig = () => {
-  const [currentConfigurationMethod, setCurrentConfigurationMethod] = useState<
-    FULLFILLMENT_METHODS_TYPES | ""
-  >("");
-
   const [configDialogData, setConfigDialogData] = useState<CONFIG_DIALOG_DATA>({
     dialogType: "self_fulfillment",
     isDialogOpen: false,
   });
 
+  const {
+    fulfillmentMethodSettings,
+    isFetchingFulfillmentMethodSettings,
+  } = useFulfillmentMethodSettings();
+  const { updateFulfillmentMethod, isUpdatingFulfillmentMethod } =
+    useUpdateFulfillmentMethodSettings();
+
+  const mapApiMethodToUiMethod = (
+    method: FulfillmentMethodType | undefined,
+  ): FULLFILLMENT_METHODS_TYPES | "" => {
+    switch (method) {
+      case FulfillmentMethodType.CUSTOM_WAREHOUSE:
+        return "warehouse_email";
+      case FulfillmentMethodType.SHIPBOB:
+        return "shipbob";
+      case FulfillmentMethodType.SELF:
+        return "self_fulfillment";
+      case FulfillmentMethodType.SHIPSTATION:
+        return "shipstation";
+      default:
+        return "";
+    }
+  };
+
+  const mapUiMethodToApiPayload = (method: FULLFILLMENT_METHODS_TYPES) => {
+    switch (method) {
+      case "warehouse_email":
+        return fulfillmentMethodSettings?.warehouseEmail
+          ? {
+              method: FulfillmentMethodType.CUSTOM_WAREHOUSE as const,
+              warehouseEmail: fulfillmentMethodSettings.warehouseEmail,
+            }
+          : null;
+      case "shipbob":
+        return fulfillmentMethodSettings?.shipbobPersonalAccessToken
+          ? {
+              method: FulfillmentMethodType.SHIPBOB as const,
+              shipbobPersonalAccessToken:
+                fulfillmentMethodSettings.shipbobPersonalAccessToken,
+            }
+          : null;
+      case "self_fulfillment":
+        return {
+          method: FulfillmentMethodType.SELF as const,
+        };
+      case "shipstation":
+        return fulfillmentMethodSettings?.shipstationApiKey
+          ? {
+              method: FulfillmentMethodType.SHIPSTATION as const,
+              shipstationApiKey: fulfillmentMethodSettings.shipstationApiKey,
+            }
+          : null;
+      default:
+        return null;
+    }
+  };
+
+  const currentConfigurationMethod = mapApiMethodToUiMethod(
+    fulfillmentMethodSettings?.method,
+  );
+
   const configSettings = {
-    warehouseEmailEnabled: true,
-    shipbobEnabled: false,
-    selfFulfillmentEnabled: false,
-    shipstationEnabled: true,
+    warehouseEmailEnabled: Boolean(fulfillmentMethodSettings?.warehouseEmail),
+    shipbobEnabled: Boolean(
+      fulfillmentMethodSettings?.shipbobPersonalAccessToken,
+    ),
+    selfFulfillmentEnabled: true,
+    shipstationEnabled: Boolean(fulfillmentMethodSettings?.shipstationApiKey),
   };
 
   return (
@@ -80,13 +142,25 @@ const OrderCancellationAgentConfig = () => {
                 methodFeatures={fulfillmentMethod.features}
                 cardColorClassName={fulfillmentMethod.color}
                 isCurrentConfiguredMethod={isCurrentConfiguredMethod}
-                areActionButtonsDisabled={false}
                 isConfigMethodEnabled={isEnabled}
                 methodConfigStatus={methodConfigStatus}
                 onActivateConfigMethod={() => {
-                  setCurrentConfigurationMethod(
-                    fulfillmentMethod.id as FULLFILLMENT_METHODS_TYPES
+                  const payload = mapUiMethodToApiPayload(
+                    fulfillmentMethod.id as FULLFILLMENT_METHODS_TYPES,
                   );
+
+                  if (!payload) {
+                    setConfigDialogData({
+                      dialogType:
+                        fulfillmentMethod.id as FULLFILLMENT_METHODS_TYPES,
+                      isDialogOpen: true,
+                    });
+                    return;
+                  }
+
+                  updateFulfillmentMethod({
+                    params: payload,
+                  });
                 }}
                 onClickConfigMethod={() => {
                   setConfigDialogData({
@@ -95,7 +169,12 @@ const OrderCancellationAgentConfig = () => {
                     isDialogOpen: true,
                   });
                 }}
-                configuredWarehouseEmail="m.babar@protogroup.co"
+                configuredWarehouseEmail={
+                  fulfillmentMethodSettings?.warehouseEmail ?? ""
+                }
+                areActionButtonsDisabled={
+                  isFetchingFulfillmentMethodSettings || isUpdatingFulfillmentMethod
+                }
               />
             );
           })}
@@ -112,6 +191,11 @@ const OrderCancellationAgentConfig = () => {
             ...configDialogData,
             isDialogOpen: value,
           });
+        }}
+        fulfillmentSettings={fulfillmentMethodSettings}
+        isSavingSettings={isUpdatingFulfillmentMethod}
+        onSaveFulfillmentSettings={(params, onSuccessCallback) => {
+          updateFulfillmentMethod({ params, onSuccessCallback });
         }}
       />
     </AiAgentRoot>

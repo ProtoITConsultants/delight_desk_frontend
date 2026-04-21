@@ -1,8 +1,60 @@
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { cn } from "@/lib/utils";
+import { useEffect } from "react";
+import z from "zod";
+import {
+  FulfillmentMethodSettings,
+  FulfillmentMethodType,
+  UpdateFulfillmentMethodSettingsParams,
+} from "@/services/ai-agents/utils/fulfillment-method";
 
-const ShipbobConfiguration = () => {
-  const connectionEstablished = false; // Replace with actual connection status
+const SHIPBOB_CONFIG_SCHEMA = z.object({
+  shipbobPersonalAccessToken: z
+    .string()
+    .min(1, "ShipBob personal access token is required"),
+});
+
+type ShipbobConfigurationProps = {
+  fulfillmentSettings: FulfillmentMethodSettings | undefined;
+  isSavingSettings: boolean;
+  onSuccessSave: () => void;
+  onSaveFulfillmentSettings: (
+    params: UpdateFulfillmentMethodSettingsParams,
+    onSuccess?: () => void,
+  ) => void;
+};
+
+const ShipbobConfiguration = ({
+  fulfillmentSettings,
+  isSavingSettings,
+  onSaveFulfillmentSettings,
+  onSuccessSave,
+}: ShipbobConfigurationProps) => {
+  const form = useForm({
+    resolver: zodResolver(SHIPBOB_CONFIG_SCHEMA),
+    defaultValues: {
+      shipbobPersonalAccessToken:
+        fulfillmentSettings?.shipbobPersonalAccessToken ?? "",
+    },
+  });
+
+  useEffect(() => {
+    form.reset({
+      shipbobPersonalAccessToken:
+        fulfillmentSettings?.shipbobPersonalAccessToken ?? "",
+    });
+  }, [form, fulfillmentSettings?.shipbobPersonalAccessToken]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -10,36 +62,44 @@ const ShipbobConfiguration = () => {
       <h3 className="font-semibold text-gray-900 dark:text-gray-100">
         ShipBob API Integration
       </h3>
-      {/* Connection Button / Status */}
-      {connectionEstablished ? (
-        // Success Message
-        <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-          <div className="flex items-center space-x-2">
-            <CheckCircle className="h-5 w-5 text-green-600" />
-            <span className="font-medium text-green-900 dark:text-green-100">
-              ShipBob Connected Successfully
-            </span>
-          </div>
-          <p className="text-sm text-green-700 dark:text-green-300 mt-1">
-            Your ShipBob integration is active and ready for automated order
-            cancellations.
-          </p>
-        </div>
-      ) : (
-        // Connect Button
-        <div className="space-y-3">
-          <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
-            <p className="text-sm text-yellow-800 dark:text-yellow-200">
-              Connect your ShipBob account to enable automated order
-              cancellations through their API.
-            </p>
-          </div>
 
-          <Button onClick={() => {}} className="w-full">
-            Connect to ShipBob
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-2"
+          onSubmit={form.handleSubmit((values) => {
+            onSaveFulfillmentSettings(
+              {
+                method: FulfillmentMethodType.SHIPBOB,
+                shipbobPersonalAccessToken: values.shipbobPersonalAccessToken,
+              },
+              onSuccessSave,
+            );
+          })}
+        >
+          <FormField
+            control={form.control}
+            name="shipbobPersonalAccessToken"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={cn("text-sm font-medium text-gray-700")}>
+                  ShipBob Personal Access Token
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Enter your ShipBob token"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[12px] -mt-1" />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="w-full" disabled={isSavingSettings}>
+            {isSavingSettings ? "Saving..." : "Save Configuration"}
           </Button>
-        </div>
-      )}
+        </form>
+      </Form>
     </div>
   );
 };

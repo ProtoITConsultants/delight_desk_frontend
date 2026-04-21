@@ -10,12 +10,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-} from "../ui/dropdown-menu";
 import Image from "next/image";
 import SIDEBAR_CONTENT from "@/constants/sidebar";
 import Link from "next/link";
@@ -64,7 +58,7 @@ export function AppSidebar() {
                           isAiAgentsActive
                             ? "text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                          "w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]"
+                          "w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]",
                         )}
                       >
                         <span className="flex items-center w-full">
@@ -86,7 +80,7 @@ export function AppSidebar() {
                               isSubItemActive
                                 ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
                                 : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                              "group flex items-center px-2 py-2 text-sm rounded-md border border-transparent cursor-pointer"
+                              "group flex items-center px-2 py-2 text-sm rounded-md border border-transparent cursor-pointer",
                             )}
                           >
                             <Link href={subItem.href}>
@@ -109,15 +103,26 @@ export function AppSidebar() {
                       isActive
                         ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]"
+                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]",
+                      {
+                        "opacity-50 cursor-not-allowed": item.isDisabled,
+                      },
                     )}
+                    disabled={true}
                   >
-                    <Link href={item.href}>
+                    {item.isDisabled ? (
                       <span className="flex items-center w-full">
                         <item.icon className="mr-2 h-4 w-4" />
                         {item.name}
                       </span>
-                    </Link>
+                    ) : (
+                      <Link href={item.href}>
+                        <span className="flex items-center w-full">
+                          <item.icon className="mr-2 h-4 w-4" />
+                          {item.name}
+                        </span>
+                      </Link>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );
@@ -128,7 +133,7 @@ export function AppSidebar() {
       <SidebarFooter className="px-4 pb-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200 h-[38px]">
                   <div className="flex items-center">
@@ -154,7 +159,17 @@ export function AppSidebar() {
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
+
+            <Link
+              href="/connections"
+              className="w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 h-[38px]"
+            >
+              <div className="flex items-center w-full cursor-pointer">
+                <Settings className="mr-3 h-4 w-4 text-gray-400" />
+                Connections
+              </div>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

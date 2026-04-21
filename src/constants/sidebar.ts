@@ -19,7 +19,12 @@ import {
 const PRIMARY_NAVIGATION = [
   { name: "Dashboard", href: "/dashboard", icon: Satellite },
   { name: "AI Assistant", href: "/ai-assistant", icon: Bot },
-  { name: "Quick Actions", href: "/quick-actions", icon: LayoutDashboard },
+  {
+    name: "Quick Actions",
+    href: "/quick-actions",
+    icon: LayoutDashboard,
+    isDisabled: true,
+  },
   { name: "AI Agents", href: "#", icon: Users }, // Dropdown menu, no direct route
   { name: "AI Team Center", href: "/ai-training", icon: Brain },
   { name: "Approval Queue", href: "/approval-queue", icon: CheckCircle },

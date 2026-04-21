@@ -2,10 +2,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AI_AGENT_TRAINING_DATA_PROPS } from "../../utils/types";
 import { cn } from "@/lib/utils";
-import {
-  getTrainingDataQualityColor,
-  getTrainingDataQualityIcon,
-} from "../../utils/services/agent-training-data/training-data-quality";
+// import {
+//   getTrainingDataQualityColor,
+//   getTrainingDataQualityIcon,
+// } from "../../utils/services/agent-training-data/training-data-quality";
 import { AlertTriangle, FileText, Globe } from "lucide-react";
 import WebsiteURLInput from "./components/url-input";
 import { Separator } from "@/components/ui/separator";
@@ -30,7 +30,7 @@ export const AiAgentTrainingData = ({
 
       <CardContent className="space-y-6">
         {/* Training Data Quality */}
-        <div
+        {/* <div
           className={`flex items-center gap-2 p-3 rounded-lg border ${getTrainingDataQualityColor(
             trainingRequirements.contentQuality
           )}`}
@@ -51,7 +51,7 @@ export const AiAgentTrainingData = ({
               added
             </p>
           </div>
-        </div>
+        </div> */}
         {/* Combined Status and Recommendations */}
         {(trainingRequirements?.warning ||
           trainingRequirements?.recommendations) && (
