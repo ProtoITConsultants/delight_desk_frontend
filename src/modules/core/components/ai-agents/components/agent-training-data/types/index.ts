@@ -17,12 +17,15 @@ type MANUAL_CONTENT_DATA = {
   content: string;
 };
 
-type MANUAL_CONTENT_INPUT_PROPS = AGENT_TRAINING_PROPS & {
+type MANUAL_CONTENT_INPUT_PROPS = Omit<
+  AGENT_TRAINING_PROPS,
+  "heading" | "Icon"
+> & {
   showManualInput: boolean;
   setShowManualInput: React.Dispatch<React.SetStateAction<boolean>>;
   titlePlaceholder: string;
   contentPlaceholder: string;
-  addManualContent: (value: MANUAL_CONTENT_DATA) => void;
+  addManualContent: (value: MANUAL_CONTENT_DATA) => Promise<boolean>;
 };
 
 export type {

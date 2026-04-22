@@ -1,4 +1,5 @@
 import { TestWismoAgentResponse } from "@/services/ai-agents/utils/wismo-agent";
+import { ProductKnowledgeSource } from "@/services/ai-training/types/product-knowledge";
 
 // Agent Page Root
 type AI_AGENT_ROOT_PROPS = {
@@ -89,7 +90,15 @@ type AI_AGENT_TRAINING_DATA_PROPS = {
   className?: string;
   agentDisplayName: string;
   Icon?: React.ReactNode;
-  trainingRequirements: AGENT_TRAINING_REQUIREMENTS;
+  urlSources?: ProductKnowledgeSource[];
+  manualSources?: ProductKnowledgeSource[];
+  onAddUrl?: (url: string) => void;
+  onAddManual?: (data: { title: string; content: string }) => Promise<boolean>;
+  onDelete?: (sourceId: string) => void;
+  isAddingUrl?: boolean;
+  isAddingManual?: boolean;
+  isDeleting?: boolean;
+  isFetchingSources?: boolean;
 };
 
 export type {

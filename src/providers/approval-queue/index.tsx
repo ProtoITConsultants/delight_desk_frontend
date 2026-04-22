@@ -16,7 +16,7 @@ import { api } from "@/lib/api";
 import { toast } from "sonner";
 
 const ApprovalQueueContext = createContext<ApprovalQueueContextType>({
-  selectedItemStatus: ApprovalQueueItemStatus.PENDING,
+  selectedItemStatus: ApprovalQueueItemStatus.IN_PROGRESS,
   setSelectedItemStatus: () => {},
   activeAgentCategory: ApprovalQueueAgentCategory.ALL,
   setActiveAgentCategory: () => {},
@@ -43,7 +43,7 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [selectedItemStatus, setSelectedItemStatus] =
-    useState<ApprovalQueueItemStatus>(ApprovalQueueItemStatus.PENDING);
+    useState<ApprovalQueueItemStatus>(ApprovalQueueItemStatus.IN_PROGRESS);
   const [activeAgentCategory, setActiveAgentCategory] =
     useState<ApprovalQueueAgentCategory>(ApprovalQueueAgentCategory.ALL);
 

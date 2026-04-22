@@ -2,10 +2,6 @@ import { ApprovalQueueAgentCategory } from "../../../../utils/constants";
 
 export const APPROVAL_QUEUE_ITEMS_FILTER_OPTIONS = [
   {
-    label: "Pending",
-    value: "pending",
-  },
-  {
     label: "In Progress",
     value: "in_progress",
   },
