@@ -10,16 +10,43 @@ import HowAgentWorks from "@/modules/core/components/ai-agents/components/how-ag
 import TestProductAgent from "@/modules/core/components/ai-agents/components/test-ai-agent/product-agent";
 import AGENT_WORKFLOW_STEPS from "@/modules/core/components/ai-agents/constants/how-agent-works";
 import { useAiAgents } from "@/providers/ai-agents";
+import {
+  AiTeamCenterProvider,
+  useAiTeamCenter,
+} from "@/providers/ai-team-center";
 import { Bot, Brain } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-const ProductAgentPage = () => {
+const ProductAgentPageInner = () => {
   const {
     aiAgentsSettings: { product },
   } = useAiAgents();
   const { updateAIAgentSettings, isUpdating } =
     useUpdateSpecificAIAgentSettings();
   const [aiAgentTestQuery, setAiAgentTestQuery] = useState<string>("");
+
+  const {
+    productKnowledgeSources,
+    addUrlProductKnowledgeSource,
+    addManualProductKnowledgeSource,
+    deleteProductKnowledgeSource,
+    isAddingUrlSource,
+    isAddingManualSource,
+    isDeletingSource,
+    isFetchingProductKnowledgeSources,
+  } = useAiTeamCenter();
+
+  const { urlSources, manualSources } = useMemo(
+    () => ({
+      urlSources: productKnowledgeSources.filter(
+        (source) => source.sourceType === "url",
+      ),
+      manualSources: productKnowledgeSources.filter(
+        (source) => source.sourceType === "manual",
+      ),
+    }),
+    [productKnowledgeSources],
+  );
 
   return (
     <AiAgentRoot>
@@ -97,24 +124,26 @@ const ProductAgentPage = () => {
       <AiAgentTrainingData
         agentDisplayName="Product Agent"
         Icon={<Brain className="h-5 w-5" />}
-        trainingRequirements={{
-          agentType: "product",
-          hasMinimumContent: true,
-          hasRelevantContent: true,
-          urlCount: 10,
-          manualContentCount: 10,
-          relevantChunks: 10,
-          totalSources: 10,
-          contentQuality: "excellent",
-          warning: "Insufficient relevant content for Product Agent.",
-          recommendations: [
-            "Add more relevant content to your training data.",
-            "Use relevant keywords in your training data.",
-          ],
+        urlSources={urlSources}
+        manualSources={manualSources}
+        onAddUrl={(url) => {
+          void addUrlProductKnowledgeSource({ url });
         }}
+        onAddManual={(data) => addManualProductKnowledgeSource(data)}
+        onDelete={deleteProductKnowledgeSource}
+        isAddingUrl={isAddingUrlSource}
+        isAddingManual={isAddingManualSource}
+        isDeleting={isDeletingSource}
+        isFetchingSources={isFetchingProductKnowledgeSources}
       />
     </AiAgentRoot>
   );
 };
+
+const ProductAgentPage = () => (
+  <AiTeamCenterProvider>
+    <ProductAgentPageInner />
+  </AiTeamCenterProvider>
+);
 
 export default ProductAgentPage;

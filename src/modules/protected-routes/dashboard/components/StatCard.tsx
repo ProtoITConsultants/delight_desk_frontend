@@ -13,7 +13,7 @@ const StatCard = ({ label, value, colorClass, icon }: StatCardProps) => {
   return (
     <Card className="py-0 rounded-lg">
       <CardContent className="p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-medium text-gray-600">{label}</p>
             <p className={cn("text-2xl font-bold", colorClass)}>{value}</p>

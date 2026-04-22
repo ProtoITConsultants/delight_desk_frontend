@@ -4,7 +4,6 @@ export enum ApprovalQueueItemCategory {
 }
 
 export enum ApprovalQueueItemStatus {
-  PENDING = "pending",
   IN_PROGRESS = "in_progress",
   CANCELLED = "cancelled",
   ESCALATED = "escalated",

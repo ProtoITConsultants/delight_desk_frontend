@@ -6,11 +6,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DASHBOARD from "@/constants/dashboard";
+import { DASHBOARD_ANALYTICS_RANGE } from "@/services/dashboard/types";
 
 // Types
 type TimeRangeSelectorProps = {
-  timeRange: string;
-  setTimeRange: React.Dispatch<React.SetStateAction<string>>;
+  timeRange: DASHBOARD_ANALYTICS_RANGE;
+  setTimeRange: (range: DASHBOARD_ANALYTICS_RANGE) => void;
 };
 
 const TimeRangeSelector = ({
@@ -18,7 +19,10 @@ const TimeRangeSelector = ({
   setTimeRange,
 }: TimeRangeSelectorProps) => {
   return (
-    <Select value={timeRange} onValueChange={setTimeRange}>
+    <Select
+      value={timeRange}
+      onValueChange={(value) => setTimeRange(value as DASHBOARD_ANALYTICS_RANGE)}
+    >
       <SelectTrigger className="w-full sm:w-[180px] hover:cursor-pointer bg-white">
         <SelectValue />
       </SelectTrigger>

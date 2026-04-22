@@ -9,8 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 const ManualTrainingDataInput = ({
-  heading,
-  Icon,
   titlePlaceholder,
   contentPlaceholder,
   setShowManualInput,
@@ -28,22 +26,16 @@ const ManualTrainingDataInput = ({
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
-      <div className="flex items-center gap-4 justify-between">
-        <div className="flex items-center gap-2">
-          {Icon}
-          <span className="text-sm font-medium text-gray-700">{heading}</span>
-        </div>
-        {!showManualInput && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowManualInput(true)}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Content
-          </Button>
-        )}
-      </div>
+      {!showManualInput && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowManualInput(true)}
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Content
+        </Button>
+      )}
       {/* Input */}
       {showManualInput && (
         <Card className="border-2 border-dashed border-gray-200 py-0">
@@ -75,6 +67,7 @@ const ManualTrainingDataInput = ({
                     content: e.target.value,
                   });
                 }}
+                minLength={20}
                 rows={6}
                 className="bg-white resize-none min-h-30"
               />
@@ -88,16 +81,21 @@ const ManualTrainingDataInput = ({
                 Cancel
               </Button>
               <Button
-                onClick={() =>
-                  addManualContent({
-                    title: manualContentData.title,
-                    content: manualContentData.content,
-                  })
-                }
+                onClick={async () => {
+                  const isSuccess = await addManualContent({
+                    title: manualContentData.title.trim(),
+                    content: manualContentData.content.trim(),
+                  });
+                  if (isSuccess) {
+                    setManualContentData({ title: "", content: "" });
+                    setShowManualInput(false);
+                  }
+                }}
                 disabled={
                   isInputDisabled ||
+                  isAddingContent ||
                   !manualContentData.title.trim() ||
-                  !manualContentData.content.trim()
+                  manualContentData.content.trim().length < 20
                 }
               >
                 {isAddingContent ? (
