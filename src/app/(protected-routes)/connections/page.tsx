@@ -14,6 +14,7 @@ import {
   ConnectionsDialogsProvider,
   useConnectionsDialogs,
 } from "@/providers/connections/connections-dialogs-provider";
+import ShipBobConnectionalModal from "@/modules/protected-routes/connections-page/components/modals/ShipBobConnectionalModal copy";
 
 type emailConnectionModalType = {
   isModalOpen: boolean;
@@ -30,6 +31,8 @@ const ConnectionsPageContent = () => {
     setWooCommerceDialog,
     shipstationDialog,
     setShipstationDialog,
+    shipbobDialogOpen,
+    setShipbobDialogOpen,
   } = useConnectionsDialogs();
 
   // Local States
@@ -220,7 +223,7 @@ const ConnectionsPageContent = () => {
           connectionEstablished={
             connectionsData?.shipbobConnection ? true : false
           }
-          onCreateConnection={() => {}}
+          onCreateConnection={() => setShipbobDialogOpen(true)}
           onManageConnection={() => {}}
           isFetchingDetails={isPending}
         />
@@ -303,6 +306,11 @@ const ConnectionsPageContent = () => {
             type: "",
           })
         }
+      />
+      {/* ShipBob Connection - Modal */}
+      <ShipBobConnectionalModal
+        showShipBobDialog={shipbobDialogOpen}
+        onCloseModal={() => setShipbobDialogOpen(false)}
       />
 
       {/* Manage Connections Modal */}
