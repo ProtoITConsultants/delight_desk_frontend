@@ -17,13 +17,13 @@ import { Input } from "@/components/ui/input";
 import { useUpdateFulfillmentMethodSettings } from "@/hooks/services/ai-agents/use-update-fulfillment-method-settings";
 import { FulfillmentMethodType } from "@/services/ai-agents/utils/fulfillment-method";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Info } from "lucide-react";
+
 import { useForm } from "react-hook-form";
 import z from "zod";
 
 // Shipstation Props Type
-type ShipStationProps = {
-  showShipstationDialog: boolean;
+type ShipBobConnectionModalProps = {
+  showShipBobDialog: boolean;
   onCloseModal: () => void;
 };
 
@@ -34,10 +34,10 @@ const formSchema = z.object({
   }),
 });
 
-const ShipStationConnectionalModal = ({
-  showShipstationDialog,
+const ShipBobConnectionalModal = ({
+  showShipBobDialog,
   onCloseModal,
-}: ShipStationProps) => {
+}: ShipBobConnectionModalProps) => {
   // React Hook Form
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -63,10 +63,10 @@ const ShipStationConnectionalModal = ({
   };
 
   return (
-    <Dialog open={showShipstationDialog} onOpenChange={onCloseModal}>
+    <Dialog open={showShipBobDialog} onOpenChange={onCloseModal}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Connect Shipstation</DialogTitle>
+          <DialogTitle>Connect ShipBob</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -96,24 +96,6 @@ const ShipStationConnectionalModal = ({
                   </FormItem>
                 )}
               />
-
-              {/* Tooltip */}
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0">
-                    <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
-                      Where to find your API credentials
-                    </h4>
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
-                      Go to Shipstation Settings → API Settings → Generate New
-                      API Key. You&apos;ll need both the API Key and API Secret.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Action Buttons */}
@@ -133,12 +115,12 @@ const ShipStationConnectionalModal = ({
               <Button
                 type="submit"
                 className="flex-1 h-10"
-                data-testid="button-connect-shipstation"
+                data-testid="button-connect-shipbob"
                 disabled={isUpdatingFulfillmentMethod}
               >
                 {isUpdatingFulfillmentMethod
                   ? "Connecting..."
-                  : "Connect Shipstation"}
+                  : "Connect ShipBob"}
               </Button>
             </div>
           </form>
@@ -148,4 +130,4 @@ const ShipStationConnectionalModal = ({
   );
 };
 
-export default ShipStationConnectionalModal;
+export default ShipBobConnectionalModal;

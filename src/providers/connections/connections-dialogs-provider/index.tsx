@@ -10,6 +10,8 @@ interface CONNECTION_DIALOG_PROVIDER_TYPE {
   setShipstationDialog: React.Dispatch<
     React.SetStateAction<CONNECTION_MODAL_TYPE>
   >;
+  shipbobDialogOpen: boolean;
+  setShipbobDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Create context with default value
@@ -19,6 +21,8 @@ const ConnectionsDialogsContext =
     setWooCommerceDialog: () => null,
     shipstationDialog: { isModalOpen: false, type: "" },
     setShipstationDialog: () => null,
+    shipbobDialogOpen: false,
+    setShipbobDialogOpen: () => null,
   });
 
 // Hook for consuming the context
@@ -46,11 +50,15 @@ export const ConnectionsDialogsProvider: React.FC<{
       type: "",
     });
 
+  const [shipbobDialogOpen, setShipbobDialogOpen] = useState(false);
+
   const value = {
     wooCommerceDialog,
     setWooCommerceDialog,
     shipstationDialog,
     setShipstationDialog,
+    shipbobDialogOpen,
+    setShipbobDialogOpen,
   };
 
   return (
