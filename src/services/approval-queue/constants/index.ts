@@ -1,4 +1,5 @@
 const GET_APPROVAL_QUEUE_STATS = "/approval-queue/stats";
+const GET_APPROVAL_QUEUE_STREAM = "/approval-queue/stream";
 const GET_APPROVAL_QUEUE_ITEMS = "/approval-queue";
 const GET_APPROVAL_QUEUE_ITEM_BY_ID = ({ itemId }: { itemId: string }) =>
   `/approval-queue/${encodeURIComponent(itemId)}`;
@@ -16,6 +17,7 @@ const EDIT_AND_APPROVE_APPROVAL_QUEUE_ACTION = ({
 
 export const APPROVAL_QUEUE_ENDPOINTS = {
   GET_APPROVAL_QUEUE_STATS,
+  GET_APPROVAL_QUEUE_STREAM,
   GET_APPROVAL_QUEUE_ITEMS,
   GET_APPROVAL_QUEUE_ITEM_BY_ID,
   CANCEL_APPROVAL_QUEUE_ITEM_WORKFLOW,

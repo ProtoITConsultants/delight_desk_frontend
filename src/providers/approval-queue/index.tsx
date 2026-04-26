@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { ApprovalQueueContextType } from "./approval-queue-context.types";
+import { useApprovalQueueStreamSync } from "@/hooks/services/approval-queue/use-approval-queue-stream-sync";
 import {
   ApprovalQueueAgentCategory,
   ApprovalQueueItemStatus,
@@ -46,6 +47,8 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
     useState<ApprovalQueueItemStatus>(ApprovalQueueItemStatus.IN_PROGRESS);
   const [activeAgentCategory, setActiveAgentCategory] =
     useState<ApprovalQueueAgentCategory>(ApprovalQueueAgentCategory.ALL);
+
+  useApprovalQueueStreamSync({ selectedItemStatus, activeAgentCategory });
 
   const {
     data,
