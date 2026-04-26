@@ -6,6 +6,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useCreatePromoCodeConfiguration } from "@/hooks/services/ai-agents/promo-code/use-create-promo-code-configuration";
+import { useUpdatePromoCodeConfiguration } from "@/hooks/services/ai-agents/promo-code/use-update-promo-code-configuration";
+import {
+  formValuesToCreatePayload,
+} from "@/modules/protected-routes/ai-agents/promo-code-agent/utils/mappers/promo-code-api-mappers";
 import {
   PROMO_CODE_DIALOG_PROPS,
   PROMO_CODE_FORM_TYPE,
@@ -14,17 +19,31 @@ import PromoCodeForm from "../promo-code-form";
 
 const PromoCodeDialoge = ({
   dialogType,
+  editingConfigId,
   dialogeTitle,
   dialogDescription,
   isDialogOpen,
   onOpenChange,
 }: PROMO_CODE_DIALOG_PROPS) => {
-  // TODO: Create Mutation
-  const onSubmit = (data: PROMO_CODE_FORM_TYPE) => {
-    if (dialogType === "add-promo-code") {
-      console.log("Add Promo Code", data);
-    } else {
-      console.log("Edit Promo Code", data);
+  const { isCreating, createConfiguration } = useCreatePromoCodeConfiguration();
+  const { isUpdating, updateConfiguration } = useUpdatePromoCodeConfiguration();
+
+  const isSaving = isCreating || isUpdating;
+
+  const onSubmit = async (data: PROMO_CODE_FORM_TYPE) => {
+    try {
+      const payload = formValuesToCreatePayload(data);
+      if (dialogType === "add-promo-code") {
+        await createConfiguration(payload);
+      } else {
+        if (!editingConfigId) {
+          return;
+        }
+        await updateConfiguration({ configId: editingConfigId, payload });
+      }
+      onOpenChange(false);
+    } catch {
+      // Errors are surfaced via mutation toasts
     }
   };
 
@@ -51,7 +70,7 @@ const PromoCodeDialoge = ({
         {/* Promo Code Form */}
         <PromoCodeForm
           dialogType={dialogType}
-          isSavingPromoCode={false}
+          isSavingPromoCode={isSaving}
           onSubmit={onSubmit}
           onCancel={() => {
             onOpenChange(false);

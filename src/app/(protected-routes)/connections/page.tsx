@@ -226,6 +226,7 @@ const ConnectionsPageContent = () => {
           onCreateConnection={() => setShipbobDialogOpen(true)}
           onManageConnection={() => {}}
           isFetchingDetails={isPending}
+          hideActionWhenConnected
         />
         {/* Shipstation Connection */}
         <ConnectionCard.Item
@@ -258,6 +259,7 @@ const ConnectionsPageContent = () => {
             })
           }
           isFetchingDetails={isPending}
+          hideActionWhenConnected
         />
 
         {/* Callout for users without ShipBob/Shipstation */}

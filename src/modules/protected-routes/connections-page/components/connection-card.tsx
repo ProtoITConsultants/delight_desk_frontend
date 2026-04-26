@@ -17,6 +17,8 @@ type CardItemProps = Omit<ConnectionCardProps, "children"> & {
   onManageConnection: () => void;
   isFetchingDetails: boolean; // When Fetching Connection Details
   disabled?: boolean;
+  /** When true, no action button is shown if already connected (e.g. fulfillment partners). */
+  hideActionWhenConnected?: boolean;
 };
 
 // Root Card Container
@@ -45,6 +47,7 @@ const Item = ({
   onManageConnection,
   isFetchingDetails,
   disabled = false,
+  hideActionWhenConnected = false,
 }: CardItemProps) => (
   <div className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors space-y-3">
     {/* Content */}
@@ -84,7 +87,7 @@ const Item = ({
     {/* Action Button */}
     {isFetchingDetails ? (
       <Skeleton className="w-full h-9 rounded-lg" />
-    ) : connectionEstablished ? (
+    ) : connectionEstablished && hideActionWhenConnected ? null : connectionEstablished ? (
       <Button
         variant="outline"
         size="sm"

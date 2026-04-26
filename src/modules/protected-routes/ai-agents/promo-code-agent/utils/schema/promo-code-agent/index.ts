@@ -7,10 +7,10 @@ export const PROMO_CODE_FORM_SCHEMA = z
     usage_type: z.enum([
       "refund_only",
       "first_time_customer_discount",
-      "general_discount_inquiries",
-      "both_refund_and_new_customer_offers",
+      "general_discount_inquiry",
+      "refund_and_new_customer_offer",
     ]),
-    discount_type: z.enum(["percentage", "fixed_cash"]),
+    discount_type: z.enum(["percentage", "fixed_amount"]),
     discount_percentage: z.string().optional(),
     max_refund_value: z.string().optional(),
     discount_amount: z.string().optional(),
@@ -24,10 +24,6 @@ export const PROMO_CODE_FORM_SCHEMA = z
     enable_first_time_customer_discounts: z.boolean().optional(), // Automatically offer this discount to customers with no previous orders
     first_time_customer_message: z.string().optional(),
     enable_general_inquiry_discounts: z.boolean().optional(), // Offer this discount when customers ask about available promotions
-    max_offer_per_customer: z
-      .number()
-      .min(1, "Min offers per customer should be 1.")
-      .max(10, "Max Offers per customer can be 10."),
     offer_frequency_days: z
       .number()
       .min(1, "Frequency Days are Required!")
@@ -41,11 +37,31 @@ export const PROMO_CODE_FORM_SCHEMA = z
         code: z.ZodIssueCode.custom,
       });
     }
-    if (data.discount_type === "fixed_cash" && !data.discount_amount) {
+    if (data.discount_type === "fixed_amount" && !data.discount_amount) {
       ctx.addIssue({
         path: ["discount_amount"],
         message: "Discount amount is required!",
         code: z.ZodIssueCode.custom,
       });
+    }
+    if (data.discount_type === "percentage" && data.max_refund_value?.trim()) {
+      const n = parseFloat(data.max_refund_value);
+      if (Number.isNaN(n) || n <= 0) {
+        ctx.addIssue({
+          path: ["max_refund_value"],
+          message: "Maximum refund amount must be greater than 0",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    }
+    if (data.discount_type === "fixed_amount" && data.discount_amount?.trim()) {
+      const n = parseFloat(data.discount_amount);
+      if (Number.isNaN(n) || n <= 0) {
+        ctx.addIssue({
+          path: ["discount_amount"],
+          message: "Amount must be greater than 0",
+          code: z.ZodIssueCode.custom,
+        });
+      }
     }
   });

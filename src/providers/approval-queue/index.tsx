@@ -48,7 +48,7 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
   const [activeAgentCategory, setActiveAgentCategory] =
     useState<ApprovalQueueAgentCategory>(ApprovalQueueAgentCategory.ALL);
 
-  useApprovalQueueStreamSync({ selectedItemStatus, activeAgentCategory });
+  useApprovalQueueStreamSync();
 
   const {
     data,

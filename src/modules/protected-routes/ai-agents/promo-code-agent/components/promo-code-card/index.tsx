@@ -17,6 +17,7 @@ import PromoCodeDialoge from "../add-promo-code-dialog";
 import { useState } from "react";
 import "./styles.css";
 import { Label } from "@/components/ui/label";
+import { useUpdatePromoCodeConfiguration } from "@/hooks/services/ai-agents/promo-code/use-update-promo-code-configuration";
 
 const PromoCodeCard = ({
   id,
@@ -26,7 +27,6 @@ const PromoCodeCard = ({
   valid_from,
   valid_until,
   is_active,
-  usage_count,
   last_used,
   discount_type,
   max_refund_value,
@@ -36,10 +36,11 @@ const PromoCodeCard = ({
   enable_first_time_customer_discounts,
   first_time_customer_message,
   enable_general_inquiry_discounts,
-  max_offer_per_customer,
   offer_frequency_days,
   discount_percentage,
+  last_sync_error,
 }: PROMO_CODE_TYPES) => {
+  const { updateConfiguration, isUpdating } = useUpdatePromoCodeConfiguration();
   const { form } = usePromoCodeDialog();
   const [isEditPromoCodeDialogOpen, setIsEditPromoCodeDialogOpen] =
     useState(false);
@@ -121,7 +122,6 @@ const PromoCodeCard = ({
       first_time_customer_message: first_time_customer_message || "",
       enable_general_inquiry_discounts:
         enable_general_inquiry_discounts || false,
-      max_offer_per_customer: max_offer_per_customer || 1,
       offer_frequency_days: offer_frequency_days || 90,
     });
 
@@ -142,14 +142,23 @@ const PromoCodeCard = ({
           <CardDescription data-testid={`config-description-${id}`}>
             {description || "No description provided"}
           </CardDescription>
+          {last_sync_error && (
+            <p className="text-xs text-destructive mt-1" data-testid={`config-sync-error-${id}`}>
+              WooCommerce sync: {last_sync_error}
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-2 header-actions">
           <div className="flex items-center gap-2">
             <Switch
               id={`switch-activation-status-${id}`}
               checked={is_active || false}
-              onCheckedChange={() => {
-                console.log("Switch checked");
+              disabled={isUpdating}
+              onCheckedChange={(checked) => {
+                void updateConfiguration({
+                  configId: id,
+                  payload: { isActive: checked },
+                });
               }}
               data-testid={`switch-activation-status-${id}`}
             />
@@ -173,7 +182,8 @@ const PromoCodeCard = ({
           {/* Edit Promo Code Dialog */}
           <PromoCodeDialoge
             dialogType="edit-promo-code"
-            dialogeTitle="Create Promo Code Configuration"
+            editingConfigId={id}
+            dialogeTitle="Edit Promo Code Configuration"
             dialogDescription="Set up automatic refunds for customers who qualified for a promo code but didn't receive the discount on their order. Configure the discount amount, validity period, and eligibility requirements."
             isDialogOpen={isEditPromoCodeDialogOpen}
             onOpenChange={(value) => {
@@ -182,7 +192,10 @@ const PromoCodeCard = ({
           />
 
           {/* Delete Promo Code Dialog */}
-          <DeletePromoCodeDialog promo_code_id={id} promo_code={promo_code} />
+          <DeletePromoCodeDialog
+            configId={id}
+            promo_code={promo_code}
+          />
         </div>
       </CardHeader>
 
@@ -206,16 +219,17 @@ const PromoCodeCard = ({
         </div>
 
         <div data-testid={`config-usage-${id}`}>
-          <div className="font-medium">Usage</div>
-          <div className="text-muted-foreground">
-            {usage_count || 0} times
-            {last_used && (
-              <div className="text-xs">
-                Last:{" "}
+          <div className="font-medium">WooCommerce</div>
+          <div className="text-muted-foreground text-xs">
+            {last_used ? (
+              <>
+                Last sync{" "}
                 {formatDistanceToNow(new Date(last_used), {
                   addSuffix: true,
                 })}
-              </div>
+              </>
+            ) : (
+              "Not synced yet"
             )}
           </div>
         </div>

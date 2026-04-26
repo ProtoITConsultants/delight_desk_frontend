@@ -2,21 +2,15 @@ import {
   EscalationPriority,
   EscalationStatus,
 } from "@/modules/protected-routes/ai-assistant/types/ai-assistant-header";
+import type { AiAssistantStreamEscalationsUpdatedEvent } from "@/services/ai-assistant/utils/escalation-stream";
 import AI_ASSISTANT_ENDPOINTS from "@/services/ai-assistant/utils/constants";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
-
-function isSseCommentOrHeartbeatBlock(block: string): boolean {
-  return block.split("\n").every((line) => {
-    const t = line.trim();
-    return t === "" || t.startsWith(":");
-  });
-}
+import { useEffect, useRef } from "react";
 
 /**
- * Subscribes to the escalations SSE stream (logged-in layout) and
- * revalidates escalation list + stats when a non-heartbeat event arrives.
- * Reconnects on disconnect with backoff until unmount.
+ * One EventSource to `/escalations/stream` with `withCredentials: true`.
+ * Only the named SSE event `escalations_updated` invalidates the escalation list + stats
+ * (not `connected` or `heartbeat`). Browser will reconnect; close on unmount.
  */
 export function useEscalationStreamSync({
   searchQuery,
@@ -28,6 +22,12 @@ export function useEscalationStreamSync({
   escalationPriority: EscalationPriority | null;
 }) {
   const queryClient = useQueryClient();
+  const searchQueryRef = useRef(searchQuery);
+  const escalationStatusRef = useRef(escalationStatus);
+  const escalationPriorityRef = useRef(escalationPriority);
+  searchQueryRef.current = searchQuery;
+  escalationStatusRef.current = escalationStatus;
+  escalationPriorityRef.current = escalationPriority;
 
   useEffect(() => {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -37,79 +37,39 @@ export function useEscalationStreamSync({
       AI_ASSISTANT_ENDPOINTS.GET_ESCALATION_STREAM
     }`;
 
-    const abortController = new AbortController();
-    let cancelled = false;
+    const stream = new EventSource(url, { withCredentials: true });
 
-    const invalidateEscalationQueries = () => {
+    const onEscalationsUpdated = (event: MessageEvent) => {
+      let payload: unknown;
+      try {
+        payload = JSON.parse(event.data);
+      } catch {
+        return;
+      }
+      if (
+        !payload ||
+        typeof payload !== "object" ||
+        (payload as AiAssistantStreamEscalationsUpdatedEvent).type !==
+          "escalations_updated"
+      ) {
+        return;
+      }
+
       void queryClient.invalidateQueries({
         queryKey: [
           "escalation-list",
-          searchQuery,
-          escalationStatus,
-          escalationPriority,
+          searchQueryRef.current,
+          escalationStatusRef.current,
+          escalationPriorityRef.current,
         ],
       });
       void queryClient.invalidateQueries({ queryKey: ["escalation-stats"] });
     };
 
-    (async function streamLoop() {
-      let errorBackoffMs = 1000;
-      const maxErrorBackoff = 30_000;
-
-      while (!cancelled) {
-        try {
-          const response = await fetch(url, {
-            credentials: "include",
-            signal: abortController.signal,
-            headers: { Accept: "text/event-stream" },
-          });
-
-          if (!response.ok) {
-            await new Promise((r) =>
-              setTimeout(r, Math.min(errorBackoffMs, maxErrorBackoff)),
-            );
-            errorBackoffMs = Math.min(errorBackoffMs * 2, maxErrorBackoff);
-            continue;
-          }
-
-          errorBackoffMs = 1000;
-          if (!response.body) {
-            await new Promise((r) => setTimeout(r, 5000));
-            continue;
-          }
-
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let buffer = "";
-
-          while (!cancelled) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            const parts = buffer.split("\n\n");
-            buffer = parts.pop() ?? "";
-            for (const part of parts) {
-              if (part && !isSseCommentOrHeartbeatBlock(part)) {
-                invalidateEscalationQueries();
-              }
-            }
-          }
-          if (cancelled) break;
-          await new Promise((r) => setTimeout(r, 1000));
-        } catch (e) {
-          if (cancelled) return;
-          if (e instanceof Error && e.name === "AbortError") return;
-          await new Promise((r) =>
-            setTimeout(r, Math.min(errorBackoffMs, maxErrorBackoff)),
-          );
-          errorBackoffMs = Math.min(errorBackoffMs * 2, maxErrorBackoff);
-        }
-      }
-    })();
+    stream.addEventListener("escalations_updated", onEscalationsUpdated);
 
     return () => {
-      cancelled = true;
-      abortController.abort();
+      stream.close();
     };
-  }, [queryClient, searchQuery, escalationStatus, escalationPriority]);
+  }, [queryClient]);
 }
