@@ -35,10 +35,19 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
     pendingWorkflowAction,
     pendingWorkflowActionIndex,
     shouldShowActionButtons,
+    isApprovingAction,
+    isRejectingAction,
   } = useGetApprovalQueueItem({
     approvalQueueId: id,
     workflowActions,
   });
+
+  const stepperActive =
+    pendingWorkflowActionIndex >= 0
+      ? pendingWorkflowActionIndex
+      : workflowActions.length;
+
+  const isActionButtonBusy = isApprovingAction || isRejectingAction;
 
   const {
     icon: AgentIcon,
@@ -101,15 +110,19 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
               />
             </div>
             <Stepper
-              active={pendingWorkflowActionIndex || 1}
+              active={stepperActive}
               orientation="vertical"
               iconSize={37}
             >
               {workflowActions.map((action, index) => (
                 <Stepper.Step
-                  key={index}
+                  key={action.id}
                   label={action.name || `Workflow Action ${index + 1}`}
                   description={action.description}
+                  loading={
+                    isActionButtonBusy &&
+                    pendingWorkflowAction?.id === action.id
+                  }
                 />
               ))}
             </Stepper>

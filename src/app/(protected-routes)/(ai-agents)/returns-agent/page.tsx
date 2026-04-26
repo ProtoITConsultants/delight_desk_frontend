@@ -1,88 +1,16 @@
 "use client";
-import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
-import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
-import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
-import AiAgentRoot from "@/modules/core/components/ai-agents/components/ai-agent-root";
-import EmailResponseSamplePreview from "@/modules/core/components/ai-agents/components/email-response-preview";
-import ReturnPolicyConfigForm from "@/modules/protected-routes/ai-agents/returns-agent/components/return-policy-config-form";
-import ReturnPolicyConfigRoot from "@/modules/protected-routes/ai-agents/returns-agent/components/return-policy-root";
-import { useAiAgents } from "@/providers/ai-agents";
-import { Bot, Package } from "lucide-react";
+
+import AgentComingSoonPage from "@/modules/core/components/ai-agents/components/agent-coming-soon";
+import { Package } from "lucide-react";
 
 const ReturnsAgentPage = () => {
-  const {
-    aiAgentsSettings: { returns },
-  } = useAiAgents();
-  const { updateAIAgentSettings, isUpdating } =
-    useUpdateSpecificAIAgentSettings();
-
   return (
-    <AiAgentRoot className="max-w-7xl">
-      {/* Header */}
-      <AiAgentHeader
-        Icon={
-          <div className="p-2 bg-orange-600/10 rounded-lg">
-            <Package className="h-6 w-6 text-orange-600" />
-          </div>
-        }
-        title="Returns Agent"
-        description="Automate return and refund processing based on your business policies. Handle simple auto-approvals or complex eligibility evaluations."
-      />
-      {/* Body */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <AgentSettings
-          agentName="Returns Agent"
-          agentIcon={<Bot className="h-5 w-5" />}
-          agentDescription="Configure how the Returns Agent handles return and refund requests."
-          enableAgentButtonDescription="Automatically process return and refund requests."
-          isAgentEnabled={returns.isEnabled}
-          onChangeAgentConfiguration={() => {
-            if (returns?.isEnabled) {
-              updateAIAgentSettings({
-                params: {
-                  agentId: returns.id,
-                  isEnabled: false,
-                  requiresModeration: false,
-                },
-              });
-            } else {
-              updateAIAgentSettings({
-                params: {
-                  agentId: returns.id,
-                  isEnabled: true,
-                },
-              });
-            }
-          }}
-          agentNeedsModeration={returns.requiresModeration}
-          onChangeAgentModeration={() =>
-            updateAIAgentSettings({
-              params: {
-                agentId: returns.id,
-                requiresModeration: !returns.requiresModeration,
-              },
-            })
-          }
-          disableAgentSettings={isUpdating}
-        />
-        <EmailResponseSamplePreview
-          responsePreviewType="default"
-          from="hello@humanfoodbar.com"
-          to="hello@humanfoodbar.com"
-          {...{
-            type: "default",
-            fromEmail: "hello@humanfoodbar.com",
-            subject: "Re: Return Request Approved",
-            body: `<p>I understand you'd like to return your recent order.<br/><br/>Based on our return policy, your order #12345 is eligible for a full refund. Here's what you need to do:<br/><br/><ol><li>Pack your items in their original packaging</li><li>Print the prepaid return label: [Return Label Link]</li><li>Drop off at any USPS location</li></ol><br/><br/>Your refund will be processed within 3-5 business days once we receive your return.<br/><br/>Is there anything else I can help you with regarding your return?</p>`,
-            signature: `Kai<br/>AI Customer Service Agent<br/>Human Food Bar`,
-          }}
-          hasTracking={false}
-        />
-      </div>
-      <ReturnPolicyConfigRoot>
-        <ReturnPolicyConfigForm />
-      </ReturnPolicyConfigRoot>
-    </AiAgentRoot>
+    <AgentComingSoonPage
+      title="Returns Agent"
+      description="We’re building this agent to automate return and refund flows using your store policies. It isn’t available yet, but we’re actively working on it and it will be here soon."
+      icon={Package}
+      iconClassName="bg-orange-500/10 text-orange-600 dark:text-orange-400"
+    />
   );
 };
 

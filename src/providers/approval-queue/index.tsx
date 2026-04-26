@@ -87,8 +87,6 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
     return data?.pages.flatMap((page) => page.data) ?? [];
   }, [data]);
 
-  console.log("approvalQueueItems", approvalQueueItems);
-
   const value = useMemo(() => {
     return {
       selectedItemStatus,
