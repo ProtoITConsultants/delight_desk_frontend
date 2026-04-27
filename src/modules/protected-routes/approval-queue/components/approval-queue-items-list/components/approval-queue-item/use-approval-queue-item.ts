@@ -1,4 +1,5 @@
 import { api } from "@/lib/api";
+import { APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX } from "@/hooks/services/approval-queue/use-agent-workflow-progress";
 import { ApprovalQueueWorkflowActionStatus } from "@/modules/protected-routes/approval-queue/utils/constants";
 import { ApprovalQueueWorkflowAction } from "@/modules/protected-routes/approval-queue/utils/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,6 +10,19 @@ interface UseGetApprovalQueueItemParams {
   workflowActions: ApprovalQueueWorkflowAction[];
 }
 
+const invalidateApprovalQueries = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  approvalQueueId: string,
+) => {
+  void queryClient.invalidateQueries({
+    queryKey: ["approval-queue-item-details", approvalQueueId],
+  });
+  void queryClient.invalidateQueries({ queryKey: ["approval-queue-items"] });
+  void queryClient.invalidateQueries({
+    queryKey: [...APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX],
+  });
+};
+
 export const useGetApprovalQueueItem = ({
   approvalQueueId,
   workflowActions,
@@ -18,10 +32,7 @@ export const useGetApprovalQueueItem = ({
     mutationFn: (actionId: string) =>
       api.approval_queue_service.approveApprovalQueueWorkflowAction(actionId),
     onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: ["approval-queue-item-details", approvalQueueId],
-      });
-      void queryClient.invalidateQueries({ queryKey: ["approval-queue-items"] });
+      invalidateApprovalQueries(queryClient, approvalQueueId);
       toast.success("Action approved successfully");
     },
     onError: () => {
@@ -29,14 +40,29 @@ export const useGetApprovalQueueItem = ({
     },
   });
 
+  const { mutate: editAndApproveAction, isPending: isEditApprovingAction } =
+    useMutation({
+      mutationFn: (params: { actionId: string; editedResponse: string }) =>
+        api.approval_queue_service.editAndApproveApprovalQueueWorkflowAction({
+          id: params.actionId,
+          editedResponse: params.editedResponse,
+        }),
+      onSuccess: () => {
+        invalidateApprovalQueries(queryClient, approvalQueueId);
+        toast.success("Response updated and approved");
+      },
+      onError: (error) => {
+        toast.error("Failed to save and approve", {
+          description: error instanceof Error ? error.message : undefined,
+        });
+      },
+    });
+
   const { mutate: rejectAction, isPending: isRejectingAction } = useMutation({
     mutationFn: (actionId: string) =>
       api.approval_queue_service.rejectApprovalQueueWorkflowAction(actionId),
     onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: ["approval-queue-item-details", approvalQueueId],
-      });
-      void queryClient.invalidateQueries({ queryKey: ["approval-queue-items"] });
+      invalidateApprovalQueries(queryClient, approvalQueueId);
       toast.success("Action rejected successfully");
     },
     onError: () => {
@@ -62,8 +88,11 @@ export const useGetApprovalQueueItem = ({
     pendingWorkflowActionIndex,
     approveAction,
     isApprovingAction,
+    editAndApproveAction,
+    isEditApprovingAction,
     rejectAction,
     isRejectingAction,
-    disableActionButtons: isApprovingAction || isRejectingAction,
+    disableActionButtons:
+      isApprovingAction || isEditApprovingAction || isRejectingAction,
   };
 };
