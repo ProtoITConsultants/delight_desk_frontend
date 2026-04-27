@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { ApprovalQueueContextType } from "./approval-queue-context.types";
+import { useApprovalQueueStreamSync } from "@/hooks/services/approval-queue/use-approval-queue-stream-sync";
 import {
   ApprovalQueueAgentCategory,
   ApprovalQueueItemStatus,
@@ -47,6 +48,8 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
   const [activeAgentCategory, setActiveAgentCategory] =
     useState<ApprovalQueueAgentCategory>(ApprovalQueueAgentCategory.ALL);
 
+  useApprovalQueueStreamSync();
+
   const {
     data,
     fetchNextPage,
@@ -83,8 +86,6 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
   const approvalQueueItems = useMemo(() => {
     return data?.pages.flatMap((page) => page.data) ?? [];
   }, [data]);
-
-  console.log("approvalQueueItems", approvalQueueItems);
 
   const value = useMemo(() => {
     return {

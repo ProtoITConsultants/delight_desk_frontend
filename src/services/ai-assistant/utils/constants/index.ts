@@ -13,6 +13,7 @@ const UPDATE_HTML_EMAIL_SIGNATURE = "/escalations/email-signature/html";
 const UPDATE_STRUCTURED_EMAIL_SIGNATURE =
   "/escalations/email-signature/structured";
 const GET_ESCALATION_STATISTICS = "/escalations/stats";
+const GET_ESCALATION_STREAM = "/escalations/stream";
 
 const AI_ASSISTANT_ENDPOINTS = {
   GET_ESCALATION_LIST,
@@ -25,6 +26,7 @@ const AI_ASSISTANT_ENDPOINTS = {
   UPDATE_HTML_EMAIL_SIGNATURE,
   UPDATE_STRUCTURED_EMAIL_SIGNATURE,
   GET_ESCALATION_STATISTICS,
+  GET_ESCALATION_STREAM,
 };
 
 export default AI_ASSISTANT_ENDPOINTS;

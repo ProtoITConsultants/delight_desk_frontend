@@ -18,9 +18,10 @@ export const useGetApprovalQueueItem = ({
     mutationFn: (actionId: string) =>
       api.approval_queue_service.approveApprovalQueueWorkflowAction(actionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ["approval-queue-item-details", approvalQueueId],
       });
+      void queryClient.invalidateQueries({ queryKey: ["approval-queue-items"] });
       toast.success("Action approved successfully");
     },
     onError: () => {
@@ -32,9 +33,10 @@ export const useGetApprovalQueueItem = ({
     mutationFn: (actionId: string) =>
       api.approval_queue_service.rejectApprovalQueueWorkflowAction(actionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ["approval-queue-item-details", approvalQueueId],
       });
+      void queryClient.invalidateQueries({ queryKey: ["approval-queue-items"] });
       toast.success("Action rejected successfully");
     },
     onError: () => {

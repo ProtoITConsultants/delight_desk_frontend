@@ -1,5 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePromoCodeConfigurations } from "@/hooks/services/ai-agents/promo-code/use-promo-code-configurations";
+import { useSyncPromoCodeConfigurations } from "@/hooks/services/ai-agents/promo-code/use-sync-promo-code-configurations";
 import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
@@ -12,35 +15,10 @@ import {
   PromoCodeDialogContextProvider,
   usePromoCodeDialog,
 } from "@/modules/protected-routes/ai-agents/promo-code-agent/utils/context";
-import { PROMO_CODE_TYPES } from "@/modules/protected-routes/ai-agents/promo-code-agent/utils/types/promo-code-card";
+import { apiConfigurationToCardProps } from "@/modules/protected-routes/ai-agents/promo-code-agent/utils/mappers/promo-code-api-mappers";
 import { useAiAgents } from "@/providers/ai-agents";
-import { Bot, Plus, Tag } from "lucide-react";
+import { Bot, CloudUpload, Plus, Tag } from "lucide-react";
 import { useState } from "react";
-
-const PROMO_CODES_DATA: PROMO_CODE_TYPES[] = [
-  {
-    id: "1",
-    promo_code: "SAVE20",
-    description: "20% off all orders",
-    discount_type: "percentage",
-    usage_type: "refund_only",
-    discount_percentage: "20",
-    max_refund_value: "",
-    discount_amount: "",
-    valid_from: "2025-10-08T00:47",
-    valid_until: "2025-10-16T00:47",
-    min_order_value: "10",
-    applies_to_subscription: false,
-    is_active: true,
-    usage_count: 10,
-    last_used: "2025-10-08T00:47",
-    enable_first_time_customer_discounts: false,
-    first_time_customer_message: "",
-    enable_general_inquiry_discounts: false,
-    max_offer_per_customer: 1,
-    offer_frequency_days: 1,
-  },
-];
 
 const PromoCodeAgentContent = () => {
   const { form } = usePromoCodeDialog();
@@ -51,6 +29,9 @@ const PromoCodeAgentContent = () => {
   } = useAiAgents();
   const { updateAIAgentSettings, isUpdating } =
     useUpdateSpecificAIAgentSettings();
+  const { configurations, isConfigurationsPending } =
+    usePromoCodeConfigurations();
+  const { syncConfigurations, isSyncing } = useSyncPromoCodeConfigurations();
 
   return (
     <AiAgentRoot className="max-w-7xl">
@@ -78,16 +59,28 @@ const PromoCodeAgentContent = () => {
         description="Automatically handle promo code refunds AND offer first-time customer discounts. Configure when and how to provide discounts to new customers and general inquiries, plus process refunds for missed promo codes."
         hasRightSection={true}
         rightSection={
-          <Button
-            className="flex items-center gap-2"
-            onClick={() => {
-              form.reset();
-              setIsCreatePromoCodeDialogOpen(true);
-            }}
-          >
-            <Plus className="w-4 h-4" />
-            Add Promo Code
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex items-center gap-2"
+              disabled={isSyncing || isConfigurationsPending}
+              onClick={() => void syncConfigurations()}
+            >
+              <CloudUpload className="w-4 h-4" />
+              {isSyncing ? "Syncing…" : "Sync to WooCommerce"}
+            </Button>
+            <Button
+              className="flex items-center gap-2"
+              onClick={() => {
+                form.reset();
+                setIsCreatePromoCodeDialogOpen(true);
+              }}
+            >
+              <Plus className="w-4 h-4" />
+              Add Promo Code
+            </Button>
+          </div>
         }
       />
 
@@ -129,7 +122,15 @@ const PromoCodeAgentContent = () => {
         disableAgentSettings={isUpdating}
       />
 
-      {PROMO_CODES_DATA.length === 0 ? (
+      {isConfigurationsPending ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-48 w-full rounded-lg" />
+            <Skeleton className="h-48 w-full rounded-lg" />
+          </div>
+          <Skeleton className="min-h-[320px] w-full rounded-lg" />
+        </div>
+      ) : !configurations?.length ? (
         <NoPromoCodeCard
           setIsDialogOpen={() => {
             setIsCreatePromoCodeDialogOpen(true);
@@ -138,8 +139,11 @@ const PromoCodeAgentContent = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col gap-2 max-h-[500px] overflow-auto">
-            {PROMO_CODES_DATA.map((promoCode) => (
-              <PromoCodeCard key={promoCode.id} {...promoCode} />
+            {configurations.map((config) => (
+              <PromoCodeCard
+                key={config.id}
+                {...apiConfigurationToCardProps(config)}
+              />
             ))}
           </div>
 

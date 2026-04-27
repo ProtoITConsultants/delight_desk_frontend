@@ -19,6 +19,13 @@ import {
   UpdateFulfillmentMethodSettingsParams,
   UpdateFulfillmentMethodSettingsResponse,
 } from "./utils/fulfillment-method";
+import type {
+  CreatePromoCodeConfigurationPayload,
+  DeletePromoCodeConfigurationResponse,
+  PromoCodeConfiguration,
+  SyncPromoCodeConfigurationsResponse,
+  UpdatePromoCodeConfigurationPayload,
+} from "./utils/promo-code";
 
 export class AIAgentsService {
   // Fetch All Agents' Settings
@@ -87,6 +94,52 @@ export class AIAgentsService {
         AI_AGENTS_SETTINGS.FULFILLMENT_METHOD_SETTINGS_URL,
         params,
       );
+    return response;
+  };
+
+  // Promo code configurations
+  getPromoCodeConfigurations = async () => {
+    const response = await apiService.get<PromoCodeConfiguration[]>(
+      AI_AGENTS_SETTINGS.GET_PROMO_CODE_CONFIGURATIONS,
+    );
+    return response;
+  };
+
+  createPromoCodeConfiguration = async (
+    payload: CreatePromoCodeConfigurationPayload,
+  ) => {
+    const response = await apiService.post<PromoCodeConfiguration>(
+      AI_AGENTS_SETTINGS.GET_PROMO_CODE_CONFIGURATIONS,
+      payload,
+    );
+    return response;
+  };
+
+  updatePromoCodeConfiguration = async ({
+    configId,
+    payload,
+  }: {
+    configId: string;
+    payload: UpdatePromoCodeConfigurationPayload;
+  }) => {
+    const response = await apiService.patch<PromoCodeConfiguration>(
+      AI_AGENTS_SETTINGS.PROMO_CODE_CONFIGURATION_BY_ID({ configId }),
+      payload,
+    );
+    return response;
+  };
+
+  deletePromoCodeConfiguration = async (configId: string) => {
+    const response = await apiService.delete<DeletePromoCodeConfigurationResponse>(
+      AI_AGENTS_SETTINGS.PROMO_CODE_CONFIGURATION_BY_ID({ configId }),
+    );
+    return response;
+  };
+
+  syncPromoCodeConfigurations = async () => {
+    const response = await apiService.post<SyncPromoCodeConfigurationsResponse>(
+      AI_AGENTS_SETTINGS.SYNC_PROMO_CODE_CONFIGURATIONS,
+    );
     return response;
   };
 }

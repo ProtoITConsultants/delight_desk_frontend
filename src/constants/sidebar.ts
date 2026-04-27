@@ -14,6 +14,7 @@ import {
   Users,
   Truck,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 // Primary navigation - frequently used features
 const PRIMARY_NAVIGATION = [
@@ -30,12 +31,29 @@ const PRIMARY_NAVIGATION = [
   { name: "Approval Queue", href: "/approval-queue", icon: CheckCircle },
 ];
 
+export type AiAgentNavItem = {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+  comingSoon?: boolean;
+};
+
 // AI Agents submenu navigation
-const AI_AGENTS_NAVIGATION = [
+const AI_AGENTS_NAVIGATION: AiAgentNavItem[] = [
   { name: "WISMO Agent", href: "/wismo-agent", icon: Truck },
-  { name: "Subscription Agent", href: "/subscription-agent", icon: Bot },
+  {
+    name: "Subscription Agent",
+    href: "/subscription-agent",
+    icon: Bot,
+    comingSoon: true,
+  },
   { name: "Product Agent", href: "/product-agent", icon: Brain },
-  { name: "Returns Agent", href: "/returns-agent", icon: Package },
+  {
+    name: "Returns Agent",
+    href: "/returns-agent",
+    icon: Package,
+    comingSoon: true,
+  },
   { name: "Promo Code Agent", href: "/promo-code-agent", icon: Tag },
   { name: "Address Change Agent", href: "/address-change-agent", icon: MapPin },
   {

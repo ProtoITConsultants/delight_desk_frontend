@@ -31,6 +31,9 @@ export const useUpdateFulfillmentMethodSettings = () => {
       queryClient.invalidateQueries({
         queryKey: FULFILLMENT_METHOD_SETTINGS_QUERY_KEY,
       });
+      queryClient.invalidateQueries({
+        queryKey: ["connections"],
+      });
       toast.success("Fulfillment method updated successfully");
     },
     onError: (error) => {

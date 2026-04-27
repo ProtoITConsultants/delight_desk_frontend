@@ -17,6 +17,11 @@ const STATUS_CONFIG = {
     color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
     icon: CheckCircle,
   },
+  canceled: {
+    label: "Completed",
+    color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+    icon: CheckCircle,
+  },
   cannot_change: {
     label: "Cannot Change",
     color:
@@ -30,8 +35,9 @@ const STATUS_CONFIG = {
   },
   escalated: {
     label: "Escalated",
-    color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-    icon: XCircle,
+    color:
+      "bg-amber-100 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200",
+    icon: AlertCircle,
   },
 };
 

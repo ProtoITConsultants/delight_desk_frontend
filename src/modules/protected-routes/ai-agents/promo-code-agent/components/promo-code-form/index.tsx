@@ -159,13 +159,13 @@ const PromoCodeForm = ({
                       First-Time Customer Discounts
                     </SelectItem>
                     <SelectItem
-                      value="general_discount_inquiries"
+                      value="general_discount_inquiry"
                       data-testid="option-general-inquiry"
                     >
                       General Discount Inquiries
                     </SelectItem>
                     <SelectItem
-                      value="both_refund_and_new_customer_offers"
+                      value="refund_and_new_customer_offer"
                       data-testid="option-both"
                     >
                       Both Refunds and New Customer Offers
@@ -221,7 +221,7 @@ const PromoCodeForm = ({
                         Percentage
                       </SelectItem>
                       <SelectItem
-                        value="fixed_cash"
+                        value="fixed_amount"
                         data-testid="option-fixed-cash"
                       >
                         Fixed Amount
@@ -302,7 +302,8 @@ const PromoCodeForm = ({
                     />
                   </FormControl>
                   <FormDescription>
-                    Optional cap for percentage-based refunds
+                    Optional cap for percentage-based refunds. If set, it must
+                    be greater than 0.
                   </FormDescription>
                   <FormMessage data-testid="error-max-refund" />
                 </FormItem>
@@ -426,14 +427,13 @@ const PromoCodeForm = ({
 
           {/* Condition Fields for custom offferings */}
           {(form.watch("usage_type") === "first_time_customer_discount" ||
-            form.watch("usage_type") === "general_discount_inquiries" ||
-            form.watch("usage_type") ===
-              "both_refund_and_new_customer_offers") && (
+            form.watch("usage_type") === "general_discount_inquiry" ||
+            form.watch("usage_type") === "refund_and_new_customer_offer") && (
             <>
               <Separator />
               {(form.watch("usage_type") === "first_time_customer_discount" ||
                 form.watch("usage_type") ===
-                  "both_refund_and_new_customer_offers") && (
+                  "refund_and_new_customer_offer") && (
                 <div className="p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg space-y-4">
                   <FormField
                     control={form.control}
@@ -489,9 +489,9 @@ const PromoCodeForm = ({
                   )}
                 </div>
               )}
-              {(form.watch("usage_type") === "general_discount_inquiries" ||
+              {(form.watch("usage_type") === "general_discount_inquiry" ||
                 form.watch("usage_type") ===
-                  "both_refund_and_new_customer_offers") && (
+                  "refund_and_new_customer_offer") && (
                 <div className="p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg space-y-4">
                   <FormField
                     control={form.control}
@@ -521,37 +521,6 @@ const PromoCodeForm = ({
 
                   {form.watch("enable_general_inquiry_discounts") && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="max_offer_per_customer"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel data-testid="label-max-offers">
-                              Max Offers per Customer
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                type="number"
-                                min="1"
-                                max="10"
-                                value={field.value || 1}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value))
-                                }
-                                data-testid="input-max-offers"
-                                className="bg-white"
-                              />
-                            </FormControl>
-                            <div className="text-sm text-muted-foreground">
-                              Limit how many times a customer can receive this
-                              offer
-                            </div>
-                            <FormMessage data-testid="error-max-offers" />
-                          </FormItem>
-                        )}
-                      />
-
                       <FormField
                         control={form.control}
                         name="offer_frequency_days"
@@ -607,8 +576,8 @@ const PromoCodeForm = ({
             {isSavingPromoCode
               ? "Saving..."
               : dialogType === "edit-promo-code"
-              ? "Update"
-              : "Create"}
+                ? "Update"
+                : "Create"}
           </Button>
         </div>
       </form>

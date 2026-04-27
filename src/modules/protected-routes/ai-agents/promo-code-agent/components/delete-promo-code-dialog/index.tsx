@@ -9,28 +9,31 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useDeletePromoCodeConfiguration } from "@/hooks/services/ai-agents/promo-code/use-delete-promo-code-configuration";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 
 const DeletePromoCodeDialog = ({
-  promo_code_id,
+  configId,
   promo_code,
 }: {
-  promo_code_id: string;
+  configId: string;
   promo_code: string;
 }) => {
+  const { deleteConfiguration, isDeleting } = useDeletePromoCodeConfiguration();
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
           variant="outline"
           size="sm"
-          data-testid={`button-delete-${promo_code_id}`}
+          data-testid={`button-delete-${configId}`}
         >
           <Trash2 className="w-4 h-4" />
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent data-testid={`dialog-delete-${promo_code_id}`}>
+      <AlertDialogContent data-testid={`dialog-delete-${configId}`}>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Promo Code Configuration</AlertDialogTitle>
           <AlertDialogDescription>
@@ -40,15 +43,16 @@ const DeletePromoCodeDialog = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
-            data-testid={`button-cancel-delete-${promo_code_id}`}
+            data-testid={`button-cancel-delete-${configId}`}
           >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            // onClick={() => deleteMutation.mutate(promo_code_id)}
-            data-testid={`button-confirm-delete-${promo_code_id}`}
+            disabled={isDeleting}
+            onClick={() => void deleteConfiguration(configId)}
+            data-testid={`button-confirm-delete-${configId}`}
           >
-            Delete
+            {isDeleting ? "Deleting…" : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

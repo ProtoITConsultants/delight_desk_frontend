@@ -4,8 +4,6 @@ import { ADDRESS_CHANGE_WORKFLOW_CARD_PROPS } from "../../utils/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
-import { Eye, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import AddressChangeWorkflowOutcomeBanner from "./components/outcome-banner";
 import AddressChangeWorkflowTimeline from "./components/workflow-timeline";
 
@@ -16,6 +14,7 @@ const AddressChangeWorkflowCard = ({
   customerEmail,
   createdAt,
   workflowId,
+  hideCompletionOutcome,
   ...restProps
 }: ADDRESS_CHANGE_WORKFLOW_CARD_PROPS) => {
   // Workflow Config (Status and Icon)
@@ -48,7 +47,9 @@ const AddressChangeWorkflowCard = ({
             <StatusIcon className="h-5 w-5 text-gray-500" />
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold">Order #{orderNumber}</h3>
+                <h3 className="font-semibold">
+                  Order #{orderNumber?.length ? orderNumber : "—"}
+                </h3>
                 {/* Big Screen */}
                 {fullfillmentMethodConfig && (
                   <Badge
@@ -87,6 +88,7 @@ const AddressChangeWorkflowCard = ({
         />
         {/* Final Outcome Banner */}
         {workflowStatus === "completed" &&
+          !hideCompletionOutcome &&
           "addressChanged" in restProps &&
           (restProps.addressChanged ? (
             <AddressChangeWorkflowOutcomeBanner
@@ -99,20 +101,6 @@ const AddressChangeWorkflowCard = ({
               failingReason={restProps.failingReason}
             />
           ))}
-
-        {/* Retry Button */}
-        {workflowStatus === "failed" && (
-          <div className="mt-4 flex space-x-2">
-            <Button size="sm" variant="outline">
-              <RefreshCw className="h-4 w-4 mr-1" />
-              Retry
-            </Button>
-            <Button size="sm" variant="outline">
-              <Eye className="h-4 w-4 mr-1" />
-              View Details
-            </Button>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

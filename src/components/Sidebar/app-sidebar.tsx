@@ -20,10 +20,25 @@ import {
 } from "../ui/collapsible";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+
+const AI_AGENT_BASE_PATHS = [
+  "/wismo-agent",
+  "/subscription-agent",
+  "/product-agent",
+  "/returns-agent",
+  "/promo-code-agent",
+  "/address-change-agent",
+  "/order-cancellation-agent",
+] as const;
 
 export function AppSidebar() {
   // Hook
   const pathname = usePathname();
+
+  const isAiAgentsActive = AI_AGENT_BASE_PATHS.some(
+    (p) => pathname === p || (pathname != null && pathname.startsWith(`${p}/`)),
+  );
 
   return (
     <Sidebar>
@@ -42,13 +57,6 @@ export function AppSidebar() {
           <SidebarMenu>
             {SIDEBAR_CONTENT.PRIMARY_NAVIGATION.map((item) => {
               const isActive = pathname === item.href;
-              const isAiAgentsActive =
-                pathname === "/wismo-agent" ||
-                pathname === "/subscription-agent" ||
-                pathname === "/product-agent" ||
-                pathname === "/promo-code-agent" ||
-                pathname === "/address-change" ||
-                pathname === "/order-cancellations";
               return item.name === "AI Agents" ? (
                 <Collapsible key={item.name} className="group/collapsible">
                   <SidebarMenuItem>
@@ -83,10 +91,24 @@ export function AppSidebar() {
                               "group flex items-center px-2 py-2 text-sm rounded-md border border-transparent cursor-pointer",
                             )}
                           >
-                            <Link href={subItem.href}>
-                              <div className="flex items-center w-full">
-                                <subItem.icon className="mr-2 h-4 w-4" />
-                                {subItem.name}
+                            <Link
+                              href={subItem.href}
+                              className="w-full min-w-0"
+                            >
+                              <div className="flex items-center w-full min-w-0 gap-1">
+                                <subItem.icon className="mr-0 h-4 w-4 shrink-0" />
+                                <span className="min-w-0 flex-1 text-left line-clamp-1">
+                                  {subItem.name}
+                                </span>
+                                {subItem.comingSoon ? (
+                                  <Badge
+                                    variant="default"
+                                    className="ml-auto shrink-0 text-[8px] leading-none px-1 py-0.5 font-medium"
+                                    aria-label="Coming soon"
+                                  >
+                                    Soon
+                                  </Badge>
+                                ) : null}
                               </div>
                             </Link>
                           </SidebarMenuButton>

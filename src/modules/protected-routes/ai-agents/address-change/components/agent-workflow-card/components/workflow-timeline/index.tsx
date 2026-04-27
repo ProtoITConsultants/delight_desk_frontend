@@ -44,7 +44,8 @@ const AddressChangeWorkflowTimeline = ({
             const isCompleted = stepNumber < currentStep;
             const isCurrent = stepNumber === currentStep;
             const isFailed =
-              workflowStatus === "failed" && stepNumber === currentStep;
+              (workflowStatus === "failed" || workflowStatus === "escalated") &&
+              stepNumber === currentStep;
 
             return (
               <div

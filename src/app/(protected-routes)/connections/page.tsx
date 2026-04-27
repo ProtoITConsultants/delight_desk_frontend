@@ -9,6 +9,7 @@ import ManageConnectionModal from "@/modules/protected-routes/connections-page/c
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { isConnectionStatusConnected } from "@/services/connections/utils/get-connection-details";
 import { useDisconnectWooCommerceStore } from "@/hooks/services/connections/woocommerce/disconnect-store/use-disconnect-woocommerce-store";
 import {
   ConnectionsDialogsProvider,
@@ -220,12 +221,13 @@ const ConnectionsPageContent = () => {
               </svg>
             </div>
           }
-          connectionEstablished={
-            connectionsData?.shipbobConnection ? true : false
-          }
+          connectionEstablished={isConnectionStatusConnected(
+            connectionsData?.shipbobConnection
+          )}
           onCreateConnection={() => setShipbobDialogOpen(true)}
           onManageConnection={() => {}}
           isFetchingDetails={isPending}
+          hideActionWhenConnected
         />
         {/* Shipstation Connection */}
         <ConnectionCard.Item
@@ -242,9 +244,9 @@ const ConnectionsPageContent = () => {
               </svg>
             </div>
           }
-          connectionEstablished={
-            connectionsData?.shipstationConnection ? true : false
-          }
+          connectionEstablished={isConnectionStatusConnected(
+            connectionsData?.shipstationConnection
+          )}
           onCreateConnection={() =>
             setShipstationDialog({
               isModalOpen: true,
@@ -258,6 +260,7 @@ const ConnectionsPageContent = () => {
             })
           }
           isFetchingDetails={isPending}
+          hideActionWhenConnected
         />
 
         {/* Callout for users without ShipBob/Shipstation */}

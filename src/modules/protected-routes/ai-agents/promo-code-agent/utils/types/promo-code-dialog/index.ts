@@ -3,6 +3,8 @@ import { PROMO_CODE_FORM_SCHEMA } from "../../schema/promo-code-agent";
 
 type PROMO_CODE_DIALOG_PROPS = {
   dialogType: "add-promo-code" | "edit-promo-code";
+  /** Required when `dialogType` is `edit-promo-code`. */
+  editingConfigId?: string;
   dialogeTitle: string;
   dialogDescription: string;
   isDialogOpen: boolean;

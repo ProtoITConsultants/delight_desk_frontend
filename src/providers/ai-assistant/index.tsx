@@ -1,5 +1,6 @@
 "use client";
 
+import { useEscalationStreamSync } from "@/hooks/services/ai-assistant/use-escalation-stream-sync";
 import { api } from "@/lib/api";
 import { FEEDBACK_DIALOG_DATA_TYPE } from "@/modules/protected-routes/ai-assistant/components/ai-assistant-tabs/components/escalation-queue-tab/components/escalation-emails-list/utils/types/escalation-email-context";
 import {
@@ -95,6 +96,11 @@ export const AiAssistantProvider: FC<{ children: React.ReactNode }> = ({
       isOpen: false,
       emailId: "",
     });
+  useEscalationStreamSync({
+    searchQuery,
+    escalationStatus,
+    escalationPriority,
+  });
 
   const {
     escalationList,

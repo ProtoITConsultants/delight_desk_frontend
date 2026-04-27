@@ -27,7 +27,8 @@ const getCurrentWorkflowStep = ({
     // 7-step warehouse workflow - map actual backend steps to display steps
     if (workflowStatus === "completed" || workflowStatus === "canceled")
       return 7;
-    if (workflowStatus === "failed") return customerAcknowledgmentSent ? 3 : 1;
+    if (workflowStatus === "failed" || workflowStatus === "escalated")
+      return customerAcknowledgmentSent ? 3 : 1;
 
     // Map backend workflow step to frontend display step
     switch (workflowStep) {
@@ -51,7 +52,7 @@ const getCurrentWorkflowStep = ({
     // 6-step automated workflow
     if (workflowStatus === "completed" || workflowStatus === "canceled")
       return 6;
-    if (workflowStatus === "failed") return 1;
+    if (workflowStatus === "failed" || workflowStatus === "escalated") return 1;
 
     // Map backend workflow step to frontend display step
     switch (workflowStep) {

@@ -5,8 +5,6 @@ import FULLFILLMENT_METHODS from "./constants/fullfilement-methods";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 import OrderCancellationWorkflowOutcomeBanner from "./components/outcome-banner";
-import { Button } from "@/components/ui/button";
-import { Eye, RefreshCw } from "lucide-react";
 import OrderCancellationWorkflowTimeline from "./components/workflow-timeline";
 
 const OrderCancellationAgentWorkflowCard = ({
@@ -16,6 +14,8 @@ const OrderCancellationAgentWorkflowCard = ({
   customerEmail,
   createdAt,
   workflowId,
+  actionProgress,
+  hideCompletionOutcome,
   ...restProps
 }: AGENT_WORKFLOW_PROPS) => {
   // Workflow Config (Status and Icon)
@@ -47,7 +47,10 @@ const OrderCancellationAgentWorkflowCard = ({
             <StatusIcon className="h-5 w-5 text-gray-500" />
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold">Order #{orderNumber}</h3>
+                <h3 className="font-semibold">
+                Order #
+                {orderNumber?.length ? orderNumber : "—"}
+              </h3>
                 {/* Big Screen */}
                 {fullfillmentMethodConfig && (
                   <Badge
@@ -83,10 +86,12 @@ const OrderCancellationAgentWorkflowCard = ({
           fulfillmentMethod={fulfillmentMethod}
           workflowStatus={workflowStatus}
           workflowId={workflowId}
+          actionProgress={actionProgress}
         />
 
         {/* Final Outcome Banner */}
         {workflowStatus === "completed" &&
+          !hideCompletionOutcome &&
           "workflowCancelled" in restProps &&
           (restProps.workflowCancelled ? (
             restProps.refundProcessed ? (
@@ -107,20 +112,6 @@ const OrderCancellationAgentWorkflowCard = ({
               failingReason={restProps.failingReason}
             />
           ))}
-
-        {/* Retry Button */}
-        {workflowStatus === "failed" && (
-          <div className="mt-4 flex space-x-2">
-            <Button size="sm" variant="outline">
-              <RefreshCw className="h-4 w-4 mr-1" />
-              Retry
-            </Button>
-            <Button size="sm" variant="outline">
-              <Eye className="h-4 w-4 mr-1" />
-              View Details
-            </Button>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
