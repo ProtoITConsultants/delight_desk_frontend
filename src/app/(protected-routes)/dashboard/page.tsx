@@ -26,6 +26,8 @@ import { useDashboardAnalytics } from "@/hooks/services/dashboard/use-dashboard-
 import StatCardsSkeleton from "@/modules/protected-routes/dashboard/components/StatCardsSkeleton";
 import ActivityLog from "@/modules/protected-routes/dashboard/components/ActivityLog";
 
+const DASHBOARD_COMING_SOON_AGENT_IDS = new Set(["subscription", "returns"]);
+
 const Dashboard = () => {
   useActivityLogStreamSync();
 
@@ -145,12 +147,6 @@ const Dashboard = () => {
       />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
-        {analytics && (
-          <p className="text-sm text-gray-500">
-            {new Date(analytics.from).toLocaleDateString()} -{" "}
-            {new Date(analytics.to).toLocaleDateString()}
-          </p>
-        )}
       </div>
 
       {/* Metrics Overview */}
@@ -179,6 +175,9 @@ const Dashboard = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {dashboardAgents.map((agent) => {
+              const isComingSoon = DASHBOARD_COMING_SOON_AGENT_IDS.has(
+                agent.agentType,
+              );
               return (
                 <AIAgents.AgentCard
                   key={agent.agentType}
@@ -187,6 +186,7 @@ const Dashboard = () => {
                   Icon={agent.icon}
                   isEnabled={agent.isEnabled}
                   onChangeAgentStatus={() =>
+                    !isComingSoon &&
                     agent.apiId &&
                     updateAIAgentSettings({
                       params: {
@@ -197,6 +197,7 @@ const Dashboard = () => {
                   }
                   isToggling={isUpdating}
                   configurationLink={agent.href}
+                  comingSoon={isComingSoon}
                 />
               );
             })}
