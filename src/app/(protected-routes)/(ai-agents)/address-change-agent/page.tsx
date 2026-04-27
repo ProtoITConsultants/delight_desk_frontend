@@ -30,8 +30,21 @@ const AddressChangeAgent = () => {
     fulfillmentMethodSettings,
   );
 
-  const { activeItems, completedItems, isLoading, refetch } =
-    useAddressChangeWorkflowProgress();
+  const {
+    activeItems,
+    completedItems,
+    isLoading,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useAddressChangeWorkflowProgress();
+
+  const infiniteLoad = {
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  };
 
   return (
     <AiAgentRoot>
@@ -96,6 +109,7 @@ const AddressChangeAgent = () => {
         onRefresh={() => {
           void refetch();
         }}
+        infiniteLoad={infiniteLoad}
       >
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Loading workflows…</p>
@@ -117,6 +131,7 @@ const AddressChangeAgent = () => {
       <AgentWorkflowRoot
         workflowType="recently-completed"
         sectionHeading="Recently Completed Workflows"
+        infiniteLoad={infiniteLoad}
       >
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Loading workflows…</p>

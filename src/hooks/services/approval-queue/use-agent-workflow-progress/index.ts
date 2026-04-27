@@ -1,14 +1,24 @@
 import { api } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useCallback, useMemo } from "react";
 import type { WorkflowProgressItem } from "@/services/approval-queue/utils/workflow-progress";
 
 export type AgentWorkflowProgressCategory =
   | "order_cancellation"
   | "address_change";
 
-const PAGE = 1;
 const LIMIT = 100;
+
+const dedupeById = (items: WorkflowProgressItem[]) => {
+  const seen = new Set<string>();
+  const out: WorkflowProgressItem[] = [];
+  for (const it of items) {
+    if (seen.has(it.id)) continue;
+    seen.add(it.id);
+    out.push(it);
+  }
+  return out;
+};
 
 const splitByStatus = (items: WorkflowProgressItem[]) => {
   const active: WorkflowProgressItem[] = [];
@@ -32,28 +42,50 @@ const workflowListQueryKey = (category: AgentWorkflowProgressCategory) =>
   [...APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX, category] as const;
 
 /**
- * Single fetch (no `status` param) with `limit: 100`. Client-splits
- * `completed` vs active (all other workflow statuses, including `cancelled`).
+ * Paginated fetch (no `status` param) with `limit` per page. Merges all loaded
+ * pages, dedupes by id, then client-splits `completed` vs active.
  */
 export const useAgentWorkflowProgress = (
   category: AgentWorkflowProgressCategory,
 ) => {
   const baseKey = workflowListQueryKey(category);
 
-  const { data, isPending, isRefetching, refetch } = useQuery({
-    queryKey: [...baseKey, { page: PAGE, limit: LIMIT, noStatus: true }],
-    queryFn: () =>
+  const {
+    data,
+    isPending,
+    isRefetching,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: [...baseKey, { limit: LIMIT, noStatus: true }],
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) =>
       api.approval_queue_service.getWorkflowProgress({
         category,
-        page: PAGE,
+        page: pageParam,
         limit: LIMIT,
       }),
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.hasNextPage
+        ? lastPage.pagination.currentPage + 1
+        : undefined,
   });
 
-  const items = data?.data ?? [];
+  const items = useMemo(() => {
+    const flat = data?.pages.flatMap((p) => p.data) ?? [];
+    return dedupeById(flat);
+  }, [data]);
+
   const { activeItems, completedItems } = useMemo(
     () => splitByStatus(items),
     [items],
+  );
+
+  const refetchAll = useCallback(
+    () => refetch().then(() => undefined),
+    [refetch],
   );
 
   return {
@@ -61,7 +93,10 @@ export const useAgentWorkflowProgress = (
     completedItems,
     isLoading: isPending,
     isRefetching,
-    refetch: () => refetch().then(() => undefined),
+    refetch: refetchAll,
+    fetchNextPage,
+    hasNextPage: Boolean(hasNextPage),
+    isFetchingNextPage,
   };
 };
 

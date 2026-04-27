@@ -30,8 +30,21 @@ const OrderCancellationAgent = () => {
     fulfillmentMethodSettings,
   );
 
-  const { activeItems, completedItems, isLoading, refetch } =
-    useOrderCancellationWorkflowProgress();
+  const {
+    activeItems,
+    completedItems,
+    isLoading,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useOrderCancellationWorkflowProgress();
+
+  const infiniteLoad = {
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  };
 
   return (
     <AiAgentRoot>
@@ -96,6 +109,7 @@ const OrderCancellationAgent = () => {
         onRefresh={() => {
           void refetch();
         }}
+        infiniteLoad={infiniteLoad}
       >
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Loading workflows…</p>
@@ -118,6 +132,7 @@ const OrderCancellationAgent = () => {
       <AgentWorkflowRoot
         workflowType="recently-completed"
         sectionHeading="Recently Completed Workflows"
+        infiniteLoad={infiniteLoad}
       >
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Loading workflows…</p>
