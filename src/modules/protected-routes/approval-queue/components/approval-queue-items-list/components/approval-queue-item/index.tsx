@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -5,10 +7,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Calendar, Mail, User } from "lucide-react";
+import { Calendar, Mail, Pencil, User } from "lucide-react";
 import { Stepper } from "@mantine/core";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { ApprovalQueueItemData } from "@/modules/protected-routes/approval-queue/utils/types";
 import {
   AGENT_METADATA_MAP,
@@ -17,6 +20,28 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useGetApprovalQueueItem } from "./use-approval-queue-item";
+import { htmlToPlainText } from "@/modules/protected-routes/approval-queue/utils/html-to-plain-text";
+
+const PROPOSED_EMAIL_HTML_RE = /<[a-z][^>]*>/i;
+
+const ProposedEmailBodyPreview = ({ body }: { body: string }) => {
+  const asHtml = PROPOSED_EMAIL_HTML_RE.test(body);
+  if (asHtml) {
+    return (
+      <div
+        className="py-4 px-5 bg-primary/10 w-full rounded-xl break-words text-sm"
+        dangerouslySetInnerHTML={{ __html: body }}
+      />
+    );
+  }
+  return (
+    <div
+      className="py-4 px-5 bg-primary/10 w-full rounded-xl text-sm break-words whitespace-pre-wrap"
+    >
+      {body}
+    </div>
+  );
+};
 
 export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
   id,
@@ -30,24 +55,50 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
 }) => {
   const {
     approveAction,
+    editAndApproveAction,
     rejectAction,
     disableActionButtons,
     pendingWorkflowAction,
     pendingWorkflowActionIndex,
     shouldShowActionButtons,
     isApprovingAction,
+    isEditApprovingAction,
     isRejectingAction,
   } = useGetApprovalQueueItem({
     approvalQueueId: id,
     workflowActions,
   });
 
+  const [isEditingProposedEmail, setIsEditingProposedEmail] = useState(false);
+  const [editedEmailBody, setEditedEmailBody] = useState("");
+
+  useEffect(() => {
+    setIsEditingProposedEmail(false);
+  }, [pendingWorkflowAction?.id]);
+
+  useEffect(() => {
+    if (!pendingWorkflowAction) {
+      setIsEditingProposedEmail(false);
+    }
+  }, [pendingWorkflowAction]);
+
   const stepperActive =
     pendingWorkflowActionIndex >= 0
       ? pendingWorkflowActionIndex
       : workflowActions.length;
 
-  const isActionButtonBusy = isApprovingAction || isRejectingAction;
+  const isActionButtonBusy =
+    isApprovingAction || isEditApprovingAction || isRejectingAction;
+
+  const hasProposedEmailBody = Boolean(
+    pendingWorkflowAction?.proposedEmailBody?.trim(),
+  );
+
+  const openEditMode = () => {
+    const raw = pendingWorkflowAction?.proposedEmailBody ?? "";
+    setEditedEmailBody(htmlToPlainText(raw));
+    setIsEditingProposedEmail(true);
+  };
 
   const {
     icon: AgentIcon,
@@ -135,29 +186,76 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
               {pendingWorkflowAction?.proposedEmailBody && (
                 <div className="flex flex-col gap-2 w-full">
                   <p className="font-semibold">AI Response</p>
-                  <div
-                    className="py-4 px-5 bg-primary/10 w-full rounded-xl"
-                    dangerouslySetInnerHTML={{
-                      __html: pendingWorkflowAction?.proposedEmailBody,
-                    }}
-                  />
+                  {isEditingProposedEmail ? (
+                    <Textarea
+                      value={editedEmailBody}
+                      onChange={(e) => setEditedEmailBody(e.target.value)}
+                      className="min-h-[160px] w-full text-sm"
+                      disabled={disableActionButtons}
+                    />
+                  ) : (
+                    <ProposedEmailBodyPreview
+                      body={pendingWorkflowAction.proposedEmailBody}
+                    />
+                  )}
                 </div>
               )}
 
               {shouldShowActionButtons && (
-                <div className="flex items-center gap-3">
-                  <Button
-                    onClick={() => {
-                      approveAction(pendingWorkflowAction?.id || "");
-                    }}
-                    disabled={disableActionButtons}
-                  >
-                    Approve
-                  </Button>
+                <div className="flex flex-wrap items-center gap-3">
+                  {hasProposedEmailBody && isEditingProposedEmail ? (
+                    <>
+                      <Button
+                        onClick={() => {
+                          const text = editedEmailBody.trim();
+                          if (!text) return;
+                          editAndApproveAction({
+                            actionId: pendingWorkflowAction?.id ?? "",
+                            editedResponse: text,
+                          });
+                        }}
+                        disabled={
+                          disableActionButtons || !editedEmailBody.trim()
+                        }
+                      >
+                        Edit and approve
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsEditingProposedEmail(false)}
+                        disabled={disableActionButtons}
+                      >
+                        Cancel
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={() => {
+                          approveAction(pendingWorkflowAction?.id ?? "");
+                        }}
+                        disabled={disableActionButtons}
+                      >
+                        Approve
+                      </Button>
+                      {hasProposedEmailBody && (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={openEditMode}
+                          disabled={disableActionButtons}
+                        >
+                          <Pencil className="h-4 w-4 mr-1.5" />
+                          Edit
+                        </Button>
+                      )}
+                    </>
+                  )}
                   <Button
                     variant="outline"
                     onClick={() => {
-                      rejectAction(pendingWorkflowAction?.id || "");
+                      rejectAction(pendingWorkflowAction?.id ?? "");
                     }}
                     disabled={disableActionButtons}
                   >
