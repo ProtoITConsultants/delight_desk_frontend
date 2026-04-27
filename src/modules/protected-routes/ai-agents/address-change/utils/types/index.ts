@@ -6,6 +6,7 @@ type WORKFLOW_STATUS_TYPE =
   | "canceled"
   | "cannot_change"
   | "failed"
+  | "escalated"
   | "completed";
 
 // Fullfillment Method Steps Types
@@ -31,7 +32,7 @@ type SHIPSTATION_FULLFILLMENT_STEPS =
   | "process_address_change"
   | "update_address";
 
-type ADDRESS_CHANGE_WORKFLOW_CARD_PROPS =
+type ADDRESS_CHANGE_WORKFLOW_CARD_PROPS = (
   | {
       workflowId: string;
       workflowStatus: Exclude<WORKFLOW_STATUS_TYPE, "completed">;
@@ -61,7 +62,11 @@ type ADDRESS_CHANGE_WORKFLOW_CARD_PROPS =
           addressChanged: true;
           newAddress: string;
         }
-    );
+    )
+) & {
+  /** When true, hides address outcome banner (e.g. API list without outcome details). */
+  hideCompletionOutcome?: boolean;
+};
 
 export type {
   ADDRESS_CHANGE_WORKFLOW_CARD_PROPS,

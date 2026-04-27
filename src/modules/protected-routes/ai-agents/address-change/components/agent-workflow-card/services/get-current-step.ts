@@ -22,6 +22,7 @@ const getCurrentWorkflowStep = ({
   if (fulfillmentMethod === "warehouse_email") {
     if (workflowStatus === "completed" || workflowStatus === "cannot_change")
       return 6;
+    if (workflowStatus === "failed" || workflowStatus === "escalated") return 3;
 
     switch (workflowStep) {
       case "identify_order":
@@ -42,6 +43,7 @@ const getCurrentWorkflowStep = ({
   } else {
     if (workflowStatus === "completed" || workflowStatus === "cannot_change")
       return 5;
+    if (workflowStatus === "failed" || workflowStatus === "escalated") return 1;
 
     switch (workflowStep) {
       case "identify_order":

@@ -10,6 +10,10 @@ import {
   GET_APPROVAL_QUEUE_ITEMS_PARAMS,
   GET_APPROVAL_QUEUE_ITEMS_RESPONSE,
 } from "./types";
+import {
+  GetWorkflowProgressParams,
+  GetWorkflowProgressResponse,
+} from "./utils/workflow-progress";
 
 export class ApprovalQueueService {
   // Get Approval Queue Statistics
@@ -29,6 +33,15 @@ export class ApprovalQueueService {
       },
     );
 
+    return response;
+  };
+
+  /** GET /approval-queue/workflows — workflow list with optional category/status filters. */
+  getWorkflowProgress = async (params: GetWorkflowProgressParams) => {
+    const response = await apiService.get<GetWorkflowProgressResponse>(
+      APPROVAL_QUEUE_ENDPOINTS.GET_APPROVAL_QUEUE_WORKFLOWS,
+      { params },
+    );
     return response;
   };
   // Get Approval Queue Item by ID

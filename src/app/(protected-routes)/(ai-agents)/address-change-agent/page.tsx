@@ -10,6 +10,13 @@ import { Bot, MapPin, Settings } from "lucide-react";
 import Link from "next/link";
 import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 import { useAiAgents } from "@/providers/ai-agents";
+import { useAddressChangeWorkflowProgress } from "@/hooks/services/approval-queue/use-agent-workflow-progress";
+import { useFulfillmentMethodSettings } from "@/hooks/services/ai-agents/use-fulfillment-method-settings";
+import { isFulfillmentMethodIntegrated } from "@/modules/protected-routes/ai-agents/common/utils/is-fulfillment-method-integrated";
+import {
+  buildAddressChangeActiveCardProps,
+  buildAddressChangeCompletedCardProps,
+} from "@/modules/protected-routes/ai-agents/address-change/utils/build-workflow-card-props";
 
 const AddressChangeAgent = () => {
   const {
@@ -17,7 +24,14 @@ const AddressChangeAgent = () => {
   } = useAiAgents();
   const { updateAIAgentSettings, isUpdating } =
     useUpdateSpecificAIAgentSettings();
-  const hasSelectedMethod = false;
+
+  const { fulfillmentMethodSettings } = useFulfillmentMethodSettings();
+  const hasIntegratedFulfillmentMethod = isFulfillmentMethodIntegrated(
+    fulfillmentMethodSettings,
+  );
+
+  const { activeItems, completedItems, isLoading, refetch } =
+    useAddressChangeWorkflowProgress();
 
   return (
     <AiAgentRoot>
@@ -75,90 +89,55 @@ const AddressChangeAgent = () => {
         disableAgentSettings={isUpdating}
       />
 
-      {/* Active Workflows Card */}
       <AgentWorkflowRoot
         workflowType="active"
         sectionHeading="Active Workflows"
-        activeWorkflowsCount={2}
-        onRefresh={() => {}}
+        activeWorkflowsCount={activeItems.length}
+        onRefresh={() => {
+          void refetch();
+        }}
       >
-        <AddressChangeWorkflowCard
-          workflowId="1"
-          workflowStatus="processing"
-          fulfillmentMethod="warehouse_email"
-          orderNumber="WC-78901"
-          customerEmail="michael.johnson@example.com"
-          createdAt="12 Feb 2024"
-        />
-        <AddressChangeWorkflowCard
-          workflowId="2"
-          workflowStatus="awaiting_warehouse"
-          fulfillmentMethod="self_fulfillment"
-          orderNumber="WC-78901"
-          customerEmail="remy@humanfoodbar.com"
-          createdAt="12 June 2025"
-        />
-        <AddressChangeWorkflowCard
-          workflowId="3"
-          workflowStatus="failed"
-          fulfillmentMethod="self_fulfillment"
-          orderNumber="WC-78901"
-          customerEmail="remy@humanfoodbar.com"
-          createdAt="12 June 2025"
-        />
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground">Loading workflows…</p>
+        ) : activeItems.length === 0 ? (
+          <EmptyWorkflowCard
+            workflowType="active-workflow"
+            agentType="address-change-agent"
+          />
+        ) : (
+          activeItems.map((item) => (
+            <AddressChangeWorkflowCard
+              key={item.id}
+              {...buildAddressChangeActiveCardProps(item)}
+            />
+          ))
+        )}
       </AgentWorkflowRoot>
 
-      {/* Recently Completed Workflows Section */}
       <AgentWorkflowRoot
         workflowType="recently-completed"
         sectionHeading="Recently Completed Workflows"
       >
-        <AddressChangeWorkflowCard
-          workflowId="4"
-          workflowStatus="completed"
-          fulfillmentMethod="shipbob"
-          orderNumber="WC-78901"
-          customerEmail="lisa.wang@example.com"
-          createdAt="02 Mar 2025"
-          addressChanged={true}
-          newAddress="123 New St, New City, NY 10001"
-        />
-        <AddressChangeWorkflowCard
-          workflowId="5"
-          workflowStatus="completed"
-          fulfillmentMethod="shipbob"
-          orderNumber="WC-78901"
-          customerEmail="lisa.wang@example.com"
-          createdAt="02 Mar 2025"
-          addressChanged={true}
-          newAddress="123 New St, New City, NY 10001"
-        />
-        <AddressChangeWorkflowCard
-          workflowId="6"
-          workflowStatus="completed"
-          fulfillmentMethod="shipstation"
-          orderNumber="WC-78901"
-          customerEmail="customer@example.com"
-          createdAt="12 Sep 2025"
-          addressChanged={false}
-          failingReason="Order placed outside address change eligibility window."
-        />
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground">Loading workflows…</p>
+        ) : completedItems.length === 0 ? (
+          <EmptyWorkflowCard
+            workflowType="completed-workflow"
+            agentType="address-change-agent"
+          />
+        ) : (
+          completedItems.map((item) => (
+            <AddressChangeWorkflowCard
+              key={item.id}
+              {...buildAddressChangeCompletedCardProps(item)}
+            />
+          ))
+        )}
       </AgentWorkflowRoot>
 
-      {/* No Fulfillment Method Card */}
-      {!hasSelectedMethod && (
+      {!hasIntegratedFulfillmentMethod && (
         <NoFulfillmentMethodConfiguredCard agentType="address-change-agent" />
       )}
-
-      {/* No Workflow Cards */}
-      <EmptyWorkflowCard
-        workflowType="active-workflow"
-        agentType="address-change-agent"
-      />
-      <EmptyWorkflowCard
-        workflowType="completed-workflow"
-        agentType="address-change-agent"
-      />
     </AiAgentRoot>
   );
 };

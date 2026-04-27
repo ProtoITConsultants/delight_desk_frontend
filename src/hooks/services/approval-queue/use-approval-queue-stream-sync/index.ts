@@ -2,6 +2,7 @@ import type { ApprovalQueueStreamQueueUpdatedEvent } from "@/services/approval-q
 import { APPROVAL_QUEUE_ENDPOINTS } from "@/services/approval-queue/constants";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX } from "../use-agent-workflow-progress";
 
 /**
  * One `EventSource` to `/approval-queue/stream` with `withCredentials: true`.
@@ -37,6 +38,9 @@ export function useApprovalQueueStreamSync() {
       }
 
       void queryClient.invalidateQueries({ queryKey: ["approval-queue-items"] });
+      void queryClient.invalidateQueries({
+        queryKey: [...APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX],
+      });
     };
 
     stream.addEventListener("queue_updated", onQueueUpdated);

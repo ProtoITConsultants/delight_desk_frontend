@@ -1,4 +1,5 @@
 import { FULLFILLMENT_METHODS_TYPES } from "@/modules/core/utils/order-fulfillment-methods/types";
+import type { ApprovalQueueActionProgress } from "@/services/approval-queue/utils/workflow-progress";
 
 type WORKFLOW_STATUS_TYPE =
   | "processing"
@@ -6,6 +7,7 @@ type WORKFLOW_STATUS_TYPE =
   | "canceled"
   | "cannot_cancel"
   | "failed"
+  | "escalated"
   | "completed";
 
 // Fullfillment Method Steps Types
@@ -29,7 +31,7 @@ type SHIPSTATION_FULLFILLMENT_STEPS =
   | "process_cancellation"
   | "process_result";
 
-type AGENT_WORKFLOW_PROPS =
+type AGENT_WORKFLOW_PROPS = (
   | {
       workflowId: string;
       workflowStatus: Exclude<WORKFLOW_STATUS_TYPE, "completed">;
@@ -59,7 +61,12 @@ type AGENT_WORKFLOW_PROPS =
           workflowCancelled: false;
           failingReason: string;
         }
-    ));
+    ))
+) & {
+  actionProgress?: ApprovalQueueActionProgress | null;
+  /** Hide refund / warehouse summary when the API does not return outcome details. */
+  hideCompletionOutcome?: boolean;
+};
 
 export type {
   AGENT_WORKFLOW_PROPS,
