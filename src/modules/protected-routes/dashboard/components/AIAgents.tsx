@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Bot } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 type AgentCardProps = {
   id: string;
@@ -18,6 +19,8 @@ type AgentCardProps = {
   onChangeAgentStatus: () => void;
   isToggling: boolean;
   configurationLink: string;
+  /** Disables the enable switch and shows a Coming soon badge (dashboard only). */
+  comingSoon?: boolean;
 };
 
 const AgentsSkeleton = () => (
@@ -53,37 +56,43 @@ const AgentCard = ({
   onChangeAgentStatus,
   isToggling,
   configurationLink,
+  comingSoon = false,
 }: AgentCardProps) => (
   <Card
     id={id}
     className={`rounded-lg relative gap-3 py-6 ${
-      isEnabled ? "ring-2 ring-primary/20" : ""
+      isEnabled && !comingSoon ? "ring-2 ring-primary/20" : ""
     }`}
   >
     <CardHeader className="gap-0">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center space-x-3">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center space-x-3 min-w-0">
           <div
-            className={`p-2 rounded-lg ${
-              isEnabled ? "bg-primary/10" : "bg-gray-100"
+            className={`p-2 rounded-lg shrink-0 ${
+              isEnabled && !comingSoon ? "bg-primary/10" : "bg-gray-100"
             }`}
           >
             <Icon
               className={`h-5 w-5 ${
-                isEnabled ? "text-primary" : "text-gray-400"
+                isEnabled && !comingSoon ? "text-primary" : "text-gray-400"
               }`}
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-1 min-w-0">
             <CardTitle className="text-lg">{name}</CardTitle>
+            {comingSoon && (
+              <Badge variant="secondary" className="w-fit text-xs">
+                Coming soon
+              </Badge>
+            )}
           </div>
         </div>
         <Switch
           checked={isEnabled}
           onCheckedChange={() => onChangeAgentStatus()}
-          disabled={isToggling}
+          disabled={isToggling || comingSoon}
           data-testid={`switch-${id}`}
-          className="hover:cursor-pointer"
+          className={comingSoon ? "opacity-60" : "hover:cursor-pointer"}
         />
       </div>
     </CardHeader>
