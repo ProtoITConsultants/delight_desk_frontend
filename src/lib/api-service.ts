@@ -1,6 +1,9 @@
 // lib/api-service.ts
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+/** Credential endpoints where 401 means invalid input, not an expired session. */
+const SKIP_401_REDIRECT_SUBSTRINGS = ["/auth/login"];
+
 class ApiService {
   private api;
 
@@ -14,13 +17,18 @@ class ApiService {
     this.api.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
-        console.log("error", error);
+        const status = error.response?.status;
+        const requestUrl = error.config?.url ?? "";
 
-        // if (error.response?.status === 401) {
-        //   if (typeof window !== "undefined") {
-        //     window.location.href = "/login";
-        //   }
-        // }
+        if (
+          status === 401 &&
+          typeof window !== "undefined" &&
+          !SKIP_401_REDIRECT_SUBSTRINGS.some((path) =>
+            requestUrl.includes(path),
+          )
+        ) {
+          window.location.assign("/login");
+        }
         // Create a custom error with message
         const message =
           (error.response?.data as { message: string })?.message ||
