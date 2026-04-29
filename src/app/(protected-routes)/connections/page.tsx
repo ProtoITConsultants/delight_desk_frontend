@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import ConnectionCard from "@/modules/protected-routes/connections-page/components/connection-card";
 import ConnectionsHeader from "@/modules/protected-routes/connections-page/components/Header";
 import ShipStationConnectionalModal from "@/modules/protected-routes/connections-page/components/modals/ShipStationConnectionalModal";
@@ -16,6 +17,7 @@ import {
   useConnectionsDialogs,
 } from "@/providers/connections/connections-dialogs-provider";
 import ShipBobConnectionalModal from "@/modules/protected-routes/connections-page/components/modals/ShipBobConnectionalModal copy";
+import { clearWooCommerceOAuthAttempt } from "@/modules/protected-routes/connections-page/utils/woocommerce-oauth-attempt-storage";
 
 type emailConnectionModalType = {
   isModalOpen: boolean;
@@ -56,6 +58,12 @@ const ConnectionsPageContent = () => {
       return api.user_connections.getUserConnections();
     },
   });
+
+  useEffect(() => {
+    if (connectionsData?.wooCommerceConnection) {
+      clearWooCommerceOAuthAttempt();
+    }
+  }, [connectionsData?.wooCommerceConnection]);
 
   if (isError) {
     toast.error("Error fetching connections", {
@@ -290,6 +298,9 @@ const ConnectionsPageContent = () => {
           wooCommerceDialog.isModalOpen &&
           wooCommerceDialog.type === "create-connection"
         }
+        isWooCommerceConnected={Boolean(
+          connectionsData?.wooCommerceConnection,
+        )}
         onCloseModal={() =>
           setWooCommerceDialog({
             isModalOpen: false,
