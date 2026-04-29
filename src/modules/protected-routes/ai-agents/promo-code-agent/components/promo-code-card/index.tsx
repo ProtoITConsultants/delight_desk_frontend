@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Edit2 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { PROMO_CODE_TYPES } from "../../utils/types/promo-code-card";
 import DeletePromoCodeDialog from "../delete-promo-code-dialog";
 import { usePromoCodeDialog } from "../../utils/context";
@@ -18,6 +17,10 @@ import { useState } from "react";
 import "./styles.css";
 import { Label } from "@/components/ui/label";
 import { useUpdatePromoCodeConfiguration } from "@/hooks/services/ai-agents/promo-code/use-update-promo-code-configuration";
+import {
+  formatRelativeSafe,
+  parseStableDate,
+} from "../../utils/promo-code-dates";
 
 const PromoCodeCard = ({
   id,
@@ -46,9 +49,12 @@ const PromoCodeCard = ({
     useState(false);
   // Function to get the status badge
   const getStatusBadge = () => {
-    const now = new Date();
-    const validFrom = new Date(valid_from);
-    const validUntil = new Date(valid_until);
+    const nowMs = Date.now();
+    const validFromDt = parseStableDate(valid_from);
+    const validUntilDt =
+      typeof valid_until === "string" && valid_until.trim() === ""
+        ? null
+        : parseStableDate(valid_until);
 
     if (!is_active) {
       return (
@@ -58,7 +64,7 @@ const PromoCodeCard = ({
       );
     }
 
-    if (now < validFrom) {
+    if (validFromDt !== null && nowMs < validFromDt.getTime()) {
       return (
         <Badge variant="outline" data-testid={`status-automated-${id}`}>
           Scheduled
@@ -66,7 +72,7 @@ const PromoCodeCard = ({
       );
     }
 
-    if (now > validUntil) {
+    if (validUntilDt !== null && nowMs > validUntilDt.getTime()) {
       return (
         <Badge variant="destructive" data-testid={`status-automated-${id}`}>
           Expired
@@ -143,7 +149,10 @@ const PromoCodeCard = ({
             {description || "No description provided"}
           </CardDescription>
           {last_sync_error && (
-            <p className="text-xs text-destructive mt-1" data-testid={`config-sync-error-${id}`}>
+            <p
+              className="text-xs text-destructive mt-1"
+              data-testid={`config-sync-error-${id}`}
+            >
               WooCommerce sync: {last_sync_error}
             </p>
           )}
@@ -192,10 +201,7 @@ const PromoCodeCard = ({
           />
 
           {/* Delete Promo Code Dialog */}
-          <DeletePromoCodeDialog
-            configId={id}
-            promo_code={promo_code}
-          />
+          <DeletePromoCodeDialog configId={id} promo_code={promo_code} />
         </div>
       </CardHeader>
 
@@ -212,25 +218,24 @@ const PromoCodeCard = ({
         <div data-testid={`config-validity-${id}`}>
           <div className="font-medium">Valid Until</div>
           <div className="text-muted-foreground">
-            {formatDistanceToNow(new Date(valid_until), {
-              addSuffix: true,
-            })}
+            {valid_until.trim()
+              ? formatRelativeSafe(valid_until) ?? "—"
+              : "No end date"}
           </div>
         </div>
 
         <div data-testid={`config-usage-${id}`}>
           <div className="font-medium">WooCommerce</div>
           <div className="text-muted-foreground text-xs">
-            {last_used ? (
-              <>
-                Last sync{" "}
-                {formatDistanceToNow(new Date(last_used), {
-                  addSuffix: true,
-                })}
-              </>
-            ) : (
-              "Not synced yet"
-            )}
+            {(() => {
+              const rel = formatRelativeSafe(last_used);
+              if (!rel) return "Not synced yet";
+              return (
+                <>
+                  Last sync {rel}
+                </>
+              );
+            })()}
           </div>
         </div>
 

@@ -60,9 +60,8 @@ const AiIdentity = () => {
     resolver: zodResolver(aiIdentityFormSchema),
     defaultValues: {
       name: "",
-      businessType: "",
-      agentTitle: "",
-      emailSalutation: "",
+      agentTitle: "AI Customer Service Agent",
+      emailSalutation: "At your service",
       companyName: "",
       signatureFooter: "",
     },
@@ -71,6 +70,8 @@ const AiIdentity = () => {
   const formValues = form.watch();
 
   const formRef = useRef(form);
+  const didFocusAgentNameRef = useRef(false);
+
   useEffect(() => {
     if (aiIdentityData) {
       formRef.current.reset({
@@ -86,10 +87,26 @@ const AiIdentity = () => {
     }
   }, [aiIdentityData]);
 
+  useEffect(() => {
+    if (isLoading || didFocusAgentNameRef.current) return;
+
+    const tid = window.setTimeout(() => {
+      const el = document.getElementById(
+        "agent-name",
+      ) as HTMLInputElement | null;
+      if (!el?.isConnected || el.disabled) return;
+
+      el.focus({ preventScroll: true });
+      didFocusAgentNameRef.current = true;
+    }, 0);
+
+    return () => window.clearTimeout(tid);
+  }, [isLoading, aiIdentityData]);
+
   const onSubmit = () => {
     updateAiIdentity({
       aiAgentName: form.getValues("name"),
-      businessType: form.getValues("businessType"),
+      // businessType: form.getValues("businessType"),
       aiAgentTitle: form.getValues("agentTitle"),
       emailSalutation: form.getValues("emailSalutation"),
       companyNameForEmailSignature: form.getValues("companyName"),
@@ -132,8 +149,7 @@ const AiIdentity = () => {
                 )}
                 disabled={isLoading}
               />
-              {/* Business Type */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="businessType"
                 render={({ field }) => (
@@ -169,7 +185,7 @@ const AiIdentity = () => {
                   </FormItem>
                 )}
                 disabled={isLoading}
-              />
+              /> */}
               {/* Agent Title */}
               <FormField
                 control={form.control}

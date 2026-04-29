@@ -26,7 +26,7 @@ export interface GET_AI_IDENTITY_RESPONSE {
 
 export interface UPDATE_AI_IDENTITY_PARAMS {
   aiAgentName: string;
-  businessType: string;
+  // businessType: string;
   aiAgentTitle: string;
   emailSalutation: string;
   companyNameForEmailSignature: string;

@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePromoCodeConfigurations } from "@/hooks/services/ai-agents/promo-code/use-promo-code-configurations";
-import { useSyncPromoCodeConfigurations } from "@/hooks/services/ai-agents/promo-code/use-sync-promo-code-configurations";
 import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 import AgentSettings from "@/modules/core/components/ai-agents/components/agent-settings";
 import AiAgentHeader from "@/modules/core/components/ai-agents/components/ai-agent-header";
@@ -17,7 +16,7 @@ import {
 } from "@/modules/protected-routes/ai-agents/promo-code-agent/utils/context";
 import { apiConfigurationToCardProps } from "@/modules/protected-routes/ai-agents/promo-code-agent/utils/mappers/promo-code-api-mappers";
 import { useAiAgents } from "@/providers/ai-agents";
-import { Bot, CloudUpload, Plus, Tag } from "lucide-react";
+import { Bot, Plus, Tag } from "lucide-react";
 import { useState } from "react";
 
 const PromoCodeAgentContent = () => {
@@ -31,7 +30,6 @@ const PromoCodeAgentContent = () => {
     useUpdateSpecificAIAgentSettings();
   const { configurations, isConfigurationsPending } =
     usePromoCodeConfigurations();
-  const { syncConfigurations, isSyncing } = useSyncPromoCodeConfigurations();
 
   return (
     <AiAgentRoot className="max-w-7xl">
@@ -60,16 +58,6 @@ const PromoCodeAgentContent = () => {
         hasRightSection={true}
         rightSection={
           <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex items-center gap-2"
-              disabled={isSyncing || isConfigurationsPending}
-              onClick={() => void syncConfigurations()}
-            >
-              <CloudUpload className="w-4 h-4" />
-              {isSyncing ? "Syncing…" : "Sync to WooCommerce"}
-            </Button>
             <Button
               className="flex items-center gap-2"
               onClick={() => {

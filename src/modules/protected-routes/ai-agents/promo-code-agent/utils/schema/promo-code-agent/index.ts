@@ -15,7 +15,7 @@ export const PROMO_CODE_FORM_SCHEMA = z
     max_refund_value: z.string().optional(),
     discount_amount: z.string().optional(),
     valid_from: z.string().min(1, "Valid from date is required"),
-    valid_until: z.string().min(1, "Valid until date is required"),
+    valid_until: z.string(),
     // Eligibity Rules
     min_order_value: z.string().optional(),
     applies_to_subscription: z.boolean().optional(),

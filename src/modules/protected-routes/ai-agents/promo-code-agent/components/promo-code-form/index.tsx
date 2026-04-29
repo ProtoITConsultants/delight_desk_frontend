@@ -349,7 +349,10 @@ const PromoCodeForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel data-testid="label-valid-until">
-                    Valid Until
+                    Valid Until{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (optional)
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -359,6 +362,9 @@ const PromoCodeForm = ({
                       className="w-full justify-between py-2"
                     />
                   </FormControl>
+                  <FormDescription className="text-xs text-muted-foreground">
+                    Leave empty if this promo doesn&apos;t have an end date
+                  </FormDescription>
                   <FormMessage data-testid="error-valid-until" />
                 </FormItem>
               )}
@@ -424,138 +430,6 @@ const PromoCodeForm = ({
               </FormItem>
             )}
           />
-
-          {/* Condition Fields for custom offferings */}
-          {(form.watch("usage_type") === "first_time_customer_discount" ||
-            form.watch("usage_type") === "general_discount_inquiry" ||
-            form.watch("usage_type") === "refund_and_new_customer_offer") && (
-            <>
-              <Separator />
-              {(form.watch("usage_type") === "first_time_customer_discount" ||
-                form.watch("usage_type") ===
-                  "refund_and_new_customer_offer") && (
-                <div className="p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="enable_first_time_customer_discounts"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between">
-                        <FormLabel
-                          data-testid="label-enable_first_time_customer_discounts"
-                          className="flex-col items-start mb-0"
-                        >
-                          First-Time Customer Discounts
-                          <div className="text-sm text-muted-foreground font-normal">
-                            Automatically offer this discount to customers with
-                            no previous orders
-                          </div>
-                        </FormLabel>
-                        <FormControl className="mb-0">
-                          <Switch
-                            checked={field.value || false}
-                            onCheckedChange={field.onChange}
-                            data-testid="switch-enable_first_time_customer_discounts"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  {form.watch("enable_first_time_customer_discounts") && (
-                    <FormField
-                      control={form.control}
-                      name="first_time_customer_message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel data-testid="label-first-time-message">
-                            Custom Message for First-Time Customers
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              value={field.value || ""}
-                              placeholder="Welcome! As a first-time customer, we'd love to offer you a special discount..."
-                              className="h-[80px] overflow-auto bg-white resize-none"
-                              data-testid="textarea-first-time-message"
-                            />
-                          </FormControl>
-                          <div className="text-sm text-muted-foreground">
-                            Custom welcome message when offering the discount to
-                            first-time customers
-                          </div>
-                          <FormMessage data-testid="error-first-time-message" />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-                </div>
-              )}
-              {(form.watch("usage_type") === "general_discount_inquiry" ||
-                form.watch("usage_type") ===
-                  "refund_and_new_customer_offer") && (
-                <div className="p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="enable_general_inquiry_discounts"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between">
-                        <FormLabel
-                          data-testid="label-enable_general_inquiry_discounts"
-                          className="flex-col items-start mb-0"
-                        >
-                          General Discount Inquiries
-                          <div className="text-sm text-muted-foreground font-normal">
-                            Offer this discount when customers ask about
-                            available promotions
-                          </div>
-                        </FormLabel>
-                        <FormControl className="mb-0">
-                          <Switch
-                            checked={field.value || false}
-                            onCheckedChange={field.onChange}
-                            data-testid="switch-enable_general_inquiry_discounts"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  {form.watch("enable_general_inquiry_discounts") && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="offer_frequency_days"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel data-testid="label-frequency-days">
-                              Frequency (Days)
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                type="number"
-                                min="1"
-                                max="365"
-                                value={field.value || 90}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value))
-                                }
-                                data-testid="input-frequency-days"
-                                className="bg-white"
-                              />
-                            </FormControl>
-                            <div className="text-sm text-muted-foreground">
-                              Minimum days between offers to the same customer
-                            </div>
-                            <FormMessage data-testid="error-frequency-days" />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
-          )}
         </div>
 
         {/* Actions */}
