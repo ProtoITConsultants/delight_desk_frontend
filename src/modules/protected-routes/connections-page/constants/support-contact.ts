@@ -1,5 +1,5 @@
 /** Public support inbox for integrations / OAuth help CTAs */
-export const NEXT_PUBLIC_SUPPORT_EMAIL_FALLBACK = "support@delightdesk.io";
+export const NEXT_PUBLIC_SUPPORT_EMAIL_FALLBACK = "developer@delightdesk.io";
 
 export function getSupportContactEmail(): string {
   const fromEnv =
