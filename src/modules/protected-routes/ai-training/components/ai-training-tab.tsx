@@ -13,7 +13,7 @@ import {
   Trash2,
   User,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -228,12 +228,16 @@ const SourceURLInput = ({
   setSourceURL,
   onAddSourceURL,
   isAddingSourceURL,
+  isPanelActive = false,
 }: {
   sourceURL: string;
   setSourceURL: React.Dispatch<React.SetStateAction<string>>; // Dispatch function to update the sourceURL state
   onAddSourceURL: () => Promise<void>;
   isAddingSourceURL: boolean;
+  /** When false, tab content is hidden (Radix Tabs); focus only when true. */
+  isPanelActive?: boolean;
 }) => {
+  const urlInputId = useId();
   const handleSubmit = async () => {
     if (!sourceURL.trim() || isAddingSourceURL) {
       return;
@@ -241,9 +245,22 @@ const SourceURLInput = ({
     await onAddSourceURL();
   };
 
+  useEffect(() => {
+    if (!isPanelActive || isAddingSourceURL) return;
+
+    const tid = window.setTimeout(() => {
+      const el = document.getElementById(urlInputId) as HTMLInputElement | null;
+      if (!el?.isConnected || el.disabled) return;
+      el.focus({ preventScroll: true });
+    }, 0);
+
+    return () => window.clearTimeout(tid);
+  }, [isPanelActive, isAddingSourceURL, urlInputId]);
+
   return (
     <div className="flex gap-2">
       <Input
+        id={urlInputId}
         placeholder="https://yoursite.com/faq"
         value={sourceURL}
         onChange={(e) => setSourceURL(e.target.value)}

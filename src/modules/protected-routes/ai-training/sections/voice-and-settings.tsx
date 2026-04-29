@@ -5,31 +5,38 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { useAiTeamCenter } from "@/providers/ai-team-center";
 import { BrandVoice } from "@/services/ai-training/types/ai-identity";
 
 type BrandSettings = {
-  brandVoice: BrandVoice;
-  customVoice: string;
+  brandVoice: Exclude<BrandVoice, BrandVoice.Custom>;
   useBusinessVerticalGuidance: boolean;
   loyalCustomerGreeting: boolean;
   allowEmojis: boolean;
   customInstructions: string;
 };
 
-const BRAND_VOICES: BrandVoice[] = [
+const BRAND_VOICE_OPTIONS: BrandSettings["brandVoice"][] = [
   BrandVoice.Friendly,
   BrandVoice.Professional,
   BrandVoice.Sophisticated,
-  BrandVoice.Custom,
 ];
+
+function formatBrandVoiceLabel(voice: BrandVoice): string {
+  return voice.charAt(0).toUpperCase() + voice.slice(1);
+}
 
 const VoiceAndSettings = () => {
   const [brandSettings, setBrandSettings] = useState<BrandSettings>({
     brandVoice: BrandVoice.Professional,
-    customVoice: "",
     allowEmojis: false,
     customInstructions: "",
     useBusinessVerticalGuidance: false,
@@ -40,21 +47,25 @@ const VoiceAndSettings = () => {
 
   useEffect(() => {
     if (aiIdentity) {
+      const voice =
+        aiIdentity.brandVoice === BrandVoice.Custom
+          ? BrandVoice.Professional
+          : aiIdentity.brandVoice;
+
       setBrandSettings({
-        brandVoice: aiIdentity.brandVoice,
-        customVoice: aiIdentity.customBrandVoice,
+        brandVoice: voice,
         allowEmojis: aiIdentity.allowEmojiInResponses,
         customInstructions: aiIdentity.customInstructions ?? "",
         useBusinessVerticalGuidance: aiIdentity.industrySpecificGuidance,
         loyalCustomerGreeting: aiIdentity.thankLoyalCustomers,
       });
     }
-  }, [aiIdentity, setBrandSettings]);
+  }, [aiIdentity]);
 
   const handleUpdateVoiceAndSetting = () => {
     updateAiIdentity({
       brandVoice: brandSettings.brandVoice,
-      customBrandVoice: brandSettings.customVoice,
+      customBrandVoice: "",
       customInstructions: brandSettings.customInstructions,
       allowEmojiInResponses: brandSettings.allowEmojis,
       industrySpecificGuidance: brandSettings.useBusinessVerticalGuidance,
@@ -65,53 +76,45 @@ const VoiceAndSettings = () => {
   return (
     <AiTrainingTab.Root>
       <AiTrainingTab.Header
-        heading="AI Knowledge Sources"
+        heading="Voice & Settings"
         icon={<MessageSquare className="h-5 w-5" />}
         description="Configure how your AI should write responses to match your brand's communication style."
       />
       <AiTrainingTab.Body className="space-y-6">
         {/* Brand Voice Selection */}
         <div className="flex flex-col gap-3">
-          <Label className="text-sm font-medium">Brand Voice</Label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {BRAND_VOICES.map((item, index) => (
-              <Button
-                key={index}
-                variant={
-                  brandSettings.brandVoice === item ? "default" : "outline"
-                }
-                size="sm"
-                onClick={() =>
-                  setBrandSettings({
-                    ...brandSettings,
-                    brandVoice: item,
-                  })
-                }
-                className="text-xs"
-                disabled={isLoading}
-              >
-                {item}
-              </Button>
-            ))}
-          </div>
-
-          {brandSettings.brandVoice === BrandVoice.Custom && (
-            <Input
-              placeholder="Describe your custom brand voice (e.g. Warm and conversational like a trusted family doctor, always explaining things clearly without medical jargon)"
-              value={brandSettings.customVoice}
-              onChange={(e) =>
-                setBrandSettings({
-                  ...brandSettings,
-                  customVoice: e.target.value,
-                })
-              }
-              disabled={isLoading}
-            />
-          )}
+          <Label htmlFor="brand-voice-select" className="text-sm font-medium">
+            Brand Voice
+          </Label>
+          <Select
+            value={brandSettings.brandVoice}
+            onValueChange={(value) =>
+              setBrandSettings({
+                ...brandSettings,
+                brandVoice: value as BrandSettings["brandVoice"],
+              })
+            }
+            disabled={isLoading}
+          >
+            <SelectTrigger
+              id="brand-voice-select"
+              className="w-full shadow-none md:max-w-sm"
+              data-testid="select-brand-voice"
+            >
+              <SelectValue placeholder="Select brand voice" />
+            </SelectTrigger>
+            <SelectContent>
+              {BRAND_VOICE_OPTIONS.map((voice) => (
+                <SelectItem key={voice} value={voice}>
+                  {formatBrandVoiceLabel(voice)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Business Vertical Guidance Toggle */}
-        <div className="space-y-3">
+        {/* <div className="space-y-3">
           <div className="flex items-center justify-between gap-4">
             <div className="space-y-1">
               <Label className="text-sm font-medium">
@@ -140,7 +143,7 @@ const VoiceAndSettings = () => {
             Test responses with and without this setting to find what works best
             for your business
           </p>
-        </div>
+        </div> */}
 
         {/* Loyal Customer Greeting */}
         <div className="space-y-3">

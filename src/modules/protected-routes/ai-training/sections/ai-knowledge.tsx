@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useAiTeamCenter } from "@/providers/ai-team-center";
 
-const AiKnowledge = () => {
+const AiKnowledge = ({ isActive = false }: { isActive?: boolean }) => {
   // AI Knowledge Source
   const [sourceURL, setSourceURL] = useState("");
   const {
@@ -79,6 +79,7 @@ const AiKnowledge = () => {
           setSourceURL={setSourceURL}
           onAddSourceURL={handleAddSourceURL}
           isAddingSourceURL={isAddingUrlSource}
+          isPanelActive={isActive}
         />
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {!isFetchingProductKnowledgeSources && urlSources.length < 1 ? (

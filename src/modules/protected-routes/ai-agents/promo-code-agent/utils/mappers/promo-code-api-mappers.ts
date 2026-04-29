@@ -107,7 +107,12 @@ export function apiConfigurationToCardProps(
     min_order_value: c.minimumOrderValue ?? "",
     applies_to_subscription: c.appliesToSubscriptions,
     is_active: c.isActive,
-    last_used: c.lastSyncedAt ?? "",
+    last_used: (() => {
+      const raw = c.lastSyncedAt;
+      if (raw == null || String(raw).trim() === "") return "";
+      const t = new Date(raw).getTime();
+      return Number.isNaN(t) ? "" : String(raw).trim();
+    })(),
     enable_first_time_customer_discounts: false,
     first_time_customer_message: "",
     enable_general_inquiry_discounts: false,

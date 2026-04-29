@@ -87,7 +87,7 @@ const AiTraining = () => {
           </TabsContent>
           {/* AI Knowledge */}
           <TabsContent value="ai-knowledge">
-            <AiKnowledge />
+            <AiKnowledge isActive={activeTab === "ai-knowledge"} />
           </TabsContent>
           {/* Voice and Settings */}
           <TabsContent value="voice-and-setting">
