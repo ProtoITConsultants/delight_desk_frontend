@@ -5,18 +5,22 @@ import {
 import { GET_APPROVAL_QUEUE_ITEMS_RESPONSE } from "@/services/approval-queue/types";
 
 export interface ApprovalQueueContextType {
-  selectedItemStatus: ApprovalQueueItemStatus;
+  selectedItemStatus: ApprovalQueueItemStatus | null;
   setSelectedItemStatus: React.Dispatch<
-    React.SetStateAction<ApprovalQueueItemStatus>
+    React.SetStateAction<ApprovalQueueItemStatus | null>
   >;
   activeAgentCategory: ApprovalQueueAgentCategory;
   setActiveAgentCategory: React.Dispatch<
     React.SetStateAction<ApprovalQueueAgentCategory>
   >;
   approvalQueueItems: GET_APPROVAL_QUEUE_ITEMS_RESPONSE["data"];
-  fetchNextPage: () => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
   hasNextPage: boolean;
-  isFetchingNextPage: boolean;
+  hasPreviousPage: boolean;
   isLoading: boolean;
   refetch: () => Promise<unknown>;
   isRefetching: boolean;
