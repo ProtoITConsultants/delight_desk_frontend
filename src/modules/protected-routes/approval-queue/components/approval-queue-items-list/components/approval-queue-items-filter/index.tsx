@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Check, ChevronDown, ListFilter, X } from "lucide-react";
+import { Check, ChevronDown, X } from "lucide-react";
 
 const ALL_STATUSES_LABEL = "All Statuses";
 const DEFAULT_AGENT = ApprovalQueueAgentCategory.ALL;
@@ -60,12 +60,7 @@ export const ApprovalQueueItemsFilter = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-        <ListFilter className="h-3.5 w-3.5" />
-        <span>Filters</span>
-      </div>
-
+    <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-2">
       <div className="flex flex-wrap items-center gap-2">
         {hasActiveFilters && (
           <button
