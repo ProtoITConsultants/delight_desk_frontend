@@ -3,7 +3,7 @@ import { CheckCircle } from "lucide-react";
 import DashboardHeader from "@/modules/protected-routes/dashboard/components/DashboardHeader";
 import { useEffect, useMemo, useRef, useState } from "react";
 import DASHBOARD from "@/constants/dashboard";
-import StatCard from "@/modules/protected-routes/dashboard/components/StatCard";
+import StatStrip from "@/modules/protected-routes/dashboard/components/StatStrip";
 import AIAgents from "@/modules/protected-routes/dashboard/components/AIAgents";
 import DashboardCardsRoot from "@/modules/protected-routes/dashboard/components/DashboardCardsRoot";
 import { Badge } from "@/components/ui/badge";
@@ -18,12 +18,10 @@ import AIAssistantQueue from "@/modules/protected-routes/dashboard/components/AI
 import { useAiAgents } from "@/providers/ai-agents";
 import { useUpdateSpecificAIAgentSettings } from "@/hooks/services/ai-agents/use-update-specific-ai-agent-settings";
 import { useAiAssistant } from "@/providers/ai-assistant";
-import TimeRangeSelector from "@/modules/protected-routes/dashboard/components/TimeRangeSelector";
 import { DASHBOARD_ANALYTICS_RANGE } from "@/services/dashboard/types";
 import { useActivityLog } from "@/hooks/services/activity-log/use-activity-log";
 import { useActivityLogStreamSync } from "@/hooks/services/activity-log/use-activity-log-stream-sync";
 import { useDashboardAnalytics } from "@/hooks/services/dashboard/use-dashboard-analytics";
-import StatCardsSkeleton from "@/modules/protected-routes/dashboard/components/StatCardsSkeleton";
 import ActivityLog from "@/modules/protected-routes/dashboard/components/ActivityLog";
 
 const DASHBOARD_COMING_SOON_AGENT_IDS = new Set(["subscription", "returns"]);
@@ -94,48 +92,31 @@ const Dashboard = () => {
 
   const formatter = useMemo(() => new Intl.NumberFormat("en-US"), []);
   const statCards = useMemo(() => {
-    return [
-      {
-        label: DASHBOARD.STAT_CARDS[0].label,
-        value: analytics
-          ? formatter.format(analytics.aiAgentActionsCompleted)
-          : "--",
-        colorClass: DASHBOARD.STAT_CARDS[0].colorClass,
-        icon: DASHBOARD.STAT_CARDS[0].icon,
-      },
-      {
-        label: DASHBOARD.STAT_CARDS[1].label,
-        value: analytics
-          ? formatter.format(analytics.aiAssistantTicketsResolved)
-          : "--",
-        colorClass: DASHBOARD.STAT_CARDS[1].colorClass,
-        icon: DASHBOARD.STAT_CARDS[1].icon,
-      },
-      {
-        label: DASHBOARD.STAT_CARDS[2].label,
-        value: analytics
-          ? formatter.format(analytics.totalEmailsReceived)
-          : "--",
-        colorClass: DASHBOARD.STAT_CARDS[2].colorClass,
-        icon: DASHBOARD.STAT_CARDS[2].icon,
-      },
-      {
-        label: DASHBOARD.STAT_CARDS[3].label,
-        value: analytics
-          ? `${formatter.format(analytics.timeSavedMinutes)} min`
-          : "--",
-        colorClass: DASHBOARD.STAT_CARDS[3].colorClass,
-        icon: DASHBOARD.STAT_CARDS[3].icon,
-      },
-      {
-        label: DASHBOARD.STAT_CARDS[4].label,
-        value: analytics
-          ? analytics.averageActionsPerResolvedTicket.toFixed(2)
-          : "--",
-        colorClass: DASHBOARD.STAT_CARDS[4].colorClass,
-        icon: DASHBOARD.STAT_CARDS[4].icon,
-      },
+    const formatTimeSaved = (minutes: number): string => {
+      if (minutes <= 60) return `${formatter.format(minutes)} min`;
+      const hours = Math.floor(minutes / 60);
+      const remaining = minutes % 60;
+      return remaining === 0
+        ? `${formatter.format(hours)}h`
+        : `${formatter.format(hours)}h ${remaining}m`;
+    };
+
+    const values = [
+      analytics ? formatter.format(analytics.aiAgentActionsCompleted) : "--",
+      analytics ? formatter.format(analytics.aiAssistantTicketsResolved) : "--",
+      analytics ? formatter.format(analytics.totalEmailsReceived) : "--",
+      analytics ? formatTimeSaved(analytics.timeSavedMinutes) : "--",
+      analytics ? analytics.averageActionsPerResolvedTicket.toFixed(2) : "--",
     ];
+
+    return DASHBOARD.STAT_CARDS.map((card, idx) => ({
+      label: card.label,
+      value: values[idx],
+      hint: card.hint,
+      iconBgClass: card.iconBgClass,
+      iconColorClass: card.iconColorClass,
+      icon: card.icon,
+    }));
   }, [analytics, formatter]);
 
   return (
@@ -145,28 +126,14 @@ const Dashboard = () => {
         description=" Advanced command center for intelligent email automation and
           escalation management"
       />
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
-      </div>
 
       {/* Metrics Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        {isFetchingAnalytics ? (
-          <StatCardsSkeleton />
-        ) : (
-          statCards.map((card) => (
-            <StatCard
-              key={card.label}
-              label={card.label}
-              value={card.value}
-              colorClass={card.colorClass}
-              icon={
-                <card.icon className={`h-8 w-8 ${card.colorClass} shrink-0`} />
-              }
-            />
-          ))
-        )}
-      </div>
+      <StatStrip
+        items={statCards}
+        timeRange={timeRange}
+        setTimeRange={setTimeRange}
+        isLoading={isFetchingAnalytics}
+      />
 
       {/* AI Agents - Quick Actions */}
       <AIAgents.Root>

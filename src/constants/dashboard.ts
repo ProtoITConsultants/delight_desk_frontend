@@ -22,28 +22,38 @@ const TIME_RANGE_OPTIONS = [
 // Stat Cards
 const STAT_CARDS = [
   {
-    label: "AI Agent Actions Completed",
-    colorClass: "text-green-600",
+    label: "Actions Completed",
+    hint: "Automated by AI agents",
+    iconBgClass: "bg-emerald-50",
+    iconColorClass: "text-emerald-600",
     icon: Bot,
   },
   {
-    label: "AI Assistant Tickets Resolved",
-    colorClass: "text-blue-600",
+    label: "Tickets Resolved",
+    hint: "Closed by AI assistant",
+    iconBgClass: "bg-blue-50",
+    iconColorClass: "text-blue-600",
     icon: User,
   },
   {
-    label: "Total Emails Received",
-    colorClass: "text-gray-900",
+    label: "Emails Received",
+    hint: "Total inbound",
+    iconBgClass: "bg-slate-100",
+    iconColorClass: "text-slate-700",
     icon: Mail,
   },
   {
     label: "Time Saved",
-    colorClass: "text-purple-600",
+    hint: "Estimated team hours",
+    iconBgClass: "bg-purple-50",
+    iconColorClass: "text-purple-600",
     icon: Clock,
   },
   {
-    label: "Average Actions / Resolved Ticket",
-    colorClass: "text-orange-600",
+    label: "Avg. Actions / Ticket",
+    hint: "Per resolved ticket",
+    iconBgClass: "bg-orange-50",
+    iconColorClass: "text-orange-600",
     icon: CheckCircle2,
   },
 ];
