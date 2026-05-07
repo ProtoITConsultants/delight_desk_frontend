@@ -12,25 +12,48 @@ When the user writes `deploy`, `deploy changes`, `/deploy`, `commit and deploy`,
    - `docs(api): document connections response`
 6. Commit the staged changes.
 7. Push the current branch to its tracked remote.
-8. Confirm the commit hash, branch, and push result to the user.
-9. **Open a GitHub pull request** after a successful push so the user can review and merge without writing the description manually—unless they explicitly ask to skip the PR, push failed, there was nothing to commit, or PR creation is impossible.
+8. **MANDATORY: Create a GitHub pull request** - This is a required step.
+9. Report the commit hash, branch, push result, and PR URL to the user.
 
-### PR step (step 9) — how to do it
+### PR Creation (Step 8) - REQUIRED
+
+**ALWAYS create a PR after successful push. Do not skip unless the user explicitly says "skip PR" or "no PR".**
 
 - **Target branch**: **`staging`** (this repo's workflow: feature branches → `staging`).
 - **Source branch**: `dev/nabeel` (your feature branch - all commits and pushes go here).
 - **Frontend context**: This is a Next.js frontend project. After PR creation, Vercel preview deployments will appear automatically in the PR.
 - **Tooling**: use the **GitHub CLI** (`gh`). Run `gh auth status`; if missing or not logged in, tell the user once how to fix it (install from [GitHub CLI](https://cli.github.com/), then `gh auth login`).
 - **`git fetch origin`** first if `origin/staging` might be stale (needed for accurate commit lists).
-- **New PR — non-interactive** with a generated body:
-  - **Title**: `git log -1 --pretty=%s` on the pushed tip.
-  - **Body** (markdown), at minimum:
-    - The latest commit's full message (`git log -1 --pretty=%b`), trimmed of extra blank lines.
-    - A short **### Commits** section: output of `git log origin/staging..HEAD --oneline` (empty is fine if already aligned).
-  - Example:
-    `gh pr create --base staging --head "$(git branch --show-current)" --title "subject here" --body-file /tmp/pr-body.md`
-    (prefer a temp file when the body is multiline so shell escaping does not break.)
-- **Report** the final **PR URL** to the user (or the existing PR link if one was already open).
+- **Generate PR body** with:
+  - **Title**: Use the latest commit subject: `git log -1 --pretty=%s`
+  - **Summary section**: Brief description of what changed and why
+  - **Changes section**: List of modified files and what they do
+  - **Testing checklist**: Mark items that apply
+  - **### Commits** section: `git log origin/staging..HEAD --oneline`
+  - **Notes/Rollback**: Any additional context or instructions to revert
+
+- **Create PR command**:
+  ```bash
+  gh pr create --base staging --head "$(git branch --show-current)" --title "$(git log -1 --pretty=%s)" --body-file /tmp/pr-body.md
+  ```
+
+- **ALWAYS report the PR URL** to the user at the end.
+
+### Output Format
+
+At the end of /deploy, present a clear summary:
+
+```
+## Deploy Complete
+
+| Step | Status |
+|------|--------|
+| Commit | ✅ `abc1234` - commit message |
+| Push | ✅ Pushed to `origin/dev/nabeel` |
+| PR | ✅ **PR #XX** created |
+
+**PR URL:** https://github.com/.../pull/XX
+```
 
 Important safety rules:
 
@@ -38,3 +61,4 @@ Important safety rules:
 - Do not force push unless the user explicitly says to force push.
 - If there are unrelated changes or possible secrets, stop and ask before committing them.
 - If there are no changes, tell the user instead of creating an empty commit.
+- **ALWAYS create a PR** unless explicitly instructed otherwise.
