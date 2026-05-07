@@ -43,9 +43,11 @@ const SignupForm = () => {
     mutationFn: (data: SignupFormTypes) => AuthAPIs.signup(data),
     onSuccess: () => {
       toast.success("Signup successful!", {
-        description: "Welcome! Redirecting...",
+        description: "Welcome! Redirecting to dashboard...",
       });
-      router.replace("/plan-selection");
+      // Redirect to plan selection (disabled for now - redirecting directly to dashboard)
+      // router.replace("/plan-selection");
+      router.replace("/dashboard");
     },
     onError: (error) => {
       toast.error("Signup failed!", {
