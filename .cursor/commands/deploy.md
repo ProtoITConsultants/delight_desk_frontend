@@ -40,12 +40,18 @@ When the user writes `deploy`, `deploy changes`, `/deploy`, `commit and deploy`,
    ```bash
    PR_NUM=$(gh pr list --base staging --head "$(git branch --show-current)" --state open --json number --jq '.[0].number // empty')
    if [ -n "$PR_NUM" ]; then
-     gh pr edit "$PR_NUM" --title "$TITLE" --body-file /tmp/pr-body.md
+     if ! gh pr edit "$PR_NUM" --title "$TITLE" --body-file /tmp/pr-body.md; then
+       REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+       jq -n --arg title "$TITLE" --rawfile body /tmp/pr-body.md '{title: $title, body: $body}' \
+         | gh api "repos/$REPO/pulls/$PR_NUM" -X PATCH --input -
+     fi
    else
      gh pr create --base staging --head "$(git branch --show-current)" --title "$TITLE" --body-file /tmp/pr-body.md
    fi
    ```
-   If `gh pr create` fails because a PR already exists (race or branch rename), run **`gh pr edit`** with the same `--title` and `--body-file` — do not stop at the error.
+   Some `gh` versions fail **`gh pr edit`** (non-zero exit) when the repo still queries **Projects (classic)**; the **`gh api` … `PATCH`** block updates title/body via the REST API and should be used as the fallback when edit fails for that reason or any other.
+
+   If `gh pr create` fails because a PR already exists (race or branch rename), run **`gh pr edit`** (or the same REST fallback) with the same `--title` and body — do not stop at the error.
 
 **Optional — user wants a "new PR" number:** They must **close** the existing PR first (`gh pr close <NUMBER>`), then `gh pr create` again from the same branch. Only do this if the user explicitly asks; refreshing title/body is the normal fix for stale descriptions.
 
