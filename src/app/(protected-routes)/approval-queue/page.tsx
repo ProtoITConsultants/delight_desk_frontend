@@ -34,8 +34,10 @@ const ApprovalQueuePageContent = () => {
       />
 
       {/* Content */}
-      <ApprovalQueueItemsFilter />
-      <ApprovalQueueItemsList />
+      <div className="flex flex-col gap-3">
+        <ApprovalQueueItemsFilter />
+        <ApprovalQueueItemsList />
+      </div>
     </ApprovalQueueRoot>
   );
 };

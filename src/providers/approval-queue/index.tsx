@@ -12,19 +12,25 @@ import {
   ApprovalQueueAgentCategory,
   ApprovalQueueItemStatus,
 } from "@/modules/protected-routes/approval-queue/utils/constants";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 
+const ITEMS_PER_PAGE = 10;
+
 const ApprovalQueueContext = createContext<ApprovalQueueContextType>({
-  selectedItemStatus: ApprovalQueueItemStatus.IN_PROGRESS,
+  selectedItemStatus: null,
   setSelectedItemStatus: () => {},
   activeAgentCategory: ApprovalQueueAgentCategory.ALL,
   setActiveAgentCategory: () => {},
   approvalQueueItems: [],
-  fetchNextPage: () => {},
+  currentPage: 1,
+  setCurrentPage: () => {},
+  totalPages: 0,
+  totalItems: 0,
+  itemsPerPage: ITEMS_PER_PAGE,
   hasNextPage: false,
-  isFetchingNextPage: false,
+  hasPreviousPage: false,
   isLoading: false,
   refetch: () => Promise.resolve(),
   isRefetching: false,
@@ -43,49 +49,49 @@ export const useApprovalQueueContext = (): ApprovalQueueContextType => {
 export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [selectedItemStatus, setSelectedItemStatus] =
-    useState<ApprovalQueueItemStatus>(ApprovalQueueItemStatus.IN_PROGRESS);
+  const [selectedItemStatus, setSelectedItemStatus] = useState<
+    ApprovalQueueItemStatus | null
+  >(null);
   const [activeAgentCategory, setActiveAgentCategory] =
     useState<ApprovalQueueAgentCategory>(ApprovalQueueAgentCategory.ALL);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // Reset to first page whenever filters change so users never end up on a
+  // page that no longer exists for the new filter set.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedItemStatus, activeAgentCategory]);
 
   useApprovalQueueStreamSync();
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isPending,
-    isError,
-    error,
-    refetch,
-    isRefetching,
-  } = useInfiniteQuery({
-    queryKey: ["approval-queue-items", selectedItemStatus, activeAgentCategory],
-    queryFn: ({ pageParam = 1 }) => {
-      return api.approval_queue_service.getApprovalQueueItems({
-        page: pageParam,
-        limit: 10,
-        status: selectedItemStatus,
+  const { data, isPending, isError, error, refetch, isRefetching } = useQuery({
+    queryKey: [
+      "approval-queue-items",
+      selectedItemStatus,
+      activeAgentCategory,
+      currentPage,
+    ],
+    queryFn: () =>
+      api.approval_queue_service.getApprovalQueueItems({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        status: selectedItemStatus ?? undefined,
         category:
           activeAgentCategory === ApprovalQueueAgentCategory.ALL
             ? undefined
             : activeAgentCategory,
-      });
-    },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      if (lastPage.pagination.hasNextPage) {
-        return lastPage.pagination.currentPage + 1;
-      }
-
-      return undefined;
-    },
+      }),
+    placeholderData: keepPreviousData,
   });
 
-  const approvalQueueItems = useMemo(() => {
-    return data?.pages.flatMap((page) => page.data) ?? [];
-  }, [data]);
+  const approvalQueueItems = useMemo(() => data?.data ?? [], [data]);
+  const pagination = data?.pagination;
+
+  const totalPages = pagination?.totalPages ?? 0;
+  const totalItems = pagination?.totalItems ?? 0;
+  const itemsPerPage = pagination?.itemsPerPage ?? ITEMS_PER_PAGE;
+  const hasNextPage = pagination?.hasNextPage ?? false;
+  const hasPreviousPage = pagination?.hasPreviousPage ?? false;
 
   const value = useMemo(() => {
     return {
@@ -94,22 +100,27 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
       activeAgentCategory,
       setActiveAgentCategory,
       approvalQueueItems,
-      fetchNextPage,
+      currentPage,
+      setCurrentPage,
+      totalPages,
+      totalItems,
+      itemsPerPage,
       hasNextPage,
-      isFetchingNextPage,
+      hasPreviousPage,
       isLoading: isPending,
       refetch,
       isRefetching,
     };
   }, [
     selectedItemStatus,
-    setSelectedItemStatus,
     activeAgentCategory,
-    setActiveAgentCategory,
     approvalQueueItems,
-    fetchNextPage,
+    currentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
     hasNextPage,
-    isFetchingNextPage,
+    hasPreviousPage,
     isPending,
     refetch,
     isRefetching,

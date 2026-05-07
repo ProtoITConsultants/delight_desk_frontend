@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ApprovalQueueItemData } from "@/modules/protected-routes/approval-queue/utils/types";
 import {
   AGENT_METADATA_MAP,
+  APPROVAL_QUEUE_STATUS_STYLES,
   ApprovalQueueItemsFilterLabelMap,
 } from "../../utils";
 import { cn } from "@/lib/utils";
@@ -132,7 +133,21 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
                     {emailSubject}
                   </p>
                 </div>
-                <Badge>{ApprovalQueueItemsFilterLabelMap[status]}</Badge>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "border font-medium",
+                    APPROVAL_QUEUE_STATUS_STYLES[status]?.badge,
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "mr-1.5 h-1.5 w-1.5 rounded-full",
+                      APPROVAL_QUEUE_STATUS_STYLES[status]?.dot,
+                    )}
+                  />
+                  {ApprovalQueueItemsFilterLabelMap[status]}
+                </Badge>
               </div>
               <div className="flex items-center gap-3 w-full">
                 <div className="flex items-center gap-2">
