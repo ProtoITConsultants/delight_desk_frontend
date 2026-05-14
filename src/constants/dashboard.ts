@@ -67,18 +67,6 @@ const AI_AGENTS = [
     href: "/wismo-agent",
   },
   {
-    id: "subscription",
-    name: "Subscription Agent",
-    icon: Bot,
-    href: "/subscription-agent",
-  },
-  {
-    id: "returns",
-    name: "Returns Agent",
-    icon: Package,
-    href: "/returns-agent",
-  },
-  {
     id: "promo_code",
     name: "Promo Code Agent",
     icon: Tag,
@@ -102,6 +90,18 @@ const AI_AGENTS = [
     icon: Package,
     href: "/order-cancellations",
   },
+  {
+    id: "subscription",
+    name: "Subscription Agent",
+    icon: Bot,
+    href: "/subscription-agent",
+  },
+  // {
+  //   id: "returns",
+  //   name: "Returns Agent",
+  //   icon: Package,
+  //   href: "/returns-agent",
+  // },
 ];
 
 const DASHBOARD = {
