@@ -1,13 +1,12 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Calendar, Mail, Pencil, User } from "lucide-react";
+import { Calendar, ChevronDown, Mail, Pencil, User } from "lucide-react";
 import { Stepper } from "@mantine/core";
 import { FC, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useGetApprovalQueueItem } from "./use-approval-queue-item";
 import { htmlToPlainText } from "@/modules/protected-routes/approval-queue/utils/html-to-plain-text";
+import { AgentControls } from "./agent-controls";
 
 const PROPOSED_EMAIL_HTML_RE = /<[a-z][^>]*>/i;
 
@@ -108,59 +108,103 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
     textColor,
   } = AGENT_METADATA_MAP[category];
 
+  const statusStyles = APPROVAL_QUEUE_STATUS_STYLES[status];
+  const StatusIcon = statusStyles?.icon;
+
   return (
-    <Card className="gap-2 border-l-8 border-l-orange-500">
+    <Card
+      className={cn(
+        "gap-2 border-l-8",
+        statusStyles?.leftBorder ?? "border-l-orange-500",
+      )}
+    >
       <CardHeader>
-        <div
-          className={cn(
-            "p-2 rounded-full flex items-center gap-2 w-fit",
-            bgColor,
-            textColor,
-          )}
-        >
-          <AgentIcon className="h-6 w-6" />
-          <span className="text-sm font-medium">{agentName}</span>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex w-fit items-center overflow-hidden rounded-full border border-border/40 shadow-sm">
+            <div
+              className={cn(
+                "flex items-center gap-2 px-3 py-2",
+                bgColor,
+                textColor,
+              )}
+            >
+              <AgentIcon className="h-5 w-5" />
+              <span className="text-sm font-medium">{agentName}</span>
+            </div>
+            <div
+              className={cn(
+                "flex items-center gap-2 px-3 py-2",
+                statusStyles?.pill,
+              )}
+            >
+              {StatusIcon && <StatusIcon className="h-5 w-5" />}
+              <span className="text-sm font-medium">
+                {ApprovalQueueItemsFilterLabelMap[status]}
+              </span>
+            </div>
+          </div>
+          <AgentControls category={category} agentName={agentName} />
         </div>
       </CardHeader>
       <CardContent>
         <Collapsible>
           <CollapsibleTrigger asChild>
-            <div className="flex flex-col gap-2 w-full rounded-lg p-2 hover:cursor-pointer hover:bg-secondary">
-              <div className="flex items-center gap-8 justify-between w-full">
-                <div className="flex items-center gap-2">
-                  <Mail />
-                  <p className="text-xl font-semibold line-clamp-1">
-                    {emailSubject}
-                  </p>
-                </div>
-                <Badge
-                  variant="outline"
+            <div className="group flex w-full flex-col gap-2 rounded-lg p-2 hover:cursor-pointer hover:bg-secondary">
+              <div className="flex items-start gap-2 w-full min-w-0">
+                <Mail className="size-5 sm:size-6 mt-0.5 shrink-0" />
+                <p
                   className={cn(
-                    "border font-medium",
-                    APPROVAL_QUEUE_STATUS_STYLES[status]?.badge,
+                    "min-w-0 flex-1 font-semibold break-words",
+                    "text-base sm:text-lg lg:text-xl",
+                    "line-clamp-2 lg:line-clamp-1",
+                    "group-data-[state=open]:line-clamp-none",
                   )}
+                  title={emailSubject}
                 >
-                  <span
-                    className={cn(
-                      "mr-1.5 h-1.5 w-1.5 rounded-full",
-                      APPROVAL_QUEUE_STATUS_STYLES[status]?.dot,
-                    )}
-                  />
-                  {ApprovalQueueItemsFilterLabelMap[status]}
-                </Badge>
+                  {emailSubject}
+                </p>
               </div>
-              <div className="flex items-center gap-3 w-full">
-                <div className="flex items-center gap-2">
-                  <User className="size-4" />
-                  <p className="text-md text-secondary-foreground line-clamp-1">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 w-full">
+                <div className="flex items-center gap-2 min-w-0 max-w-full">
+                  <User className="size-4 shrink-0" />
+                  <p
+                    className="text-sm sm:text-md text-secondary-foreground line-clamp-1 break-all"
+                    title={customerEmail}
+                  >
                     {customerEmail}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="size-4" />
-                  <p className="text-md text-secondary-foreground line-clamp-1">
+                <div className="flex items-center gap-2 shrink-0">
+                  <Calendar className="size-4 shrink-0" />
+                  <p className="text-sm sm:text-md text-secondary-foreground line-clamp-1">
                     {format(new Date(createdAt), "MMM dd, yyyy")}
                   </p>
+                </div>
+              </div>
+              <div className="flex w-full items-center justify-end pt-1">
+                <div
+                  className={cn(
+                    "flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5",
+                    "text-xs font-semibold",
+                    "border border-primary/30 bg-primary/10 text-primary",
+                    "shadow-sm transition-all duration-200",
+                    "group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:shadow-md",
+                    "group-data-[state=open]:bg-primary group-data-[state=open]:text-primary-foreground group-data-[state=open]:border-primary",
+                  )}
+                  aria-hidden
+                >
+                  <span className="group-data-[state=open]:hidden">
+                    View actions
+                  </span>
+                  <span className="hidden group-data-[state=open]:inline">
+                    Hide actions
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "size-4 transition-transform duration-200",
+                      "group-data-[state=open]:rotate-180",
+                    )}
+                  />
                 </div>
               </div>
             </div>

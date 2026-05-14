@@ -19,6 +19,7 @@ import type { LucideIcon } from "lucide-react";
 // Primary navigation - frequently used features
 const PRIMARY_NAVIGATION = [
   { name: "Dashboard", href: "/dashboard", icon: Satellite },
+  { name: "Approval Queue", href: "/approval-queue", icon: CheckCircle },
   { name: "AI Assistant", href: "/ai-assistant", icon: Bot },
   {
     name: "Quick Actions",
@@ -28,7 +29,6 @@ const PRIMARY_NAVIGATION = [
   },
   { name: "AI Agents", href: "#", icon: Users }, // Dropdown menu, no direct route
   { name: "AI Team Center", href: "/ai-training", icon: Brain },
-  { name: "Approval Queue", href: "/approval-queue", icon: CheckCircle },
 ];
 
 export type AiAgentNavItem = {
@@ -41,25 +41,25 @@ export type AiAgentNavItem = {
 // AI Agents submenu navigation
 const AI_AGENTS_NAVIGATION: AiAgentNavItem[] = [
   { name: "WISMO Agent", href: "/wismo-agent", icon: Truck },
-  {
-    name: "Subscription Agent",
-    href: "/subscription-agent",
-    icon: Bot,
-    comingSoon: true,
-  },
-  { name: "Product Agent", href: "/product-agent", icon: Brain },
-  {
-    name: "Returns Agent",
-    href: "/returns-agent",
-    icon: Package,
-    comingSoon: true,
-  },
+  // {
+  //   name: "Returns Agent",
+  //   href: "/returns-agent",
+  //   icon: Package,
+  //   comingSoon: true,
+  // },
   { name: "Promo Code Agent", href: "/promo-code-agent", icon: Tag },
+  { name: "Product Agent", href: "/product-agent", icon: Brain },
   { name: "Address Change Agent", href: "/address-change-agent", icon: MapPin },
   {
     name: "Cancellation Agent",
     href: "/order-cancellation-agent",
     icon: Package,
+  },
+  {
+    name: "Subscription Agent",
+    href: "/subscription-agent",
+    icon: Bot,
+    comingSoon: true,
   },
 ];
 

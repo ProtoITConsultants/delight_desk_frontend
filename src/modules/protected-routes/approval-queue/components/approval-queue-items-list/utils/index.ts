@@ -4,7 +4,19 @@ import {
 } from "../../../utils/constants";
 import { AgentMetadata } from "../../../utils/types";
 import { APPROVAL_QUEUE_ITEMS_FILTER_OPTIONS } from "./constants";
-import { Brain, CreditCard, MapPin, Package, Tag, Truck } from "lucide-react";
+import {
+  AlertTriangle,
+  Brain,
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  LucideIcon,
+  MapPin,
+  Package,
+  Tag,
+  Truck,
+  XCircle,
+} from "lucide-react";
 
 export const ApprovalQueueItemsFilterLabelMap = Object.fromEntries(
   APPROVAL_QUEUE_ITEMS_FILTER_OPTIONS.map((option) => [
@@ -21,23 +33,46 @@ export const ApprovalQueueItemsFilterLabelMap = Object.fromEntries(
  */
 export const APPROVAL_QUEUE_STATUS_STYLES: Record<
   ApprovalQueueItemStatus,
-  { dot: string; badge: string }
+  {
+    /** Dot used by the status filter dropdown */
+    dot: string;
+    /** Outline badge variant (kept for any compact usage) */
+    badge: string;
+    /** Left border color for the queue card */
+    leftBorder: string;
+    /** Filled pill background + text color matching the agent badge */
+    pill: string;
+    /** Status icon rendered inside the pill */
+    icon: LucideIcon;
+  }
 > = {
   [ApprovalQueueItemStatus.IN_PROGRESS]: {
     dot: "bg-sky-500",
     badge: "border-sky-200 bg-sky-50 text-sky-700",
+    leftBorder: "border-l-sky-500",
+    pill: "bg-sky-100 text-sky-700",
+    icon: Clock,
   },
   [ApprovalQueueItemStatus.CANCELLED]: {
     dot: "bg-rose-500",
     badge: "border-rose-200 bg-rose-50 text-rose-700",
+    leftBorder: "border-l-rose-500",
+    pill: "bg-rose-100 text-rose-700",
+    icon: XCircle,
   },
   [ApprovalQueueItemStatus.COMPLETED]: {
     dot: "bg-emerald-500",
     badge: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    leftBorder: "border-l-emerald-500",
+    pill: "bg-emerald-100 text-emerald-700",
+    icon: CheckCircle2,
   },
   [ApprovalQueueItemStatus.ESCALATED]: {
     dot: "bg-amber-500",
     badge: "border-amber-200 bg-amber-50 text-amber-800",
+    leftBorder: "border-l-amber-500",
+    pill: "bg-amber-100 text-amber-700",
+    icon: AlertTriangle,
   },
 };
 
