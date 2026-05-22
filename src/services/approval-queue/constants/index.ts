@@ -4,7 +4,7 @@ const GET_APPROVAL_QUEUE_ITEMS = "/approval-queue";
 const GET_APPROVAL_QUEUE_WORKFLOWS = "/approval-queue/workflows";
 const GET_APPROVAL_QUEUE_ITEM_BY_ID = ({ itemId }: { itemId: string }) =>
   `/approval-queue/${encodeURIComponent(itemId)}`;
-const CANCEL_APPROVAL_QUEUE_ITEM_WORKFLOW = "approval-queue/cancel";
+const CANCEL_APPROVAL_QUEUE_ITEM_WORKFLOW = "/approval-queue/cancel";
 const APPROVE_APPROVAL_QUEUE_ACTION = ({ actionId }: { actionId: string }) =>
   `/approval-queue/actions/${encodeURIComponent(actionId)}/approve`;
 const REJECT_APPROVAL_QUEUE_ACTION = ({ actionId }: { actionId: string }) =>

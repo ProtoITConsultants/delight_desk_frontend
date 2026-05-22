@@ -33,6 +33,8 @@ export interface ApprovalQueueWorkflowAction {
   step: string;
   createdAt: string;
   proposedEmailBody: string | null;
+  escalationId: string | null;
+  escalationReason: string | null;
 }
 
 export interface ApprovalQueueItemData {

@@ -70,6 +70,25 @@ export const useGetApprovalQueueItem = ({
     },
   });
 
+  const { mutate: cancelWorkflow, isPending: isCancellingWorkflow } =
+    useMutation({
+      mutationFn: () =>
+        api.approval_queue_service.cancelApprovalQueueWorkflow({
+          id: approvalQueueId,
+        }),
+      onSuccess: (response) => {
+        invalidateApprovalQueries(queryClient, approvalQueueId);
+        toast.success(
+          response.message || "Workflow cancelled successfully",
+        );
+      },
+      onError: (error) => {
+        toast.error("Failed to cancel workflow", {
+          description: error instanceof Error ? error.message : undefined,
+        });
+      },
+    });
+
   const pendingWorkflowAction = workflowActions.find(
     (action) =>
       action.status === ApprovalQueueWorkflowActionStatus.PENDING_APPROVAL,
@@ -92,7 +111,12 @@ export const useGetApprovalQueueItem = ({
     isEditApprovingAction,
     rejectAction,
     isRejectingAction,
+    cancelWorkflow,
+    isCancellingWorkflow,
     disableActionButtons:
-      isApprovingAction || isEditApprovingAction || isRejectingAction,
+      isApprovingAction ||
+      isEditApprovingAction ||
+      isRejectingAction ||
+      isCancellingWorkflow,
   };
 };

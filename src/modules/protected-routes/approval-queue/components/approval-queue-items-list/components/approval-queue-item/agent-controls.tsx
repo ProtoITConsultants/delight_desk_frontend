@@ -88,7 +88,8 @@ export const AgentControls: FC<AgentControlsProps> = ({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 sm:gap-3 rounded-full border border-border/70 bg-muted/40 px-3 py-1.5",
+        "flex max-w-full shrink-0 flex-wrap items-center gap-x-2 gap-y-1.5 sm:gap-x-3",
+        "rounded-full border border-border/70 bg-muted/40 px-3 py-1.5",
         "transition-colors",
       )}
       onClick={(e) => e.stopPropagation()}
@@ -98,7 +99,7 @@ export const AgentControls: FC<AgentControlsProps> = ({
           <label
             htmlFor={`agent-enable-${agentApiId}`}
             className={cn(
-              "flex items-center gap-1.5",
+              "flex shrink-0 items-center gap-1.5",
               disableEnableSwitch
                 ? "cursor-not-allowed opacity-70"
                 : "cursor-pointer",
@@ -106,11 +107,11 @@ export const AgentControls: FC<AgentControlsProps> = ({
           >
             <Power
               className={cn(
-                "size-3.5 transition-colors",
+                "size-3.5 shrink-0 transition-colors",
                 isEnabled ? "text-primary" : "text-muted-foreground",
               )}
             />
-            <span className="hidden text-xs font-medium text-foreground sm:inline">
+            <span className="whitespace-nowrap text-xs font-medium text-foreground">
               Agent
             </span>
             <Switch
@@ -131,14 +132,12 @@ export const AgentControls: FC<AgentControlsProps> = ({
         </TooltipContent>
       </Tooltip>
 
-      <div className="h-4 w-px bg-border/70" />
-
       <Tooltip>
         <TooltipTrigger asChild>
           <label
             htmlFor={`agent-moderation-${agentApiId}`}
             className={cn(
-              "flex items-center gap-1.5",
+              "flex shrink-0 items-center gap-1.5 border-l border-border/70 pl-2 sm:pl-3",
               disableModerationSwitch
                 ? "cursor-not-allowed opacity-70"
                 : "cursor-pointer",
@@ -146,11 +145,11 @@ export const AgentControls: FC<AgentControlsProps> = ({
           >
             <ShieldCheck
               className={cn(
-                "size-3.5 transition-colors",
+                "size-3.5 shrink-0 transition-colors",
                 requiresModeration ? "text-primary" : "text-muted-foreground",
               )}
             />
-            <span className="hidden text-xs font-medium text-foreground sm:inline">
+            <span className="whitespace-nowrap text-xs font-medium text-foreground">
               Moderation
             </span>
             <Switch

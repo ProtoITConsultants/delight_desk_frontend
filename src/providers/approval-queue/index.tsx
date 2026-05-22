@@ -49,9 +49,8 @@ export const useApprovalQueueContext = (): ApprovalQueueContextType => {
 export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [selectedItemStatus, setSelectedItemStatus] = useState<
-    ApprovalQueueItemStatus | null
-  >(null);
+  const [selectedItemStatus, setSelectedItemStatus] =
+    useState<ApprovalQueueItemStatus | null>(null);
   const [activeAgentCategory, setActiveAgentCategory] =
     useState<ApprovalQueueAgentCategory>(ApprovalQueueAgentCategory.ALL);
   const [currentPage, setCurrentPage] = useState<number>(1);
