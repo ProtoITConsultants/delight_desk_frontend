@@ -36,4 +36,6 @@ export enum ApprovalQueueWorkflowActionStatus {
   FAILED = "failed",
   ESCALATED = "escalated",
   REJECTED = "rejected",
+  AWAITING_CUSTOMER_REPLY = "awaiting_customer_reply",
+  CANCELLED = "cancelled",
 }

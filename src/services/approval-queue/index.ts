@@ -5,6 +5,8 @@ import {
 } from "@/modules/protected-routes/approval-queue/utils/types";
 import { APPROVAL_QUEUE_ENDPOINTS } from "./constants";
 import {
+  CANCEL_APPROVAL_QUEUE_WORKFLOW_PARAMS,
+  CANCEL_APPROVAL_QUEUE_WORKFLOW_RESPONSE,
   EDIT_AND_APPROVE_WORKFLOW_ACTION_PARAMS,
   GET_APPROVAL_QUEUE_ITEM_BY_ID_PARAMS,
   GET_APPROVAL_QUEUE_ITEMS_PARAMS,
@@ -56,13 +58,13 @@ export class ApprovalQueueService {
 
     return response;
   };
-  // Cancel Approval Queue Workflow by Id
-  cancelApprovalQueueWorkflowById = async (id: string) => {
-    const response = await apiService.post(
+  // Cancel an in-progress approval queue workflow
+  cancelApprovalQueueWorkflow = async (
+    params: CANCEL_APPROVAL_QUEUE_WORKFLOW_PARAMS,
+  ) => {
+    const response = await apiService.post<CANCEL_APPROVAL_QUEUE_WORKFLOW_RESPONSE>(
       APPROVAL_QUEUE_ENDPOINTS.CANCEL_APPROVAL_QUEUE_ITEM_WORKFLOW,
-      {
-        workflowId: id,
-      },
+      params,
     );
 
     return response;

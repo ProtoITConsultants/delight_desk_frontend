@@ -33,3 +33,12 @@ export type EDIT_AND_APPROVE_WORKFLOW_ACTION_PARAMS = {
   id: string;
   editedResponse: string;
 };
+
+export type CANCEL_APPROVAL_QUEUE_WORKFLOW_PARAMS = {
+  id?: string;
+  workflowId?: string;
+};
+
+export type CANCEL_APPROVAL_QUEUE_WORKFLOW_RESPONSE = {
+  message: string;
+};
