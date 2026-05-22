@@ -1,14 +1,14 @@
 import {
   ApprovalQueueAgentCategory,
-  ApprovalQueueItemStatus,
   ApprovalQueuePriority,
+  ApprovalQueueStatusFilter,
 } from "@/modules/protected-routes/approval-queue/utils/constants";
 import { ApprovalQueueItemData } from "@/modules/protected-routes/approval-queue/utils/types";
 
 export type GET_APPROVAL_QUEUE_ITEMS_PARAMS = {
   page: number;
   limit: number;
-  status?: ApprovalQueueItemStatus;
+  status?: ApprovalQueueStatusFilter;
   category?: ApprovalQueueAgentCategory;
   priority?: ApprovalQueuePriority;
 };

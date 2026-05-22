@@ -10,7 +10,7 @@ import { ApprovalQueueContextType } from "./approval-queue-context.types";
 import { useApprovalQueueStreamSync } from "@/hooks/services/approval-queue/use-approval-queue-stream-sync";
 import {
   ApprovalQueueAgentCategory,
-  ApprovalQueueItemStatus,
+  ApprovalQueueStatusFilter,
 } from "@/modules/protected-routes/approval-queue/utils/constants";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -50,7 +50,7 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [selectedItemStatus, setSelectedItemStatus] =
-    useState<ApprovalQueueItemStatus | null>(null);
+    useState<ApprovalQueueStatusFilter | null>(null);
   const [activeAgentCategory, setActiveAgentCategory] =
     useState<ApprovalQueueAgentCategory>(ApprovalQueueAgentCategory.ALL);
   const [currentPage, setCurrentPage] = useState<number>(1);

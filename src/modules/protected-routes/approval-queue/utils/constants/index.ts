@@ -10,6 +10,18 @@ export enum ApprovalQueueItemStatus {
   COMPLETED = "completed",
 }
 
+/**
+ * Special filter value backed by the `workflowActions[].status` field rather
+ * than the workflow-level `status`. The API accepts this as a value for the
+ * same `status` query param, returning items that have at least one action in
+ * the `pending_approval` state.
+ */
+export const APPROVAL_QUEUE_PENDING_APPROVAL_FILTER = "pending_approval" as const;
+
+export type ApprovalQueueStatusFilter =
+  | ApprovalQueueItemStatus
+  | typeof APPROVAL_QUEUE_PENDING_APPROVAL_FILTER;
+
 export enum ApprovalQueueAgentCategory {
   ALL = "all",
   WISMO = "wismo",

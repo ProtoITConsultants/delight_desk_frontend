@@ -1,13 +1,13 @@
 import {
-  ApprovalQueueItemStatus,
   ApprovalQueueAgentCategory,
+  ApprovalQueueStatusFilter,
 } from "@/modules/protected-routes/approval-queue/utils/constants";
 import { GET_APPROVAL_QUEUE_ITEMS_RESPONSE } from "@/services/approval-queue/types";
 
 export interface ApprovalQueueContextType {
-  selectedItemStatus: ApprovalQueueItemStatus | null;
+  selectedItemStatus: ApprovalQueueStatusFilter | null;
   setSelectedItemStatus: React.Dispatch<
-    React.SetStateAction<ApprovalQueueItemStatus | null>
+    React.SetStateAction<ApprovalQueueStatusFilter | null>
   >;
   activeAgentCategory: ApprovalQueueAgentCategory;
   setActiveAgentCategory: React.Dispatch<

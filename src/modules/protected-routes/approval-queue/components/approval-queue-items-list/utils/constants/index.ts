@@ -1,23 +1,35 @@
-import { ApprovalQueueAgentCategory } from "../../../../utils/constants";
+import {
+  APPROVAL_QUEUE_PENDING_APPROVAL_FILTER,
+  ApprovalQueueAgentCategory,
+  ApprovalQueueItemStatus,
+  ApprovalQueueStatusFilter,
+} from "../../../../utils/constants";
 
-export const APPROVAL_QUEUE_ITEMS_FILTER_OPTIONS = [
+export const APPROVAL_QUEUE_ITEMS_FILTER_OPTIONS: ReadonlyArray<{
+  label: string;
+  value: ApprovalQueueStatusFilter;
+}> = [
+  {
+    label: "Pending Approval",
+    value: APPROVAL_QUEUE_PENDING_APPROVAL_FILTER,
+  },
   {
     label: "In Progress",
-    value: "in_progress",
+    value: ApprovalQueueItemStatus.IN_PROGRESS,
   },
   {
     label: "Cancelled",
-    value: "cancelled",
+    value: ApprovalQueueItemStatus.CANCELLED,
   },
   {
     label: "Completed",
-    value: "completed",
+    value: ApprovalQueueItemStatus.COMPLETED,
   },
   {
     label: "Escalated",
-    value: "escalated",
+    value: ApprovalQueueItemStatus.ESCALATED,
   },
-] as const;
+];
 
 export const APPROVAL_QUEUE_AGENT_FILTER_OPTIONS = [
   {
