@@ -7,7 +7,7 @@ import {
 } from "../../utils/constants";
 import {
   ApprovalQueueAgentCategory,
-  ApprovalQueueItemStatus,
+  ApprovalQueueStatusFilter,
 } from "@/modules/protected-routes/approval-queue/utils/constants";
 import {
   AGENT_METADATA_MAP,
@@ -120,7 +120,7 @@ export const ApprovalQueueItemsFilter = () => {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {APPROVAL_QUEUE_ITEMS_FILTER_OPTIONS.map((option) => {
-              const statusValue = option.value as ApprovalQueueItemStatus;
+              const statusValue: ApprovalQueueStatusFilter = option.value;
               const isSelected = selectedItemStatus === statusValue;
 
               return (

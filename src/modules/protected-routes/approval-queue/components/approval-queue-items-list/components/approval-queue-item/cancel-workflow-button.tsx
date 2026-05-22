@@ -15,11 +15,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  approvalQueueActionPillBaseClass,
-  approvalQueueActionPillIconClass,
-  approvalQueueActionPillTextClass,
-} from "./action-pill-styles";
+
+type CancelWorkflowButtonVariant = "ghost" | "solid";
 
 type CancelWorkflowButtonProps = {
   disabled?: boolean;
@@ -27,10 +24,32 @@ type CancelWorkflowButtonProps = {
   onOpenChange: (open: boolean) => void;
   onCancel: () => void;
   className?: string;
+  /**
+   * `ghost` is the calm, low-attention variant used inline in the card's
+   * action row. `solid` keeps the older bright red pill for places that need
+   * higher visual weight (kept for backwards compatibility).
+   */
+  variant?: CancelWorkflowButtonVariant;
+  label?: string;
 };
 
 const stopTriggerPropagation = (event: SyntheticEvent) => {
   event.stopPropagation();
+};
+
+const VARIANT_CLASSES: Record<CancelWorkflowButtonVariant, string> = {
+  ghost: cn(
+    "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium",
+    "text-muted-foreground hover:bg-muted hover:text-destructive transition-colors",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30 focus-visible:ring-offset-2",
+    "disabled:pointer-events-none disabled:opacity-50",
+  ),
+  solid: cn(
+    "inline-flex h-8 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold shadow-sm transition-colors",
+    "appearance-none border-0 bg-destructive text-white hover:bg-destructive/90",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30 focus-visible:ring-offset-2",
+    "disabled:pointer-events-none disabled:opacity-50",
+  ),
 };
 
 export const CancelWorkflowButton: FC<CancelWorkflowButtonProps> = ({
@@ -39,6 +58,8 @@ export const CancelWorkflowButton: FC<CancelWorkflowButtonProps> = ({
   onOpenChange,
   onCancel,
   className,
+  variant = "ghost",
+  label = "Cancel workflow",
 }) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -46,21 +67,12 @@ export const CancelWorkflowButton: FC<CancelWorkflowButtonProps> = ({
         <button
           type="button"
           disabled={disabled}
-          className={cn(
-            approvalQueueActionPillBaseClass,
-            approvalQueueActionPillTextClass,
-            "appearance-none border-0 bg-destructive text-white hover:bg-destructive/90",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30 focus-visible:ring-offset-2",
-            "disabled:pointer-events-none disabled:opacity-50",
-            className,
-          )}
+          className={cn(VARIANT_CLASSES[variant], className)}
           onPointerDown={stopTriggerPropagation}
           onClick={stopTriggerPropagation}
         >
-          <span className={approvalQueueActionPillIconClass}>
-            <CircleStop className="size-4 shrink-0" />
-          </span>
-          <span className={approvalQueueActionPillTextClass}>Cancel workflow</span>
+          <CircleStop className="size-3.5 shrink-0" />
+          <span>{label}</span>
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent onPointerDown={stopTriggerPropagation}>

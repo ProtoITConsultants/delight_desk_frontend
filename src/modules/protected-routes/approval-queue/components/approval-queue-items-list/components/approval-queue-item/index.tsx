@@ -1,32 +1,39 @@
 "use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Calendar, ChevronDown, Mail, Pencil, User } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  ChevronDown,
+  Mail,
+  Pencil,
+  User,
+} from "lucide-react";
 import { Stepper } from "@mantine/core";
 import { FC, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ApprovalQueueItemData } from "@/modules/protected-routes/approval-queue/utils/types";
 import {
+  APPROVAL_QUEUE_PENDING_APPROVAL_FILTER,
   ApprovalQueueItemStatus,
 } from "@/modules/protected-routes/approval-queue/utils/constants";
 import {
   AGENT_METADATA_MAP,
   APPROVAL_QUEUE_STATUS_STYLES,
   ApprovalQueueItemsFilterLabelMap,
+  hasPendingApprovalAction,
 } from "../../utils";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useGetApprovalQueueItem } from "./use-approval-queue-item";
 import { htmlToPlainText } from "@/modules/protected-routes/approval-queue/utils/html-to-plain-text";
-import { AgentControls } from "./agent-controls";
 import { CancelWorkflowButton } from "./cancel-workflow-button";
-import { approvalQueueActionPillBaseClass, approvalQueueActionPillIconClass, approvalQueueActionPillTextClass } from "./action-pill-styles";
 import {
   getWorkflowActionStepDescription,
   getWorkflowActionStepLabel,
@@ -41,15 +48,13 @@ const ProposedEmailBodyPreview = ({ body }: { body: string }) => {
   if (asHtml) {
     return (
       <div
-        className="py-4 px-5 bg-primary/10 w-full rounded-xl break-words text-sm"
+        className="w-full break-words rounded-lg border border-primary/15 bg-primary/5 px-4 py-3 text-sm"
         dangerouslySetInnerHTML={{ __html: body }}
       />
     );
   }
   return (
-    <div
-      className="py-4 px-5 bg-primary/10 w-full rounded-xl text-sm break-words whitespace-pre-wrap"
-    >
+    <div className="w-full whitespace-pre-wrap break-words rounded-lg border border-primary/15 bg-primary/5 px-4 py-3 text-sm">
       {body}
     </div>
   );
@@ -60,6 +65,7 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
   status,
   category,
   customerEmail,
+  customerName,
   emailSubject,
   createdAt,
   originalCustomerEmailBody,
@@ -142,193 +148,255 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
   const StatusIcon = statusStyles?.icon;
   const isInProgress = status === ApprovalQueueItemStatus.IN_PROGRESS;
 
+  const isAwaitingApproval = hasPendingApprovalAction(workflowActions);
+  const pendingApprovalStyles =
+    APPROVAL_QUEUE_STATUS_STYLES[APPROVAL_QUEUE_PENDING_APPROVAL_FILTER];
+
   return (
     <Card
       className={cn(
-        "gap-2 border-l-8",
-        statusStyles?.leftBorder ?? "border-l-orange-500",
+        "relative gap-0 overflow-hidden py-0 transition-shadow",
+        isAwaitingApproval && "ring-1 ring-orange-200/70",
       )}
     >
-      <CardHeader>
-        <div className="flex flex-col items-start gap-3 min-[650px]:flex-row min-[650px]:items-center min-[650px]:justify-between">
-          <div className="flex w-fit items-center overflow-hidden rounded-full border border-border/40 shadow-sm">
-            <div
-              className={cn(
-                "flex items-center gap-2 px-3 py-2",
-                bgColor,
-                textColor,
-              )}
-            >
-              <AgentIcon className="h-5 w-5" />
-              <span className="text-sm font-medium">{agentName}</span>
-            </div>
-            <div
-              className={cn(
-                "flex items-center gap-2 px-3 py-2",
-                statusStyles?.pill,
-              )}
-            >
-              {StatusIcon && <StatusIcon className="h-5 w-5" />}
-              <span className="text-sm font-medium">
-                {ApprovalQueueItemsFilterLabelMap[status]}
+      {isAwaitingApproval && (
+        <div
+          className={cn("h-1 w-full", pendingApprovalStyles.accentBar)}
+          aria-hidden
+        />
+      )}
+
+      <Collapsible
+        open={isActionsOpen}
+        onOpenChange={handleActionsOpenChange}
+        className="group"
+      >
+        <div className="flex flex-col gap-4 p-5">
+          {/* Meta row: agent chip + status + date */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <div
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
+                  bgColor,
+                  textColor,
+                )}
+              >
+                <AgentIcon className="h-3.5 w-3.5" />
+                <span>{agentName}</span>
+              </div>
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+                  statusStyles?.softPill,
+                )}
+              >
+                {StatusIcon && <StatusIcon className="h-3.5 w-3.5" />}
+                <span>{ApprovalQueueItemsFilterLabelMap[status]}</span>
               </span>
+              {isAwaitingApproval && (
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold",
+                    pendingApprovalStyles.softPill,
+                  )}
+                  title="At least one action is awaiting your approval"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-500 opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-orange-500" />
+                  </span>
+                  Needs your approval
+                </span>
+              )}
+            </div>
+            <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Calendar className="h-3.5 w-3.5" />
+              <span>{format(new Date(createdAt), "MMM d, yyyy")}</span>
             </div>
           </div>
-          <AgentControls category={category} agentName={agentName} />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Collapsible
-          open={isActionsOpen}
-          onOpenChange={handleActionsOpenChange}
-          className="group"
-        >
-          <div className="flex w-full flex-col gap-2 rounded-lg p-2">
+
+          {/* Subject + customer */}
+          <CollapsibleTrigger asChild>
+            <button
+              type="button"
+              className="flex w-full flex-col gap-1.5 rounded-md text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <div className="flex items-start gap-2">
+                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                <h3
+                  className="min-w-0 flex-1 break-words text-base font-semibold leading-snug sm:text-lg"
+                  title={emailSubject}
+                >
+                  {emailSubject}
+                </h3>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 pl-6 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <User className="h-3.5 w-3.5" />
+                  <span className="font-medium text-foreground/80">
+                    {customerName || "Unknown customer"}
+                  </span>
+                </span>
+                <span className="text-muted-foreground/60">·</span>
+                <span
+                  className="break-all"
+                  title={customerEmail}
+                >
+                  {customerEmail}
+                </span>
+              </div>
+            </button>
+          </CollapsibleTrigger>
+
+          {/* Action row */}
+          <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
+            {isInProgress && (
+              <CancelWorkflowButton
+                disabled={disableActionButtons}
+                open={isCancelDialogOpen}
+                onOpenChange={handleCancelDialogOpenChange}
+                onCancel={() => {
+                  cancelWorkflow(undefined, {
+                    onSuccess: () => setIsCancelDialogOpen(false),
+                  });
+                }}
+                variant="ghost"
+              />
+            )}
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="flex w-full flex-col gap-2 rounded-lg text-left hover:cursor-pointer hover:bg-secondary"
+                className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                <div className="flex items-start gap-2 w-full min-w-0">
-                  <Mail className="size-5 sm:size-6 mt-0.5 shrink-0" />
-                  <p
-                    className={cn(
-                      "min-w-0 flex-1 font-semibold break-words",
-                      "text-base sm:text-lg lg:text-xl",
-                    )}
-                    title={emailSubject}
-                  >
-                    {emailSubject}
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 w-full">
-                  <div className="flex items-center gap-2 min-w-0 max-w-full">
-                    <User className="size-4 shrink-0" />
-                    <p
-                      className="text-sm sm:text-md text-secondary-foreground line-clamp-1 break-all"
-                      title={customerEmail}
-                    >
-                      {customerEmail}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Calendar className="size-4 shrink-0" />
-                    <p className="text-sm sm:text-md text-secondary-foreground line-clamp-1">
-                      {format(new Date(createdAt), "MMM dd, yyyy")}
-                    </p>
-                  </div>
-                </div>
+                <ChevronDown
+                  className={cn(
+                    "h-3.5 w-3.5 transition-transform duration-200",
+                    "group-data-[state=open]:rotate-180",
+                  )}
+                />
+                <span className="group-data-[state=open]:hidden">
+                  View workflow
+                </span>
+                <span className="hidden group-data-[state=open]:inline">
+                  Hide workflow
+                </span>
               </button>
             </CollapsibleTrigger>
-            <div className="ml-auto inline-flex w-max flex-col items-stretch gap-2 pt-1">
-              {isInProgress && (
-                <CancelWorkflowButton
-                  disabled={disableActionButtons}
-                  open={isCancelDialogOpen}
-                  onOpenChange={handleCancelDialogOpenChange}
-                  onCancel={() => {
-                    cancelWorkflow(undefined, {
-                      onSuccess: () => setIsCancelDialogOpen(false),
-                    });
-                  }}
-                />
-              )}
+            {isAwaitingApproval && (
               <CollapsibleTrigger asChild>
-                <div
+                <button
+                  type="button"
                   className={cn(
-                    approvalQueueActionPillBaseClass,
-                    "cursor-pointer border border-primary bg-primary text-primary-foreground shadow-md",
-                    "hover:bg-primary/90 hover:border-primary",
+                    "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors",
+                    "bg-orange-500 hover:bg-orange-600",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2",
                   )}
                 >
-                  <span className={approvalQueueActionPillIconClass}>
-                    <ChevronDown
-                      className={cn(
-                        "size-4 shrink-0 transition-transform duration-200",
-                        "group-data-[state=open]:rotate-180",
-                      )}
-                    />
-                  </span>
-                  <span
-                    className={cn(
-                      approvalQueueActionPillTextClass,
-                      "group-data-[state=open]:hidden",
-                    )}
-                  >
-                    View actions
-                  </span>
-                  <span
-                    className={cn(
-                      approvalQueueActionPillTextClass,
-                      "hidden group-data-[state=open]:inline",
-                    )}
-                  >
-                    Hide actions
-                  </span>
-                </div>
+                  <span>Review &amp; approve</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
               </CollapsibleTrigger>
-            </div>
+            )}
           </div>
-          <CollapsibleContent className="flex flex-col items-start gap-4 p-2.5 text-sm">
-            <div className="flex flex-col gap-2 w-full">
-              <p className="font-semibold">Original Email Content</p>
-              <div
-                className="py-4 px-5 bg-secondary w-full rounded-xl"
-                dangerouslySetInnerHTML={{
-                  __html: originalCustomerEmailBody || "",
-                }}
-              />
-            </div>
-            <Stepper
-              active={stepperActive}
-              orientation="vertical"
-              iconSize={37}
-            >
-              {workflowActions.map((action, index) => {
-                const stepVisuals = getWorkflowActionStepVisuals(action.status);
+        </div>
 
-                return (
-                  <Stepper.Step
-                    key={action.id}
-                    label={getWorkflowActionStepLabel(action, index)}
-                    description={getWorkflowActionStepDescription(action)}
-                    color={stepVisuals.color}
-                    completedIcon={stepVisuals.completedIcon}
-                    progressIcon={stepVisuals.progressIcon}
-                    loading={
-                      isActionButtonBusy &&
-                      pendingWorkflowAction?.id === action.id
-                    }
+        <CollapsibleContent>
+          <CardContent className="border-t bg-muted/20 px-5 py-5">
+            <div className="flex flex-col gap-5">
+              {/* Original email + proposed response (side-by-side at wide widths) */}
+              <div className="grid gap-4 lg:grid-cols-2">
+                <section className="flex flex-col gap-2">
+                  <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Original email
+                  </h4>
+                  <div
+                    className="w-full break-words rounded-lg border bg-card px-4 py-3 text-sm"
+                    dangerouslySetInnerHTML={{
+                      __html: originalCustomerEmailBody || "",
+                    }}
                   />
-                );
-              })}
-            </Stepper>
-            <div className="ps-[49px] flex flex-col gap-3 items-start w-full">
+                </section>
+                {pendingWorkflowAction?.proposedEmailBody && (
+                  <section className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Proposed AI response
+                      </h4>
+                      {hasProposedEmailBody && !isEditingProposedEmail && (
+                        <button
+                          type="button"
+                          onClick={openEditMode}
+                          disabled={disableActionButtons}
+                          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                          Edit
+                        </button>
+                      )}
+                    </div>
+                    {isEditingProposedEmail ? (
+                      <Textarea
+                        value={editedEmailBody}
+                        onChange={(e) => setEditedEmailBody(e.target.value)}
+                        className="min-h-[160px] w-full text-sm"
+                        disabled={disableActionButtons}
+                      />
+                    ) : (
+                      <ProposedEmailBodyPreview
+                        body={pendingWorkflowAction.proposedEmailBody}
+                      />
+                    )}
+                  </section>
+                )}
+              </div>
+
+              {/* Workflow stepper */}
+              <section className="flex flex-col gap-3">
+                <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Workflow
+                </h4>
+                <Stepper
+                  active={stepperActive}
+                  orientation="vertical"
+                  iconSize={32}
+                >
+                  {workflowActions.map((action, index) => {
+                    const stepVisuals = getWorkflowActionStepVisuals(
+                      action.status,
+                    );
+
+                    return (
+                      <Stepper.Step
+                        key={action.id}
+                        label={getWorkflowActionStepLabel(action, index)}
+                        description={getWorkflowActionStepDescription(action)}
+                        color={stepVisuals.color}
+                        completedIcon={stepVisuals.completedIcon}
+                        progressIcon={stepVisuals.progressIcon}
+                        loading={
+                          isActionButtonBusy &&
+                          pendingWorkflowAction?.id === action.id
+                        }
+                      />
+                    );
+                  })}
+                </Stepper>
+              </section>
+
               {pendingWorkflowAction?.actionDetails && (
-                <div className="py-4 px-5 bg-secondary w-full rounded-xl">
-                  <p>{pendingWorkflowAction?.actionDetails}</p>
-                </div>
-              )}
-              {pendingWorkflowAction?.proposedEmailBody && (
-                <div className="flex flex-col gap-2 w-full">
-                  <p className="font-semibold">AI Response</p>
-                  {isEditingProposedEmail ? (
-                    <Textarea
-                      value={editedEmailBody}
-                      onChange={(e) => setEditedEmailBody(e.target.value)}
-                      className="min-h-[160px] w-full text-sm"
-                      disabled={disableActionButtons}
-                    />
-                  ) : (
-                    <ProposedEmailBodyPreview
-                      body={pendingWorkflowAction.proposedEmailBody}
-                    />
-                  )}
-                </div>
+                <section className="flex flex-col gap-2">
+                  <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Action details
+                  </h4>
+                  <div className="rounded-lg border bg-card px-4 py-3 text-sm">
+                    {pendingWorkflowAction.actionDetails}
+                  </div>
+                </section>
               )}
 
               {shouldShowActionButtons && (
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2 border-t pt-4">
                   {hasProposedEmailBody && isEditingProposedEmail ? (
                     <>
                       <Button
@@ -344,7 +412,7 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
                           disableActionButtons || !editedEmailBody.trim()
                         }
                       >
-                        Edit and approve
+                        Save and approve
                       </Button>
                       <Button
                         type="button"
@@ -352,31 +420,18 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
                         onClick={() => setIsEditingProposedEmail(false)}
                         disabled={disableActionButtons}
                       >
-                        Cancel
+                        Discard changes
                       </Button>
                     </>
                   ) : (
-                    <>
-                      <Button
-                        onClick={() => {
-                          approveAction(pendingWorkflowAction?.id ?? "");
-                        }}
-                        disabled={disableActionButtons}
-                      >
-                        Approve
-                      </Button>
-                      {hasProposedEmailBody && (
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          onClick={openEditMode}
-                          disabled={disableActionButtons}
-                        >
-                          <Pencil className="h-4 w-4 mr-1.5" />
-                          Edit
-                        </Button>
-                      )}
-                    </>
+                    <Button
+                      onClick={() => {
+                        approveAction(pendingWorkflowAction?.id ?? "");
+                      }}
+                      disabled={disableActionButtons}
+                    >
+                      Approve
+                    </Button>
                   )}
                   <Button
                     variant="outline"
@@ -390,9 +445,9 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
                 </div>
               )}
             </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </CardContent>
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };
