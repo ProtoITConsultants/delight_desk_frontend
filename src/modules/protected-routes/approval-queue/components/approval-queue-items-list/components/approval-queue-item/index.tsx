@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/collapsible";
 import {
   ArrowRight,
+  BellRing,
   Calendar,
   ChevronDown,
   Mail,
@@ -303,54 +304,27 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
         <CollapsibleContent>
           <CardContent className="border-t bg-muted/20 px-5 py-5">
             <div className="flex flex-col gap-5">
-              {/* Original email + proposed response (side-by-side at wide widths) */}
-              <div className="grid gap-4 lg:grid-cols-2">
-                <section className="flex flex-col gap-2">
-                  <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Original email
-                  </h4>
-                  <div
-                    className="w-full break-words rounded-lg border bg-card px-4 py-3 text-sm"
-                    dangerouslySetInnerHTML={{
-                      __html: originalCustomerEmailBody || "",
-                    }}
-                  />
-                </section>
-                {pendingWorkflowAction?.proposedEmailBody && (
-                  <section className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        Proposed AI response
-                      </h4>
-                      {hasProposedEmailBody && !isEditingProposedEmail && (
-                        <button
-                          type="button"
-                          onClick={openEditMode}
-                          disabled={disableActionButtons}
-                          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                          Edit
-                        </button>
-                      )}
-                    </div>
-                    {isEditingProposedEmail ? (
-                      <Textarea
-                        value={editedEmailBody}
-                        onChange={(e) => setEditedEmailBody(e.target.value)}
-                        className="min-h-[160px] w-full text-sm"
-                        disabled={disableActionButtons}
-                      />
-                    ) : (
-                      <ProposedEmailBodyPreview
-                        body={pendingWorkflowAction.proposedEmailBody}
-                      />
-                    )}
-                  </section>
-                )}
-              </div>
+              {/* Inciting customer message — rendered full-width as
+                  background context. The proposed AI response used to
+                  live here in a side-by-side grid, but it's now part of
+                  the "Awaiting your approval" panel below so the thing
+                  being approved sits adjacent to its Approve / Reject
+                  buttons (Fitts's Law + Gestalt proximity). */}
+              <section className="flex flex-col gap-2">
+                <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Original email
+                </h4>
+                <div
+                  className="w-full break-words rounded-lg border bg-card px-4 py-3 text-sm"
+                  dangerouslySetInnerHTML={{
+                    __html: originalCustomerEmailBody || "",
+                  }}
+                />
+              </section>
 
-              {/* Workflow stepper */}
+              {/* Workflow progress — shows where we are in the lifecycle.
+                  The active step matches the orange "Awaiting" panel below
+                  when a step is pending approval. */}
               <section className="flex flex-col gap-3">
                 <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   Workflow
@@ -383,65 +357,125 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
                 </Stepper>
               </section>
 
-              {pendingWorkflowAction?.actionDetails && (
-                <section className="flex flex-col gap-2">
-                  <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Action details
-                  </h4>
-                  <div className="rounded-lg border bg-card px-4 py-3 text-sm">
-                    {pendingWorkflowAction.actionDetails}
-                  </div>
-                </section>
-              )}
+              {/* "Awaiting your approval" panel.
+               *
+               *  Co-locates everything the user needs to make a decision:
+               *    - What this action will do (action details)
+               *    - What we're about to send (proposed email + edit)
+               *    - The decision itself (Approve / Reject)
+               *
+               *  The orange treatment is intentional — it matches the
+               *  accent bar at the top of the card and the "Needs your
+               *  approval" pill in the header, so the page's hero color
+               *  travels from "spot it" → "expand it" → "act on it".
+               */}
+              {shouldShowActionButtons && pendingWorkflowAction && (
+                <section
+                  className="flex flex-col gap-4 rounded-lg border border-orange-200 bg-orange-50/40 p-4"
+                  aria-label="Action awaiting your approval"
+                >
+                  <header className="flex items-center gap-2">
+                    <BellRing
+                      className="h-4 w-4 text-orange-600"
+                      aria-hidden
+                    />
+                    <h4 className="text-sm font-semibold text-orange-700">
+                      Awaiting your approval
+                    </h4>
+                  </header>
 
-              {shouldShowActionButtons && (
-                <div className="flex flex-wrap items-center gap-2 border-t pt-4">
-                  {hasProposedEmailBody && isEditingProposedEmail ? (
-                    <>
+                  {pendingWorkflowAction.actionDetails && (
+                    <div className="flex flex-col gap-2">
+                      <h5 className="text-xs font-semibold uppercase tracking-wide text-orange-700/80">
+                        What this action will do
+                      </h5>
+                      <div className="rounded-md border border-orange-100 bg-card px-3 py-2.5 text-sm">
+                        {pendingWorkflowAction.actionDetails}
+                      </div>
+                    </div>
+                  )}
+
+                  {pendingWorkflowAction.proposedEmailBody && (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <h5 className="text-xs font-semibold uppercase tracking-wide text-orange-700/80">
+                          Proposed email response
+                        </h5>
+                        {hasProposedEmailBody && !isEditingProposedEmail && (
+                          <button
+                            type="button"
+                            onClick={openEditMode}
+                            disabled={disableActionButtons}
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-orange-700 transition-colors hover:bg-orange-100 hover:text-orange-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                            Edit
+                          </button>
+                        )}
+                      </div>
+                      {isEditingProposedEmail ? (
+                        <Textarea
+                          value={editedEmailBody}
+                          onChange={(e) => setEditedEmailBody(e.target.value)}
+                          className="min-h-[160px] w-full text-sm"
+                          disabled={disableActionButtons}
+                        />
+                      ) : (
+                        <ProposedEmailBodyPreview
+                          body={pendingWorkflowAction.proposedEmailBody}
+                        />
+                      )}
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-2 border-t border-orange-200/60 pt-4">
+                    {hasProposedEmailBody && isEditingProposedEmail ? (
+                      <>
+                        <Button
+                          onClick={() => {
+                            const text = editedEmailBody.trim();
+                            if (!text) return;
+                            editAndApproveAction({
+                              actionId: pendingWorkflowAction?.id ?? "",
+                              editedResponse: text,
+                            });
+                          }}
+                          disabled={
+                            disableActionButtons || !editedEmailBody.trim()
+                          }
+                        >
+                          Save and approve
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setIsEditingProposedEmail(false)}
+                          disabled={disableActionButtons}
+                        >
+                          Discard changes
+                        </Button>
+                      </>
+                    ) : (
                       <Button
                         onClick={() => {
-                          const text = editedEmailBody.trim();
-                          if (!text) return;
-                          editAndApproveAction({
-                            actionId: pendingWorkflowAction?.id ?? "",
-                            editedResponse: text,
-                          });
+                          approveAction(pendingWorkflowAction?.id ?? "");
                         }}
-                        disabled={
-                          disableActionButtons || !editedEmailBody.trim()
-                        }
-                      >
-                        Save and approve
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setIsEditingProposedEmail(false)}
                         disabled={disableActionButtons}
                       >
-                        Discard changes
+                        Approve
                       </Button>
-                    </>
-                  ) : (
+                    )}
                     <Button
+                      variant="outline"
                       onClick={() => {
-                        approveAction(pendingWorkflowAction?.id ?? "");
+                        rejectAction(pendingWorkflowAction?.id ?? "");
                       }}
                       disabled={disableActionButtons}
                     >
-                      Approve
+                      Reject
                     </Button>
-                  )}
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      rejectAction(pendingWorkflowAction?.id ?? "");
-                    }}
-                    disabled={disableActionButtons}
-                  >
-                    Reject
-                  </Button>
-                </div>
+                  </div>
+                </section>
               )}
             </div>
           </CardContent>

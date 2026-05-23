@@ -1,5 +1,7 @@
 import { api } from "@/lib/api";
 import { APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX } from "@/hooks/services/approval-queue/use-agent-workflow-progress";
+import { APPROVAL_QUEUE_STATS_QUERY_KEY } from "@/hooks/services/approval-queue/use-approval-queue-stats";
+import { NAV_BADGE_COUNTS_QUERY_KEY } from "@/hooks/services/dashboard/use-nav-badge-counts";
 import { ApprovalQueueWorkflowActionStatus } from "@/modules/protected-routes/approval-queue/utils/constants";
 import { ApprovalQueueWorkflowAction } from "@/modules/protected-routes/approval-queue/utils/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,6 +22,12 @@ const invalidateApprovalQueries = (
   void queryClient.invalidateQueries({ queryKey: ["approval-queue-items"] });
   void queryClient.invalidateQueries({
     queryKey: [...APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX],
+  });
+  void queryClient.invalidateQueries({
+    queryKey: [...APPROVAL_QUEUE_STATS_QUERY_KEY],
+  });
+  void queryClient.invalidateQueries({
+    queryKey: [...NAV_BADGE_COUNTS_QUERY_KEY],
   });
 };
 

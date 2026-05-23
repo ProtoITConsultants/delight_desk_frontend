@@ -10,7 +10,7 @@ export const APPROVAL_QUEUE_ITEMS_FILTER_OPTIONS: ReadonlyArray<{
   value: ApprovalQueueStatusFilter;
 }> = [
   {
-    label: "Pending Approval",
+    label: "Awaiting Approval",
     value: APPROVAL_QUEUE_PENDING_APPROVAL_FILTER,
   },
   {
@@ -18,16 +18,16 @@ export const APPROVAL_QUEUE_ITEMS_FILTER_OPTIONS: ReadonlyArray<{
     value: ApprovalQueueItemStatus.IN_PROGRESS,
   },
   {
-    label: "Cancelled",
-    value: ApprovalQueueItemStatus.CANCELLED,
+    label: "Escalated",
+    value: ApprovalQueueItemStatus.ESCALATED,
   },
   {
     label: "Completed",
     value: ApprovalQueueItemStatus.COMPLETED,
   },
   {
-    label: "Escalated",
-    value: ApprovalQueueItemStatus.ESCALATED,
+    label: "Cancelled",
+    value: ApprovalQueueItemStatus.CANCELLED,
   },
 ];
 

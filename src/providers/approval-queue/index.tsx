@@ -7,12 +7,17 @@ import {
   useState,
 } from "react";
 import { ApprovalQueueContextType } from "./approval-queue-context.types";
-import { useApprovalQueueStreamSync } from "@/hooks/services/approval-queue/use-approval-queue-stream-sync";
+import { APPROVAL_QUEUE_STATS_QUERY_KEY } from "@/hooks/services/approval-queue/use-approval-queue-stats";
+import { NAV_BADGE_COUNTS_QUERY_KEY } from "@/hooks/services/dashboard/use-nav-badge-counts";
 import {
   ApprovalQueueAgentCategory,
   ApprovalQueueStatusFilter,
 } from "@/modules/protected-routes/approval-queue/utils/constants";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -61,9 +66,16 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
     setCurrentPage(1);
   }, [selectedItemStatus, activeAgentCategory]);
 
-  useApprovalQueueStreamSync();
+  const queryClient = useQueryClient();
 
-  const { data, isPending, isError, error, refetch, isRefetching } = useQuery({
+  const {
+    data,
+    isPending,
+    isError,
+    error,
+    refetch: refetchItems,
+    isRefetching,
+  } = useQuery({
     queryKey: [
       "approval-queue-items",
       selectedItemStatus,
@@ -82,6 +94,22 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
       }),
     placeholderData: keepPreviousData,
   });
+
+  // Wrap refetch so a manual "Refresh" updates both the items list and the
+  // stats strip in one click. Returns once the items list resolves; the stats
+  // refetch is fire-and-forget because the strip handles its own loading UI.
+  const refetch = useMemo(
+    () => async () => {
+      void queryClient.invalidateQueries({
+        queryKey: [...APPROVAL_QUEUE_STATS_QUERY_KEY],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [...NAV_BADGE_COUNTS_QUERY_KEY],
+      });
+      return refetchItems();
+    },
+    [queryClient, refetchItems],
+  );
 
   const approvalQueueItems = useMemo(() => data?.data ?? [], [data]);
   const pagination = data?.pagination;
@@ -121,8 +149,8 @@ export const ApprovalQueueProvider: FC<{ children: React.ReactNode }> = ({
     hasNextPage,
     hasPreviousPage,
     isPending,
-    refetch,
     isRefetching,
+    refetch,
   ]);
 
   useEffect(() => {

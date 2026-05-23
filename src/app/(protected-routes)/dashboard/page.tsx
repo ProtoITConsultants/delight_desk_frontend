@@ -240,19 +240,13 @@ const Dashboard = () => {
           {isActivityLogsPending ? (
             <ActivityLog.ActivityLogSkeleton />
           ) : activityLogs.length === 0 ? (
-            <div className="p-4 text-center text-gray-500">
-              No recent activity
-            </div>
+            <ActivityLog.EmptyState />
           ) : (
             <div
               ref={activityLogScrollRef}
               className="max-h-[min(24rem,50vh)] overflow-y-auto"
             >
-              <div className="space-y-3 p-4">
-                {activityLogs.map((activity) => (
-                  <ActivityLog.ItemCard key={activity.id} {...activity} />
-                ))}
-              </div>
+              <ActivityLog.ItemList activities={activityLogs} />
               {hasNextPage && (
                 <div
                   ref={activityLogLoadMoreRef}
@@ -261,9 +255,7 @@ const Dashboard = () => {
                 />
               )}
               {isActivityLogsFetchingNextPage && (
-                <div className="px-4 pb-4">
-                  <ActivityLog.ActivityLogBottomSkeleton />
-                </div>
+                <ActivityLog.ActivityLogBottomSkeleton />
               )}
             </div>
           )}
