@@ -1,7 +1,10 @@
 import {
+  AI_ASSISTANT_ICON,
+  SUBSCRIPTION_AGENT_ICON,
+} from "@/constants/product-icons";
+import {
   LayoutDashboard,
   Satellite,
-  Bot,
   CheckCircle,
   Clock,
   Settings,
@@ -20,7 +23,7 @@ import type { LucideIcon } from "lucide-react";
 const PRIMARY_NAVIGATION = [
   { name: "Dashboard", href: "/dashboard", icon: Satellite },
   { name: "Approval Queue", href: "/approval-queue", icon: CheckCircle },
-  { name: "AI Assistant", href: "/ai-assistant", icon: Bot },
+  { name: "AI Assistant", href: "/ai-assistant", icon: AI_ASSISTANT_ICON },
   {
     name: "Quick Actions",
     href: "/quick-actions",
@@ -58,7 +61,7 @@ const AI_AGENTS_NAVIGATION: AiAgentNavItem[] = [
   {
     name: "Subscription Agent",
     href: "/subscription-agent",
-    icon: Bot,
+    icon: SUBSCRIPTION_AGENT_ICON,
     comingSoon: true,
   },
 ];

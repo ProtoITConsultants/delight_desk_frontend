@@ -1,6 +1,9 @@
 import {
-  Bot,
-  User,
+  AI_AGENT_ACTIONS_ICON,
+  AI_ASSISTANT_ICON,
+  SUBSCRIPTION_AGENT_ICON,
+} from "@/constants/product-icons";
+import {
   Clock,
   Mail,
   Truck,
@@ -26,14 +29,14 @@ const STAT_CARDS = [
     hint: "Automated by AI agents",
     iconBgClass: "bg-emerald-50",
     iconColorClass: "text-emerald-600",
-    icon: Bot,
+    icon: AI_AGENT_ACTIONS_ICON,
   },
   {
     label: "Tickets Resolved",
     hint: "Closed by AI assistant",
     iconBgClass: "bg-blue-50",
     iconColorClass: "text-blue-600",
-    icon: User,
+    icon: AI_ASSISTANT_ICON,
   },
   {
     label: "Emails Received",
@@ -93,7 +96,7 @@ const AI_AGENTS = [
   {
     id: "subscription",
     name: "Subscription Agent",
-    icon: Bot,
+    icon: SUBSCRIPTION_AGENT_ICON,
     href: "/subscription-agent",
   },
   // {

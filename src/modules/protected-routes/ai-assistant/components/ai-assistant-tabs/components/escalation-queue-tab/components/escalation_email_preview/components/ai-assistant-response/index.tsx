@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Bot } from "lucide-react";
+import { AI_ASSISTANT_ICON } from "@/constants/product-icons";
 import HighConfidenceResponse from "./components/high-confidence-response";
 import LowConfidenceResponse from "./components/low-confidence-response";
 import { useAiAssistant } from "@/providers/ai-assistant";
@@ -18,7 +18,7 @@ const AiAssistantResponse = () => {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Bot className="h-4 w-4 text-blue-600" />
+          <AI_ASSISTANT_ICON className="h-4 w-4 text-blue-600" />
           <CardTitle className="text-base">AI Assistant</CardTitle>
         </div>
         <p className="text-sm text-gray-600">

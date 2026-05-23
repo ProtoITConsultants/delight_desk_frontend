@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Bot } from "lucide-react";
+import { AI_ASSISTANT_ICON } from "@/constants/product-icons";
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -32,7 +32,7 @@ const EscalationEmailResponseFeedbackDialog = () => {
         {/* Header */}
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Bot className="h-5 w-5 text-blue-600" />
+            <AI_ASSISTANT_ICON className="h-5 w-5 text-blue-600" />
             Help Us Improve AI Responses
           </DialogTitle>
           <div className="flex flex-col gap-2">

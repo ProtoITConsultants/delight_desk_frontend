@@ -261,7 +261,6 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
                     onSuccess: () => setIsCancelDialogOpen(false),
                   });
                 }}
-                variant="ghost"
               />
             )}
             <CollapsibleTrigger asChild>

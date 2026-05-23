@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { AI_ASSISTANT_ICON } from "@/constants/product-icons";
 import { useAiAssistant } from "@/providers/ai-assistant";
 import { ArrowUp, Clock } from "lucide-react";
 
@@ -8,7 +9,10 @@ const AiAssistantHeader = () => {
   return (
     <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-gray-900">AI Assistant</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+          <AI_ASSISTANT_ICON className="h-6 w-6 text-blue-600" />
+          AI Assistant
+        </h1>
         <p className="text-gray-600">
           Resolve complex cases with AI-powered assistance
         </p>

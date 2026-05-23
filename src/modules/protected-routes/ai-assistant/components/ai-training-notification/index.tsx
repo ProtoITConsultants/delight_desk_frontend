@@ -1,4 +1,4 @@
-import { Bot } from "lucide-react";
+import { AI_ASSISTANT_ICON } from "@/constants/product-icons";
 import Link from "next/link";
 import { AI_TRAINING_NOTIFICATION_PROPS } from "../../types/ai-training-notification";
 
@@ -14,7 +14,7 @@ const AiTrainingNotification = ({
     <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4 flex items-start flex-col sm:flex-row gap-4 sm:gap-3">
       <div className="flex items-start gap-3 flex-1">
         <div className="p-2 bg-purple-100 rounded-lg w-fit h-fit">
-          <Bot className="h-5 w-5 text-purple-600" />
+          <AI_ASSISTANT_ICON className="h-5 w-5 text-purple-600" />
         </div>
         <div className="flex-1">
           <h3 className="text-sm font-semibold text-purple-900">
@@ -42,7 +42,7 @@ const AiTrainingNotification = ({
         className="text-purple-700 border border-purple-300 bg-white hover:bg-purple-100 flex items-center justify-center gap-1 rounded-md px-3 py-2 font-medium text-sm w-full sm:w-fit"
         href="/ai-training"
       >
-        <Bot className="h-3 w-3" />
+        <AI_ASSISTANT_ICON className="h-3 w-3" />
         Complete Training
       </Link>
     </div>

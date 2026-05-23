@@ -16,20 +16,12 @@ import {
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
-type CancelWorkflowButtonVariant = "ghost" | "solid";
-
 type CancelWorkflowButtonProps = {
   disabled?: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCancel: () => void;
   className?: string;
-  /**
-   * `ghost` is the calm, low-attention variant used inline in the card's
-   * action row. `solid` keeps the older bright red pill for places that need
-   * higher visual weight (kept for backwards compatibility).
-   */
-  variant?: CancelWorkflowButtonVariant;
   label?: string;
 };
 
@@ -37,20 +29,15 @@ const stopTriggerPropagation = (event: SyntheticEvent) => {
   event.stopPropagation();
 };
 
-const VARIANT_CLASSES: Record<CancelWorkflowButtonVariant, string> = {
-  ghost: cn(
-    "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium",
-    "text-muted-foreground hover:bg-muted hover:text-destructive transition-colors",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30 focus-visible:ring-offset-2",
-    "disabled:pointer-events-none disabled:opacity-50",
-  ),
-  solid: cn(
-    "inline-flex h-8 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold shadow-sm transition-colors",
-    "appearance-none border-0 bg-destructive text-white hover:bg-destructive/90",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30 focus-visible:ring-offset-2",
-    "disabled:pointer-events-none disabled:opacity-50",
-  ),
-};
+// Calm, low-attention button used inline in the card's action row. The
+// destructive action lives behind the confirm dialog, so the trigger itself
+// stays understated by design.
+const TRIGGER_CLASSES = cn(
+  "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium",
+  "text-muted-foreground hover:bg-muted hover:text-destructive transition-colors",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30 focus-visible:ring-offset-2",
+  "disabled:pointer-events-none disabled:opacity-50",
+);
 
 export const CancelWorkflowButton: FC<CancelWorkflowButtonProps> = ({
   disabled = false,
@@ -58,7 +45,6 @@ export const CancelWorkflowButton: FC<CancelWorkflowButtonProps> = ({
   onOpenChange,
   onCancel,
   className,
-  variant = "ghost",
   label = "Cancel workflow",
 }) => {
   return (
@@ -67,7 +53,7 @@ export const CancelWorkflowButton: FC<CancelWorkflowButtonProps> = ({
         <button
           type="button"
           disabled={disabled}
-          className={cn(VARIANT_CLASSES[variant], className)}
+          className={cn(TRIGGER_CLASSES, className)}
           onPointerDown={stopTriggerPropagation}
           onClick={stopTriggerPropagation}
         >

@@ -6,7 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useGenerateAiResponse } from "@/hooks/services/ai-assistant/use-generate-ai-response";
 import { useSendEscalationResponse } from "@/hooks/services/ai-assistant/use-send-escalation-response";
 import { EscalationType } from "@/modules/protected-routes/ai-assistant/types/ai-assistant-header";
-import { AlertCircle, Bot, Edit, Loader2, Send, Sparkles } from "lucide-react";
+import { AI_ASSISTANT_ICON } from "@/constants/product-icons";
+import { AlertCircle, Edit, Loader2, Send, Sparkles } from "lucide-react";
 import { FC, useEffect, useState } from "react";
 
 type Mode = "manual" | "instruct-ai";
@@ -97,7 +98,7 @@ const LowConfidenceResponse: FC<EscalationType> = ({ id }) => {
           onClick={() => handleSwitchMode("instruct-ai")}
           className="!h-9"
         >
-          <Bot className="h-3 w-3 mr-1" />
+          <AI_ASSISTANT_ICON className="h-3 w-3 mr-1" />
           Instruct AI
         </Button>
         <Button
