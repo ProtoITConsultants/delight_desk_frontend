@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import {
   createContext,
   FC,
+  Suspense,
   useContext,
   useEffect,
   useMemo,
@@ -122,6 +123,16 @@ export const useAiAssistant = (): AiAssistantContentType => {
 };
 
 export const AiAssistantProvider: FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return (
+    <Suspense fallback={null}>
+      <AiAssistantProviderInner>{children}</AiAssistantProviderInner>
+    </Suspense>
+  );
+};
+
+const AiAssistantProviderInner: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const searchParams = useSearchParams();
