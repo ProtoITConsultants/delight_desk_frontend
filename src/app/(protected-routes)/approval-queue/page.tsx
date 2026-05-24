@@ -4,7 +4,7 @@ import ApprovalQueueHeader from "@/modules/protected-routes/approval-queue/compo
 import ApprovalQueueRoot from "@/modules/protected-routes/approval-queue/components/approval-queue-root";
 import ApprovalQueueItemsList from "@/modules/protected-routes/approval-queue/components/approval-queue-items-list";
 import { ApprovalQueueItemsFilter } from "@/modules/protected-routes/approval-queue/components/approval-queue-items-list/components/approval-queue-items-filter";
-import { ActiveAgentsStrip } from "@/modules/protected-routes/approval-queue/components/active-agents-strip";
+import { ApprovalQueueStats } from "@/modules/protected-routes/approval-queue/components/approval-queue-stats";
 import {
   ApprovalQueueProvider,
   useApprovalQueueContext,
@@ -34,7 +34,7 @@ const ApprovalQueuePageContent = () => {
         }
       />
 
-      <ActiveAgentsStrip />
+      <ApprovalQueueStats />
 
       <div className="flex flex-col gap-4">
         <ApprovalQueueItemsFilter />

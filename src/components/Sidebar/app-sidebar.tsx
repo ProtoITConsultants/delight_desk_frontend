@@ -7,6 +7,7 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
@@ -21,6 +22,10 @@ import {
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import {
+  formatNavBadgeCount,
+  useNavBadgeCounts,
+} from "@/hooks/services/dashboard/use-nav-badge-counts";
 
 const AI_AGENT_BASE_PATHS = [
   "/wismo-agent",
@@ -32,9 +37,32 @@ const AI_AGENT_BASE_PATHS = [
   "/order-cancellation-agent",
 ] as const;
 
+const getNavBadgeCount = (
+  href: string,
+  counts:
+    | {
+        approvalQueuePendingApproval: number;
+        aiAssistantPending: number;
+      }
+    | undefined,
+) => {
+  if (!counts) return 0;
+
+  if (href === "/approval-queue") {
+    return counts.approvalQueuePendingApproval;
+  }
+
+  if (href === "/ai-assistant") {
+    return counts.aiAssistantPending;
+  }
+
+  return 0;
+};
+
 export function AppSidebar() {
   // Hook
   const pathname = usePathname();
+  const { data: navBadgeCounts } = useNavBadgeCounts();
 
   const isAiAgentsActive = AI_AGENT_BASE_PATHS.some(
     (p) => pathname === p || (pathname != null && pathname.startsWith(`${p}/`)),
@@ -57,6 +85,7 @@ export function AppSidebar() {
           <SidebarMenu>
             {SIDEBAR_CONTENT.PRIMARY_NAVIGATION.map((item) => {
               const isActive = pathname === item.href;
+              const badgeCount = getNavBadgeCount(item.href, navBadgeCounts);
               return item.name === "AI Agents" ? (
                 <Collapsible key={item.name} className="group/collapsible">
                   <SidebarMenuItem>
@@ -146,6 +175,14 @@ export function AppSidebar() {
                       </Link>
                     )}
                   </SidebarMenuButton>
+                  {!item.isDisabled && badgeCount > 0 ? (
+                    <SidebarMenuBadge
+                      className="bg-orange-500 text-white"
+                      aria-label={`${badgeCount} pending`}
+                    >
+                      {formatNavBadgeCount(badgeCount)}
+                    </SidebarMenuBadge>
+                  ) : null}
                 </SidebarMenuItem>
               );
             })}

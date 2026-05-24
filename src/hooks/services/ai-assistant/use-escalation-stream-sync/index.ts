@@ -4,6 +4,7 @@ import {
 } from "@/modules/protected-routes/ai-assistant/types/ai-assistant-header";
 import type { AiAssistantStreamEscalationsUpdatedEvent } from "@/services/ai-assistant/utils/escalation-stream";
 import AI_ASSISTANT_ENDPOINTS from "@/services/ai-assistant/utils/constants";
+import { NAV_BADGE_COUNTS_QUERY_KEY } from "@/hooks/services/dashboard/use-nav-badge-counts";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 
@@ -64,6 +65,9 @@ export function useEscalationStreamSync({
         ],
       });
       void queryClient.invalidateQueries({ queryKey: ["escalation-stats"] });
+      void queryClient.invalidateQueries({
+        queryKey: [...NAV_BADGE_COUNTS_QUERY_KEY],
+      });
     };
 
     stream.addEventListener("escalations_updated", onEscalationsUpdated);

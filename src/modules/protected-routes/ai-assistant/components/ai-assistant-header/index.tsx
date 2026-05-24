@@ -1,53 +1,38 @@
-import { Card, CardContent } from "@/components/ui/card";
+"use client";
+import { AI_ASSISTANT_ICON } from "@/constants/product-icons";
 import { useAiAssistant } from "@/providers/ai-assistant";
-import { ArrowUp, Clock } from "lucide-react";
+import { Radio } from "lucide-react";
 
 const AiAssistantHeader = () => {
-  const { escalationStats } = useAiAssistant();
+  const { escalationStats, isStatsPending } = useAiAssistant();
+
+  // Live indicator copy: "Live · N escalations". When stats haven't arrived
+  // yet the count is muted so the dot still telegraphs "we're connected".
+  const totalLabel = isStatsPending
+    ? "Connecting"
+    : `${escalationStats?.total ?? 0} escalations`;
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-gray-900">AI Assistant</h1>
-        <p className="text-gray-600">
-          Resolve complex cases with AI-powered assistance
+        <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
+          <AI_ASSISTANT_ICON className="h-6 w-6 text-primary" />
+          AI Assistant
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Resolve complex cases with AI-powered assistance.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 lg:flex gap-4">
-        <Card className="flex-shrink-0 p-0 min-w-[156.79px]">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Clock className="h-4 w-4 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-xl font-bold text-gray-900">
-                  {escalationStats?.byStatus.pending || 0}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="flex-shrink-0 p-0 min-w-[156.79px]">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <ArrowUp className="h-4 w-4 text-red-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  High Priority
-                </p>
-                <p className="text-xl font-bold text-gray-900">
-                  {escalationStats?.byPriority.high || 0}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="flex items-center gap-2 self-start text-xs text-muted-foreground sm:self-end">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+        </span>
+        <Radio className="h-3 w-3" />
+        <span className="font-medium text-foreground/80">Live</span>
+        <span aria-hidden>·</span>
+        <span>{totalLabel}</span>
       </div>
     </div>
   );

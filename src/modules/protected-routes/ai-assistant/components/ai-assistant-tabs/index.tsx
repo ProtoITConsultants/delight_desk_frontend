@@ -1,24 +1,33 @@
+"use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutList, Signature } from "lucide-react";
 import EmailSignatureTab from "./components/email-signature-tab";
 import EscalationQueueTab from "./components/escalation-queue-tab";
 
+/**
+ * Top-level switch between the operational queue and the signature settings.
+ *
+ * The triggers sit in a width-`fit` segmented control aligned to the left
+ * so the operational view visually dominates — Email Signature is a
+ * less-frequent settings surface and shouldn't take up half the page width
+ * the way a 50/50 split tab strip implies.
+ */
 const AiAssistantTabs = () => {
   return (
     <Tabs defaultValue="escalation-queue" className="space-y-4">
-      <TabsList className="flex items-center flex-wrap w-full gap-2 p-1 h-10">
+      <TabsList className="inline-flex h-9 w-fit items-center gap-1 rounded-md bg-muted p-1">
         <TabsTrigger
           value="escalation-queue"
-          className="flex items-center gap-2 p-[6px_12px] cursor-pointer"
+          className="inline-flex h-7 items-center gap-1.5 rounded-sm px-3 text-xs font-medium cursor-pointer data-[state=active]:bg-background data-[state=active]:shadow-sm"
         >
-          <LayoutList className="h-4 w-4" />
+          <LayoutList className="h-3.5 w-3.5" />
           Escalation Queue
         </TabsTrigger>
         <TabsTrigger
           value="email-signature"
-          className="flex items-center gap-2 p-[6px_12px] cursor-pointer"
+          className="inline-flex h-7 items-center gap-1.5 rounded-sm px-3 text-xs font-medium cursor-pointer data-[state=active]:bg-background data-[state=active]:shadow-sm"
         >
-          <Signature className="h-4 w-4" />
+          <Signature className="h-3.5 w-3.5" />
           Email Signature
         </TabsTrigger>
       </TabsList>

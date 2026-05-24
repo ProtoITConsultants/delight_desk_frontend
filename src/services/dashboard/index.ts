@@ -3,6 +3,7 @@ import DASHBOARD_ENDPOINTS from "./constants";
 import {
   GET_DASHBOARD_ANALYTICS_PARAMS,
   GET_DASHBOARD_ANALYTICS_RESPONSE,
+  NavBadgeCounts,
 } from "./types";
 
 export class DashboardService {
@@ -13,5 +14,11 @@ export class DashboardService {
     );
 
     return response;
+  }
+
+  async getNavBadgeCounts() {
+    return apiService.get<NavBadgeCounts>(
+      DASHBOARD_ENDPOINTS.GET_NAV_BADGE_COUNTS,
+    );
   }
 }

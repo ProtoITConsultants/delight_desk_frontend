@@ -1,15 +1,5 @@
-import { AlertTriangle, ArrowDown, ArrowUp } from "lucide-react";
+import { getPriorityIcon } from "@/modules/protected-routes/ai-assistant/utils/palette";
 
-const getEmailPriorityIcon = (priority: string) => {
-  switch (priority) {
-    case "urgent":
-    case "high":
-      return ArrowUp;
-    case "low":
-      return ArrowDown;
-    default:
-      return AlertTriangle;
-  }
-};
+const getEmailPriorityIcon = (priority: string) => getPriorityIcon(priority);
 
 export default getEmailPriorityIcon;

@@ -1,16 +1,12 @@
-const getEmailStatusColor = (status: string) => {
-  switch (status) {
-    case "pending":
-      return "text-orange-600 bg-orange-50";
-    case "in_progress":
-      return "text-blue-600 bg-blue-50";
-    case "resolved":
-      return "text-green-600 bg-green-50";
-    case "closed":
-      return "text-gray-600 bg-gray-50";
-    default:
-      return "text-gray-600 bg-gray-50";
-  }
-};
+import { getStatusVariants } from "@/modules/protected-routes/ai-assistant/utils/palette";
+
+// Backend uses the `progress` enum value but historical UI mapped `in_progress`
+// to the same hue family — normalize either to the canonical pending/progress/
+// resolved palette.
+const normalizeStatus = (status: string): string =>
+  status === "in_progress" ? "progress" : status;
+
+const getEmailStatusColor = (status: string) =>
+  getStatusVariants(normalizeStatus(status)).softPill;
 
 export default getEmailStatusColor;

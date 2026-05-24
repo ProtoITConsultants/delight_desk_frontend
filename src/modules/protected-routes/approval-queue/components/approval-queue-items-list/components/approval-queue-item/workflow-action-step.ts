@@ -1,6 +1,10 @@
 import { ApprovalQueueWorkflowActionStatus } from "@/modules/protected-routes/approval-queue/utils/constants";
 import { ApprovalQueueWorkflowAction } from "@/modules/protected-routes/approval-queue/utils/types";
 import {
+  ACTION_STATUS_COLOR_FAMILY,
+  STATUS_COLOR_PALETTE,
+} from "../../utils";
+import {
   AlertTriangle,
   Check,
   CircleStop,
@@ -24,24 +28,35 @@ const IN_PROGRESS_ACTION_STATUSES: ApprovalQueueWorkflowActionStatus[] = [
   ApprovalQueueWorkflowActionStatus.AWAITING_CUSTOMER_REPLY,
 ];
 
+// Text colors for the secondary status label rendered under an action's
+// name. We derive each entry from the canonical palette so a "Cancelled"
+// step's label uses the same rose hue as the Cancelled stats tile, the
+// Cancelled filter dot, and the Cancelled workflow card pill.
+const labelClassFor = (status: ApprovalQueueWorkflowActionStatus): string =>
+  STATUS_COLOR_PALETTE[ACTION_STATUS_COLOR_FAMILY[status]].labelText;
+
 const ACTION_STATUS_LABELS: Partial<
   Record<ApprovalQueueWorkflowActionStatus, { text: string; className: string }>
 > = {
   [ApprovalQueueWorkflowActionStatus.ESCALATED]: {
     text: "Escalated",
-    className: "text-amber-700",
+    className: labelClassFor(ApprovalQueueWorkflowActionStatus.ESCALATED),
   },
   [ApprovalQueueWorkflowActionStatus.REJECTED]: {
     text: "Rejected",
-    className: "text-rose-700",
+    className: labelClassFor(ApprovalQueueWorkflowActionStatus.REJECTED),
   },
   [ApprovalQueueWorkflowActionStatus.FAILED]: {
-    text: "Failed",
-    className: "text-rose-700",
+    // Backend says `failed`; user-facing copy says "Couldn't complete".
+    // The hue (rose) is unchanged so the visual signal still reads as a
+    // negative terminal state — we're just removing the implication that
+    // the agent itself is broken. Same wording as the activity log badge.
+    text: "Couldn't complete",
+    className: labelClassFor(ApprovalQueueWorkflowActionStatus.FAILED),
   },
   [ApprovalQueueWorkflowActionStatus.CANCELLED]: {
     text: "Cancelled",
-    className: "text-slate-600",
+    className: labelClassFor(ApprovalQueueWorkflowActionStatus.CANCELLED),
   },
 };
 
@@ -57,55 +72,75 @@ const renderStepIcon = (Icon: LucideIcon) =>
     strokeWidth: 2.5,
   });
 
+// Glyph used per action status. The color is derived from the canonical
+// palette below so we only define the icon here.
+const ACTION_STATUS_ICONS: Record<ApprovalQueueWorkflowActionStatus, LucideIcon> = {
+  [ApprovalQueueWorkflowActionStatus.EXECUTED]: Check,
+  [ApprovalQueueWorkflowActionStatus.ESCALATED]: AlertTriangle,
+  [ApprovalQueueWorkflowActionStatus.REJECTED]: XCircle,
+  [ApprovalQueueWorkflowActionStatus.FAILED]: XCircle,
+  [ApprovalQueueWorkflowActionStatus.PENDING_APPROVAL]: Clock,
+  [ApprovalQueueWorkflowActionStatus.APPROVED]: Check,
+  [ApprovalQueueWorkflowActionStatus.EXECUTING]: Loader2,
+  [ApprovalQueueWorkflowActionStatus.AWAITING_CUSTOMER_REPLY]: Clock,
+  [ApprovalQueueWorkflowActionStatus.CANCELLED]: CircleStop,
+};
+
+// A subset of statuses animate the "in progress" indicator with the
+// `Loader2` spinner; the rest reuse their completed glyph.
+const SPINNER_PROGRESS_STATUSES = new Set<ApprovalQueueWorkflowActionStatus>([
+  ApprovalQueueWorkflowActionStatus.APPROVED,
+  ApprovalQueueWorkflowActionStatus.EXECUTING,
+]);
+
+const buildStepVisuals = (
+  status: ApprovalQueueWorkflowActionStatus,
+): WorkflowActionStepVisuals => {
+  const Icon = ACTION_STATUS_ICONS[status];
+  return {
+    // Mantine name pulled from the canonical palette. The Mantine
+    // `<Stepper />` colors each step's circle by name, so this is how the
+    // step inside a card ends up in the same hue family as the matching
+    // status tile/filter/pill elsewhere on the page.
+    color: STATUS_COLOR_PALETTE[ACTION_STATUS_COLOR_FAMILY[status]].mantine,
+    completedIcon: renderStepIcon(Icon),
+    progressIcon: SPINNER_PROGRESS_STATUSES.has(status)
+      ? renderStepIcon(Loader2)
+      : renderStepIcon(Icon),
+  };
+};
+
 const WORKFLOW_ACTION_STEP_VISUALS: Record<
   ApprovalQueueWorkflowActionStatus,
   WorkflowActionStepVisuals
 > = {
-  [ApprovalQueueWorkflowActionStatus.EXECUTED]: {
-    color: "teal",
-    completedIcon: renderStepIcon(Check),
-    progressIcon: renderStepIcon(Check),
-  },
-  [ApprovalQueueWorkflowActionStatus.ESCALATED]: {
-    color: "yellow",
-    completedIcon: renderStepIcon(AlertTriangle),
-    progressIcon: renderStepIcon(AlertTriangle),
-  },
-  [ApprovalQueueWorkflowActionStatus.REJECTED]: {
-    color: "red",
-    completedIcon: renderStepIcon(XCircle),
-    progressIcon: renderStepIcon(XCircle),
-  },
-  [ApprovalQueueWorkflowActionStatus.FAILED]: {
-    color: "red",
-    completedIcon: renderStepIcon(XCircle),
-    progressIcon: renderStepIcon(XCircle),
-  },
-  [ApprovalQueueWorkflowActionStatus.PENDING_APPROVAL]: {
-    color: "blue",
-    completedIcon: renderStepIcon(Clock),
-    progressIcon: renderStepIcon(Clock),
-  },
-  [ApprovalQueueWorkflowActionStatus.APPROVED]: {
-    color: "blue",
-    completedIcon: renderStepIcon(Check),
-    progressIcon: renderStepIcon(Loader2),
-  },
-  [ApprovalQueueWorkflowActionStatus.EXECUTING]: {
-    color: "blue",
-    completedIcon: renderStepIcon(Loader2),
-    progressIcon: renderStepIcon(Loader2),
-  },
-  [ApprovalQueueWorkflowActionStatus.AWAITING_CUSTOMER_REPLY]: {
-    color: "blue",
-    completedIcon: renderStepIcon(Clock),
-    progressIcon: renderStepIcon(Clock),
-  },
-  [ApprovalQueueWorkflowActionStatus.CANCELLED]: {
-    color: "gray",
-    completedIcon: renderStepIcon(CircleStop),
-    progressIcon: renderStepIcon(CircleStop),
-  },
+  [ApprovalQueueWorkflowActionStatus.EXECUTED]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.EXECUTED,
+  ),
+  [ApprovalQueueWorkflowActionStatus.ESCALATED]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.ESCALATED,
+  ),
+  [ApprovalQueueWorkflowActionStatus.REJECTED]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.REJECTED,
+  ),
+  [ApprovalQueueWorkflowActionStatus.FAILED]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.FAILED,
+  ),
+  [ApprovalQueueWorkflowActionStatus.PENDING_APPROVAL]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.PENDING_APPROVAL,
+  ),
+  [ApprovalQueueWorkflowActionStatus.APPROVED]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.APPROVED,
+  ),
+  [ApprovalQueueWorkflowActionStatus.EXECUTING]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.EXECUTING,
+  ),
+  [ApprovalQueueWorkflowActionStatus.AWAITING_CUSTOMER_REPLY]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.AWAITING_CUSTOMER_REPLY,
+  ),
+  [ApprovalQueueWorkflowActionStatus.CANCELLED]: buildStepVisuals(
+    ApprovalQueueWorkflowActionStatus.CANCELLED,
+  ),
 };
 
 const findLastActionIndexByStatus = (

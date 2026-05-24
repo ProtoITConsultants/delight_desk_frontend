@@ -18,3 +18,8 @@ export type GET_DASHBOARD_ANALYTICS_RESPONSE = {
   timeSavedMinutes: number;
   averageActionsPerResolvedTicket: number;
 };
+
+export type NavBadgeCounts = {
+  approvalQueuePendingApproval: number;
+  aiAssistantPending: number;
+};

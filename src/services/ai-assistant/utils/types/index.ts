@@ -13,12 +13,25 @@ export interface GetEscalationListParams {
   status?: EscalationStatus;
   priority?: EscalationPriority;
   search?: string;
+  /** ISO string. Includes escalations with `createdAt >= dateFrom`. */
+  dateFrom?: string;
+  /** ISO string. Includes escalations with `createdAt <= dateTo`. */
+  dateTo?: string;
+}
+
+export interface GetEscalationStatsParams {
+  /** ISO string. Includes escalations with `createdAt >= dateFrom`. */
+  dateFrom?: string;
+  /** ISO string. Includes escalations with `createdAt <= dateTo`. */
+  dateTo?: string;
 }
 
 export interface GET_ESCALATION_LIST_RESPONSE {
   data: EscalationType[];
   pagination: PaginationType;
 }
+
+export type GET_SPECIFIC_ESCALATION_RESPONSE = EscalationType;
 
 export interface ESCALATION_STATS {
   total: number;

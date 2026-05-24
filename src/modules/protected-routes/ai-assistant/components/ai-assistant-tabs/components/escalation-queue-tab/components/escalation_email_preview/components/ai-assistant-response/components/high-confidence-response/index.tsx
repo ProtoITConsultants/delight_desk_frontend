@@ -1,10 +1,9 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { Edit, Send, X } from "lucide-react";
+import { Edit3, Loader2, Send, ThumbsDown, X } from "lucide-react";
 import { FC, useEffect, useState } from "react";
 import { EscalationType } from "@/modules/protected-routes/ai-assistant/types/ai-assistant-header";
 import { useSendEscalationResponse } from "@/hooks/services/ai-assistant/use-send-escalation-response";
@@ -12,136 +11,116 @@ import { useAiAssistant } from "@/providers/ai-assistant";
 
 const HighConfidenceResponse: FC<EscalationType> = ({
   id,
-  aiSuggestedResponseConfidence,
   aiSuggestedResponse,
 }) => {
   const { setFeedbackDialogData } = useAiAssistant();
   const { sendEscalationResponse, isPending } = useSendEscalationResponse();
-  const [isEditingResponse, setIsEditingResponse] = useState(false);
-  const [emailResponse, setEmailResponse] = useState("");
-  const [shouldIncludeSignature, setShouldIncludeSignature] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [includeSignature, setIncludeSignature] = useState(true);
 
   useEffect(() => {
-    setEmailResponse(aiSuggestedResponse || "");
-  }, [isEditingResponse, aiSuggestedResponse]);
+    setDraft(aiSuggestedResponse || "");
+  }, [isEditing, aiSuggestedResponse]);
+
+  const onSend = () => {
+    sendEscalationResponse({
+      escalationId: id,
+      message: draft,
+      includeEmailSignature: includeSignature,
+    });
+  };
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Heading */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700">
-            Suggested Response
-          </span>
-          <Badge
-            variant="outline"
-            className={`text-xs ${
-              aiSuggestedResponseConfidence >= 80
-                ? "bg-green-50 text-green-700 border-green-300"
-                : aiSuggestedResponseConfidence >= 60
-                  ? "bg-yellow-50 text-yellow-700 border-yellow-300"
-                  : "bg-red-50 text-red-700 border-red-300"
-            }`}
-          >
-            {Math.round(aiSuggestedResponseConfidence)}% confident
-          </Badge>
-        </div>
+    <div className="flex flex-col gap-3">
+      {/* AI draft — reads as a message bubble rather than a notice block. */}
+      <div className="rounded-md border bg-muted/40 p-4">
+        {isEditing ? (
+          <Textarea
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            className="min-h-[140px] resize-y border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
+            placeholder="Edit the AI response..."
+          />
+        ) : (
+          <div
+            className="prose prose-sm max-w-none text-sm leading-relaxed text-foreground [&_p]:my-2 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0"
+            dangerouslySetInnerHTML={{ __html: aiSuggestedResponse || "" }}
+          />
+        )}
       </div>
 
-      {/* User Edited Response */}
-      <Textarea
-        className={cn("min-h-32", !isEditingResponse && "hidden")}
-        placeholder="Edit the AI response..."
-        value={emailResponse}
-        onChange={(e) => setEmailResponse(e.target.value)}
-      />
-
-      {/* AI Response Actions */}
-      <div className="flex flex-col gap-3">
-        {/* Include Email Signature */}
-        <div className="flex items-center space-x-2">
+      {/* Action bar — primary Send + signature toggle live together to
+          keep the "ready to send?" decisions close to each other. */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
           <Checkbox
             id={`signature-${id}`}
-            checked={shouldIncludeSignature}
-            onCheckedChange={() =>
-              setShouldIncludeSignature(!shouldIncludeSignature)
+            checked={includeSignature}
+            onCheckedChange={(checked) =>
+              setIncludeSignature(Boolean(checked))
             }
           />
           <label
             htmlFor={`signature-${id}`}
-            className="text-xs text-gray-600 cursor-pointer"
+            className="cursor-pointer text-xs text-muted-foreground"
           >
             Include email signature
           </label>
         </div>
-        {/* Action Buttons */}
-        <div className="flex gap-2">
+
+        <div className="flex items-center gap-1.5">
           <Button
+            type="button"
+            variant="ghost"
             size="sm"
             onClick={() =>
-              sendEscalationResponse({
-                escalationId: id,
-                message: emailResponse,
-                includeEmailSignature: shouldIncludeSignature,
-              })
+              setFeedbackDialogData({ isOpen: true, emailId: id })
             }
             disabled={isPending}
-            className="!h-9"
+            className="h-8 gap-1 px-2 text-xs text-muted-foreground"
+            data-testid="button-reject-response"
           >
-            <Send className="h-3 w-3 mr-1" />
-            Send
+            <ThumbsDown className="h-3 w-3" />
+            Reject
           </Button>
           <Button
-            size="sm"
+            type="button"
             variant="outline"
+            size="sm"
             onClick={() => {
-              if (isEditingResponse) {
-                setEmailResponse(aiSuggestedResponse || "");
-              }
-              setIsEditingResponse((prev) => !prev);
+              if (isEditing) setDraft(aiSuggestedResponse || "");
+              setIsEditing((prev) => !prev);
             }}
-            className="!h-9"
+            disabled={isPending}
+            className="h-8 gap-1 px-2 text-xs"
           >
-            {isEditingResponse ? (
+            {isEditing ? (
               <>
-                <X className="h-3 w-3 mr-1" />
+                <X className="h-3 w-3" />
                 Cancel
               </>
             ) : (
               <>
-                <Edit className="h-3 w-3 mr-1" />
+                <Edit3 className="h-3 w-3" />
                 Edit
               </>
             )}
           </Button>
-          {!isEditingResponse && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() =>
-                setFeedbackDialogData({ isOpen: true, emailId: "" })
-              }
-              data-testid="button-reject-response"
-              className="!h-9"
-            >
-              <X className="h-3 w-3 mr-1" />
-              Reject Response
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* AI Generated Response */}
-      <div className={cn("flex flex-col gap-3", isEditingResponse && "hidden")}>
-        <div className="p-4 bg-blue-50 border-l-4 border-blue-400 rounded-md">
-          <p
-            className="text-sm whitespace-pre-wrap text-gray-800"
-            dangerouslySetInnerHTML={{ __html: aiSuggestedResponse || "" }}
-          />
-        </div>
-        <div className="text-xs text-gray-500">
-          💡 This suggestion is generated from your brand training data. Review
-          and modify as needed before sending.
+          <Button
+            type="button"
+            size="sm"
+            onClick={onSend}
+            disabled={isPending || !draft.trim()}
+            className={cn("h-8 gap-1 px-3 text-xs")}
+          >
+            {isPending ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <Send className="h-3 w-3" />
+            )}
+            {isPending ? "Sending..." : "Send response"}
+          </Button>
         </div>
       </div>
     </div>

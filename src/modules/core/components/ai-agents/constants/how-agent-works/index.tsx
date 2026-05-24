@@ -1,4 +1,5 @@
-import { Bot, CreditCard, Mail, Stars, Truck } from "lucide-react";
+import { SUBSCRIPTION_AGENT_ICON } from "@/constants/product-icons";
+import { Bot, Mail, Stars, Truck } from "lucide-react";
 import { AGENT_WORKFLOW_CARD_PROPS } from "../../utils/types";
 
 // WISMO Agent
@@ -30,13 +31,13 @@ const SUBSCRIPTION_AGENT: AGENT_WORKFLOW_CARD_PROPS[] = [
     title: "Detection",
     description:
       "AI identifies subscription pause, cancel, renew, and order date change requests.",
-    icon: <Bot className="h-4 w-4 text-blue-600" />,
+    icon: <SUBSCRIPTION_AGENT_ICON className="h-4 w-4 text-green-600" />,
   },
   {
     title: "Processing",
     description:
       "Processes subscription changes like pause, cancel, renew, or order date updates.",
-    icon: <CreditCard className="h-4 w-4 text-green-600" />,
+    icon: <SUBSCRIPTION_AGENT_ICON className="h-4 w-4 text-green-600" />,
   },
   {
     title: "Response",

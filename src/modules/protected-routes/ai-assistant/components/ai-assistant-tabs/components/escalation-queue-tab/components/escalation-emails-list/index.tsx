@@ -1,37 +1,23 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { ESCALATION_EMAILS_LIST_PROPS } from "../../types/escalation-emails-list";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import SearchBar from "./components/email-filters/search-bar";
-import EscalationEmailsStatusTabsList from "./components/email-filters/emails-status-filter";
-import EscalationEmailPriorityFilter from "./components/email-filters/email-priority-filter";
-import BulkActionTab from "./components/email-filters/bulk-action";
-import SelectAllEscalationEmailsButton from "./components/email-filters/select-all-emails-button";
+import { Card } from "@/components/ui/card";
 import EscalationEmailsList from "./components/emails-list";
+import EscalationPagination from "./components/escalation-pagination";
+import EscalationListToolbar from "./components/escalation-list-toolbar";
+import EscalationBulkActionBar from "./components/escalation-bulk-action-bar";
 
 const EscalationQueueEmailsList = ({
   className,
 }: ESCALATION_EMAILS_LIST_PROPS) => {
   return (
-    <Card className={cn(className)}>
-      {/* Filters Header */}
-      <CardHeader className="space-y-3">
-        {/* Search Bar */}
-        <SearchBar />
-        {/* Filter Tabs - Email Status */}
-        <EscalationEmailsStatusTabsList />
-        {/* Email Priority Filter */}
-        <EscalationEmailPriorityFilter />
-        {/* ------------------- */}
-        {/* Bulk Action Section */}
-        <BulkActionTab />
-        {/* Select All / Clear Selection - Button */}
-        <SelectAllEscalationEmailsButton />
-      </CardHeader>
-
-      {/* Emails List */}
-      <CardContent className="p-0 max-h-[500px] h-fit overflow-y-auto">
+    <Card className={cn("h-fit gap-0 overflow-hidden p-0", className)}>
+      <EscalationListToolbar />
+      <EscalationBulkActionBar />
+      <div className="max-h-[640px] overflow-y-auto">
         <EscalationEmailsList />
-      </CardContent>
+      </div>
+      <EscalationPagination />
     </Card>
   );
 };

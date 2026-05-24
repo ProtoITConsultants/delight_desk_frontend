@@ -1,8 +1,10 @@
 import type { ApprovalQueueStreamQueueUpdatedEvent } from "@/services/approval-queue/utils/approval-queue-stream";
 import { APPROVAL_QUEUE_ENDPOINTS } from "@/services/approval-queue/constants";
+import { NAV_BADGE_COUNTS_QUERY_KEY } from "@/hooks/services/dashboard/use-nav-badge-counts";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX } from "../use-agent-workflow-progress";
+import { APPROVAL_QUEUE_STATS_QUERY_KEY } from "../use-approval-queue-stats";
 
 /**
  * One `EventSource` to `/approval-queue/stream` with `withCredentials: true`.
@@ -40,6 +42,12 @@ export function useApprovalQueueStreamSync() {
       void queryClient.invalidateQueries({ queryKey: ["approval-queue-items"] });
       void queryClient.invalidateQueries({
         queryKey: [...APPROVAL_QUEUE_WORKFLOWS_QUERY_PREFIX],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [...APPROVAL_QUEUE_STATS_QUERY_KEY],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [...NAV_BADGE_COUNTS_QUERY_KEY],
       });
     };
 

@@ -19,6 +19,13 @@ export type ApprovalQueueStats = {
   total: number;
   pending: number;
   inProgress: number;
+  /**
+   * Count of items with at least one workflow action in `pending_approval`.
+   * Backed by `workflowActions[].status`, not the workflow-level `status`,
+   * so it overlaps with `pending` / `inProgress` rather than partitioning
+   * the queue.
+   */
+  pendingApproval: number;
   cancelled: number;
   completed: number;
   escalated: number;

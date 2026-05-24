@@ -6,7 +6,9 @@ import {
   GENERATE_AI_RESPONSE_PARAMS,
   GENERATE_AI_RESPONSE_RESPONSE,
   GET_ESCALATION_LIST_RESPONSE,
+  GET_SPECIFIC_ESCALATION_RESPONSE,
   GetEscalationListParams,
+  GetEscalationStatsParams,
   SEND_ESCALATION_RESPONSE_PARAMS,
   UPDATE_ESCALATION_STATUS_PARAMS,
   UPDATE_HTML_EMAIL_SIGNATURE_PARAMS,
@@ -22,6 +24,13 @@ export class AiAssistantService {
       {
         params,
       },
+    );
+    return response;
+  }
+  // Get specific escalation
+  async getSpecificEscalation(id: string) {
+    const response = await apiService.get<GET_SPECIFIC_ESCALATION_RESPONSE>(
+      AI_ASSISTANT_ENDPOINTS.GET_SPECIFIC_ESCALATION({ id }),
     );
     return response;
   }
@@ -96,9 +105,10 @@ export class AiAssistantService {
     return response;
   }
   // Get Escalation Statistics
-  async getEscalationStatistics() {
+  async getEscalationStatistics(params: GetEscalationStatsParams = {}) {
     const response = await apiService.get<ESCALATION_STATS>(
       AI_ASSISTANT_ENDPOINTS.GET_ESCALATION_STATISTICS,
+      { params },
     );
     return response;
   }

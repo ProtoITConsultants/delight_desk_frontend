@@ -1,7 +1,10 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import type z from "zod";
 import { VISUAL_BUILDER_FORM_SCHEMA } from "../../schema/visual-builder";
+
+type VisualBuilderFormValues = z.input<typeof VISUAL_BUILDER_FORM_SCHEMA>;
 import {
   Form,
   FormControl,
@@ -12,10 +15,19 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { Building, Captions, Globe, Mail, Phone, User } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import {
+  Building,
+  Captions,
+  Globe,
+  Loader2,
+  Mail,
+  Phone,
+  RotateCcw,
+  Save,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSignatureBuilder } from "../../../../utils/context/signature-builder-context";
 import { generateSignaturePreview } from "../../../../utils/services/generateSignaturePreview";
 import { useAiAssistant } from "@/providers/ai-assistant";
@@ -26,21 +38,25 @@ const VisualSignatureBuilder = () => {
   const { emailSignature } = useAiAssistant();
   const { updateEmailSignature, isPending } = useUpdateEmailSignature();
 
-  const form = useForm({
+  const initialValues = useMemo<VisualBuilderFormValues>(
+    () => ({
+      name: emailSignature?.structured.name || "",
+      title: emailSignature?.structured.title || "",
+      company: emailSignature?.structured.company || "",
+      companyUrl: emailSignature?.structured.companyUrl || "",
+      email: emailSignature?.structured.email || "",
+      phone: emailSignature?.structured.phoneNumber || "",
+    }),
+    [emailSignature],
+  );
+
+  const form = useForm<VisualBuilderFormValues>({
     resolver: zodResolver(VISUAL_BUILDER_FORM_SCHEMA),
-    defaultValues: {
-      name: "",
-      title: "",
-      company: "",
-      companyUrl: "",
-      email: "",
-      phone: "",
-    },
+    defaultValues: initialValues,
   });
 
   const onSubmit = () => {
     const values = form.getValues();
-
     updateEmailSignature({
       type: "structured",
       signature: {
@@ -52,42 +68,36 @@ const VisualSignatureBuilder = () => {
         phoneNumber: values.phone || "",
       },
     });
+    // Reset the form's "dirty" baseline to the just-saved values so the
+    // save bar relaxes immediately after a successful submit.
+    form.reset(values);
   };
 
   const values = form.watch();
+  const isDirty = form.formState.isDirty;
 
   useEffect(() => {
-    const preview = generateSignaturePreview(values);
-
-    setSignatureHtml(preview);
+    setSignatureHtml(generateSignaturePreview(values));
   }, [values, setSignatureHtml]);
 
   useEffect(() => {
     if (emailSignature) {
-      form.reset({
-        name: emailSignature.structured.name || "",
-        title: emailSignature.structured.title || "",
-        company: emailSignature.structured.company || "",
-        companyUrl: emailSignature.structured.companyUrl || "",
-        email: emailSignature.structured.email || "",
-        phone: emailSignature.structured.phoneNumber || "",
-      });
+      form.reset(initialValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emailSignature]);
 
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-        {/* Personal Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={cn("flex items-center gap-2")}>
-                  <User className="h-4 w-4" />
+                <FormLabel className={cn("flex items-center gap-2 text-xs")}>
+                  <User className="h-3.5 w-3.5" />
                   Name
                 </FormLabel>
                 <FormControl>
@@ -103,8 +113,8 @@ const VisualSignatureBuilder = () => {
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={cn("flex items-center gap-2")}>
-                  <Captions className="h-4 w-4" />
+                <FormLabel className={cn("flex items-center gap-2 text-xs")}>
+                  <Captions className="h-3.5 w-3.5" />
                   Title
                 </FormLabel>
                 <FormControl>
@@ -120,15 +130,14 @@ const VisualSignatureBuilder = () => {
             disabled={isPending}
           />
         </div>
-        {/* Company Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name="company"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={cn("flex items-center gap-2")}>
-                  <Building className="h-4 w-4" />
+                <FormLabel className={cn("flex items-center gap-2 text-xs")}>
+                  <Building className="h-3.5 w-3.5" />
                   Company
                 </FormLabel>
                 <FormControl>
@@ -148,8 +157,8 @@ const VisualSignatureBuilder = () => {
             name="companyUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={cn("flex items-center gap-2")}>
-                  <Globe className="h-4 w-4" />
+                <FormLabel className={cn("flex items-center gap-2 text-xs")}>
+                  <Globe className="h-3.5 w-3.5" />
                   Company URL
                 </FormLabel>
                 <FormControl>
@@ -165,15 +174,14 @@ const VisualSignatureBuilder = () => {
             disabled={isPending}
           />
         </div>
-        {/* Contact Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={cn("flex items-center gap-2")}>
-                  <Mail className="h-4 w-4" />
+                <FormLabel className={cn("flex items-center gap-2 text-xs")}>
+                  <Mail className="h-3.5 w-3.5" />
                   Email
                 </FormLabel>
                 <FormControl>
@@ -193,8 +201,8 @@ const VisualSignatureBuilder = () => {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={cn("flex items-center gap-2")}>
-                  <Phone className="h-4 w-4" />
+                <FormLabel className={cn("flex items-center gap-2 text-xs")}>
+                  <Phone className="h-3.5 w-3.5" />
                   Phone
                 </FormLabel>
                 <FormControl>
@@ -210,103 +218,43 @@ const VisualSignatureBuilder = () => {
             disabled={isPending}
           />
         </div>
-        <Separator />
-        {/* Profile Picture */}
-        {/* <div className="space-y-4">
-          <h4 className="font-medium">Profile Photo (Optional)</h4>
-          <FormField
-            control={form.control}
-            name="photoUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Profile Photo</FormLabel>
-                <FormControl>
-                  {!field.value ? (
-                    <FileUploader
-                      triggerClassName="w-full"
-                      fileType="image"
-                      dialogHeading="Upload Profile Photo"
-                      dialogDescription="This will appear in your email signature"
-                      onSaveSelectedFile={(file) => {
-                        field.onChange(file);
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Camera className="h-4 w-4" />
-                        {isUploading === "photo"
-                          ? "Uploading..."
-                          : "Upload Profile Photo"}
-                      </div>
-                    </FileUploader>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
-                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
-                          <Image
-                            width={48}
-                            height={48}
-                            src={field.value}
-                            alt="Profile"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">
-                            Profile photo uploaded
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            This will appear in your email signature
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2">
-                        <FileUploader
-                          triggerClassName="w-full"
-                          fileType="image"
-                          dialogHeading="Upload Profile Photo"
-                          dialogDescription="This will appear in your email signature"
-                          onSaveSelectedFile={(file) => {
-                            field.onChange(file);
-                          }}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Camera className="h-4 w-4" />
-                            {isUploading === "photo"
-                              ? "Uploading..."
-                              : "Upload Profile Photo"}
-                          </div>
-                        </FileUploader>
-
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {}}
-                          className="flex-1"
-                        >
-                          <X className="h-4 w-4 mr-2" />
-                          Remove Photo
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </FormControl>
-                <FormMessage />
-                <FormDescription>
-                  Optional: Add a professional headshot. Your signature will
-                  look great with or without a photo.
-                </FormDescription>
-              </FormItem>
-            )}
-            disabled={isPending}
-          />
-        </div> 
-        <Separator />
-        */}
-
-        <Button disabled={isPending} className="w-full">
-          Save Email Signature
-        </Button>
+        {/* Dirty-aware save bar. Mirrors the action density we use in the
+            AI Assistant response composer so users learn the pattern once. */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-xs text-muted-foreground">
+          <span>
+            {isPending
+              ? "Saving signature..."
+              : isDirty
+                ? "Unsaved changes"
+                : "All changes saved"}
+          </span>
+          <div className="flex items-center gap-1.5">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={!isDirty || isPending}
+              onClick={() => form.reset(initialValues)}
+              className="h-8 gap-1 px-2 text-xs"
+            >
+              <RotateCcw className="h-3 w-3" />
+              Discard
+            </Button>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={!isDirty || isPending}
+              className="h-8 gap-1 px-3 text-xs"
+            >
+              {isPending ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <Save className="h-3 w-3" />
+              )}
+              {isPending ? "Saving..." : "Save signature"}
+            </Button>
+          </div>
+        </div>
       </form>
     </Form>
   );
