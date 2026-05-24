@@ -14,7 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 type CancelWorkflowButtonProps = {
   disabled?: boolean;
@@ -29,16 +29,6 @@ const stopTriggerPropagation = (event: SyntheticEvent) => {
   event.stopPropagation();
 };
 
-// Calm, low-attention button used inline in the card's action row. The
-// destructive action lives behind the confirm dialog, so the trigger itself
-// stays understated by design.
-const TRIGGER_CLASSES = cn(
-  "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium",
-  "text-muted-foreground hover:bg-muted hover:text-destructive transition-colors",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/30 focus-visible:ring-offset-2",
-  "disabled:pointer-events-none disabled:opacity-50",
-);
-
 export const CancelWorkflowButton: FC<CancelWorkflowButtonProps> = ({
   disabled = false,
   open,
@@ -50,16 +40,18 @@ export const CancelWorkflowButton: FC<CancelWorkflowButtonProps> = ({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>
-        <button
+        <Button
           type="button"
+          size="sm"
+          variant="outline"
           disabled={disabled}
-          className={cn(TRIGGER_CLASSES, className)}
+          className={cn("inline-flex items-center gap-1.5", className)}
           onPointerDown={stopTriggerPropagation}
           onClick={stopTriggerPropagation}
         >
           <CircleStop className="size-3.5 shrink-0" />
           <span>{label}</span>
-        </button>
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent onPointerDown={stopTriggerPropagation}>
         <AlertDialogHeader>

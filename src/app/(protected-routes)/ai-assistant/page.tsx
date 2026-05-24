@@ -1,21 +1,13 @@
 "use client";
 import AiAssistantHeader from "@/modules/protected-routes/ai-assistant/components/ai-assistant-header";
 import AiAssistantTabs from "@/modules/protected-routes/ai-assistant/components/ai-assistant-tabs";
+import EscalationStatsStrip from "@/modules/protected-routes/ai-assistant/components/escalation-stats-strip";
 
 const AiAssistantPage = () => {
-  // const aiTrainingStatus = {
-  //   hasTrainingUrls: false,
-  //   hasCompletedUrls: false,
-  //   completedUrlCount: 0,
-  //   urlCount: 0,
-  //   contentCount: 0,
-  //   brandVoice: "Professional" as const,
-  // };
-
   return (
-    <div className="max-w-6xl mx-auto px-6 space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-5 px-4 sm:px-6">
       <AiAssistantHeader />
-      {/* <AiTrainingNotification {...aiTrainingStatus} /> */}
+      <EscalationStatsStrip />
       <AiAssistantTabs />
     </div>
   );

@@ -34,7 +34,11 @@ const EmailCard = ({
         {priority}
       </Badge>
       <Button size="sm" variant="outline" asChild>
-        <Link href={`/ai-assistant?email=${escalationQueueId}`}>
+        <Link
+          href={`/ai-assistant?escalationId=${encodeURIComponent(
+            escalationQueueId,
+          )}&source=dashboard`}
+        >
           <ExternalLink className="h-4 w-4 mr-1" />
           Reply in AI Assistant
         </Link>

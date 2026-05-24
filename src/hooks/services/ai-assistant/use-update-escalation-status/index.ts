@@ -12,8 +12,7 @@ type UseUpdateEscalationStatusParams = {
 
 export const useUpdateEscalationStatus = () => {
   const queryClient = useQueryClient();
-  const { searchQuery, escalationStatus, setSelectedEmailsForBulkAction } =
-    useAiAssistant();
+  const { setSelectedEmailsForBulkAction } = useAiAssistant();
 
   const { mutate: updateEscalationStatus, isPending } = useMutation({
     mutationFn: async (params: UseUpdateEscalationStatusParams) => {
@@ -31,9 +30,11 @@ export const useUpdateEscalationStatus = () => {
     },
     onSuccess: () => {
       setSelectedEmailsForBulkAction(new Set());
-      queryClient.invalidateQueries({
-        queryKey: ["escalation-list", searchQuery, escalationStatus],
-      });
+      // Invalidate all variants of the escalation list (different filters,
+      // pages, date ranges) and the stats so the strip reflects the change
+      // immediately even when SSE is delayed.
+      queryClient.invalidateQueries({ queryKey: ["escalation-list"] });
+      queryClient.invalidateQueries({ queryKey: ["escalation-stats"] });
       toast.success("Escalation status updated successfully");
     },
     onError: (error) => {

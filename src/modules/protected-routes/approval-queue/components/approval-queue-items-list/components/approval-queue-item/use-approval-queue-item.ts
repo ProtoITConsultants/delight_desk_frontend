@@ -102,6 +102,17 @@ export const useGetApprovalQueueItem = ({
       action.status === ApprovalQueueWorkflowActionStatus.PENDING_APPROVAL,
   );
 
+  const escalatedWorkflowAction = workflowActions.find(
+    (action) =>
+      action.status === ApprovalQueueWorkflowActionStatus.ESCALATED &&
+      !!action.escalationId,
+  );
+
+  const escalationId =
+    escalatedWorkflowAction?.escalationId ??
+    workflowActions.find((action) => !!action.escalationId)?.escalationId ??
+    null;
+
   const shouldShowActionButtons = !!pendingWorkflowAction;
 
   const pendingWorkflowActionIndex = workflowActions.findIndex(
@@ -111,6 +122,8 @@ export const useGetApprovalQueueItem = ({
 
   return {
     pendingWorkflowAction,
+    escalatedWorkflowAction,
+    escalationId,
     shouldShowActionButtons,
     pendingWorkflowActionIndex,
     approveAction,

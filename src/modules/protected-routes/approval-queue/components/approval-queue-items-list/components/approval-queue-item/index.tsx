@@ -7,10 +7,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  ArrowRight,
   BellRing,
   Calendar,
   ChevronDown,
+  ExternalLink,
   Mail,
   Pencil,
   User,
@@ -35,6 +35,7 @@ import { format } from "date-fns";
 import { useGetApprovalQueueItem } from "./use-approval-queue-item";
 import { htmlToPlainText } from "@/modules/protected-routes/approval-queue/utils/html-to-plain-text";
 import { CancelWorkflowButton } from "./cancel-workflow-button";
+import Link from "next/link";
 import {
   getWorkflowActionStepDescription,
   getWorkflowActionStepLabel,
@@ -78,6 +79,7 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
     rejectAction,
     disableActionButtons,
     pendingWorkflowAction,
+    escalationId,
     pendingWorkflowActionIndex,
     shouldShowActionButtons,
     isApprovingAction,
@@ -148,6 +150,7 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
   const statusStyles = APPROVAL_QUEUE_STATUS_STYLES[status];
   const StatusIcon = statusStyles?.icon;
   const isInProgress = status === ApprovalQueueItemStatus.IN_PROGRESS;
+  const isEscalated = status === ApprovalQueueItemStatus.ESCALATED;
 
   const isAwaitingApproval = hasPendingApprovalAction(workflowActions);
   const pendingApprovalStyles =
@@ -252,6 +255,25 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
 
           {/* Action row */}
           <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
+            {isEscalated && escalationId && (
+              <Button
+                asChild
+                type="button"
+                size="sm"
+                variant="outline"
+                className="inline-flex items-center gap-1.5"
+              >
+                <Link
+                  href={`/ai-assistant?escalationId=${encodeURIComponent(
+                    escalationId,
+                  )}&source=approval-queue`}
+                  aria-label={`View escalated ticket "${emailSubject}" in AI Assistant`}
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  View in AI Assistant
+                </Link>
+              </Button>
+            )}
             {isInProgress && (
               <CancelWorkflowButton
                 disabled={disableActionButtons}
@@ -265,9 +287,11 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
               />
             )}
             <CollapsibleTrigger asChild>
-              <button
+              <Button
                 type="button"
-                className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                size="sm"
+                variant="outline"
+                className="inline-flex items-center gap-1.5"
               >
                 <ChevronDown
                   className={cn(
@@ -276,28 +300,15 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
                   )}
                 />
                 <span className="group-data-[state=open]:hidden">
-                  View workflow
+                  {isAwaitingApproval
+                    ? "Review & approve agent actions"
+                    : "View agent actions"}
                 </span>
                 <span className="hidden group-data-[state=open]:inline">
-                  Hide workflow
+                  Hide agent actions
                 </span>
-              </button>
+              </Button>
             </CollapsibleTrigger>
-            {isAwaitingApproval && (
-              <CollapsibleTrigger asChild>
-                <button
-                  type="button"
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors",
-                    "bg-orange-500 hover:bg-orange-600",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2",
-                  )}
-                >
-                  <span>Review &amp; approve</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </CollapsibleTrigger>
-            )}
           </div>
         </div>
 
