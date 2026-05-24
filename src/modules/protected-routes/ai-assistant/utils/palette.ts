@@ -8,14 +8,10 @@ import {
   StatusColorVariants,
 } from "@/lib/status-palette";
 import {
-  AlertCircle,
   AlertTriangle,
   ArrowDown,
   ArrowUp,
-  CheckCircle2,
-  Clock,
   Flame,
-  Inbox,
   LucideIcon,
   Minus,
 } from "lucide-react";
@@ -39,15 +35,6 @@ export const ESCALATION_STATUS_LABEL: Record<
   [EscalationStatus.PENDING]: "Pending",
   [EscalationStatus.IN_PROGRESS]: "In Progress",
   [EscalationStatus.RESOLVED]: "Resolved",
-};
-
-export const ESCALATION_STATUS_ICON: Record<
-  EscalationStatus.PENDING | EscalationStatus.IN_PROGRESS | EscalationStatus.RESOLVED,
-  LucideIcon
-> = {
-  [EscalationStatus.PENDING]: Clock,
-  [EscalationStatus.IN_PROGRESS]: AlertCircle,
-  [EscalationStatus.RESOLVED]: CheckCircle2,
 };
 
 /* Priority -> hue family. Urgent uses rose (saturated red) so it pops the
@@ -123,17 +110,6 @@ export const getPriorityIcon = (
     ESCALATION_PRIORITY_ICON[
       priority as keyof typeof ESCALATION_PRIORITY_ICON
     ] ?? AlertTriangle
-  );
-};
-
-export const getStatusIcon = (
-  status: string | null | undefined,
-): LucideIcon => {
-  if (!status) return Inbox;
-  return (
-    ESCALATION_STATUS_ICON[
-      status as keyof typeof ESCALATION_STATUS_ICON
-    ] ?? Inbox
   );
 };
 
