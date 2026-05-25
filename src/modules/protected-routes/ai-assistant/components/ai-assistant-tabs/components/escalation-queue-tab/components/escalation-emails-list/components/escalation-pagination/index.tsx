@@ -70,7 +70,9 @@ const EscalationPagination = () => {
 
   return (
     <div className="border-t bg-background px-3 py-2.5">
-      <div className="mb-2 flex items-center justify-between text-[11px] text-muted-foreground">
+      {/* Range/page summary — hidden on <sm to give the page navigator the
+          full width without crowding tap targets. */}
+      <div className="mb-2 hidden items-center justify-between text-[11px] text-muted-foreground sm:flex">
         <p>
           <span className="font-medium text-foreground tabular-nums">
             {rangeStart}

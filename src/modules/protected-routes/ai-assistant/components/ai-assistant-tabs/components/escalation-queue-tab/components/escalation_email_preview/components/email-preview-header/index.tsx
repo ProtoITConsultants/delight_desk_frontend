@@ -17,12 +17,14 @@ import {
   formatRelativeTime,
 } from "@/modules/protected-routes/ai-assistant/utils/format-escalation-date";
 import {
+  ArrowLeft,
   CheckCircle2,
   Clock,
   Loader2,
   RotateCcw,
   User,
 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const normalizeStatus = (status: string) =>
   status === "in_progress" ? "progress" : status;
@@ -35,8 +37,11 @@ const parseFromAddress = (raw: string | null | undefined) => {
 };
 
 const EmailPreviewHeader = () => {
-  const { selectedEscalationDetails } = useAiAssistant();
+  const { selectedEscalationDetails, setSelectedEscalationForPreview } =
+    useAiAssistant();
   const { isPending, updateEscalationStatus } = useUpdateEscalationStatus();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   if (!selectedEscalationDetails) return null;
 
@@ -61,11 +66,44 @@ const EmailPreviewHeader = () => {
       status: next,
     });
 
+  // Mobile-only back affordance. We clear both the local selection AND the
+  // deep-link query param so the user can't bounce right back to the same
+  // detail on the next render (the provider re-syncs from the URL).
+  const onBackToInbox = () => {
+    setSelectedEscalationForPreview(null);
+    if (searchParams.has("escalationId") || searchParams.has("email")) {
+      router.replace("/ai-assistant", { scroll: false });
+    }
+  };
+
   return (
     <div className="sticky top-0 z-10 border-b bg-background/95 px-5 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      {/* Back-to-inbox is the user's primary navigation handle on small
+          screens. We use a solid charcoal fill (bg-foreground / text-
+          background via design tokens) because:
+            • the inverse contrast pops on the white card without competing
+              with brand-blue primary CTAs like "Send response",
+            • the rectangular shape + drop shadow reads as a structural
+              button rather than a tag/chip,
+            • the arrow slides left on hover for a "swipe-back" affordance. */}
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={onBackToInbox}
+        aria-label="Back to inbox"
+        className="group mb-3 h-9 gap-2 rounded-md bg-foreground px-3.5 text-sm font-semibold text-background shadow-sm transition-all hover:bg-foreground/90 hover:text-background hover:shadow active:bg-foreground/85 lg:hidden"
+      >
+        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+        Back to inbox
+      </Button>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
-          <h2 className="truncate text-lg font-semibold capitalize text-foreground">
+          {/* Subject is the single highest-context line in the entire panel,
+              so it never truncates. `break-words` keeps URL-like tokens from
+              overflowing the panel; the action buttons sit at `lg:items-start`
+              so they keep their top-right anchor as the subject grows. */}
+          <h2 className="text-lg font-semibold capitalize text-foreground break-words">
             {email?.subject || "(No subject)"}
           </h2>
           <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">

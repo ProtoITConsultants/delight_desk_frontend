@@ -1,6 +1,13 @@
 "use client";
 import { FC } from "react";
-import { Search, Calendar, X, ChevronDown } from "lucide-react";
+import {
+  Search,
+  Calendar,
+  X,
+  ChevronDown,
+  Check,
+  SlidersHorizontal,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -172,11 +179,24 @@ const EscalationFiltersBar: FC = () => {
     !!dateRange.from ||
     !!dateRange.to;
 
+  // Selected priority label for the compact dropdown trigger shown below xl.
+  // Falls back to a generic "Priority" so the trigger never collapses to a
+  // bare icon on tiny widths.
+  const activePriorityKey =
+    escalationPriority &&
+    (escalationPriority as keyof typeof ESCALATION_PRIORITY_LABEL);
+  const activePriorityLabel = activePriorityKey
+    ? ESCALATION_PRIORITY_LABEL[activePriorityKey]
+    : null;
+  const ActivePriorityIcon = activePriorityKey
+    ? ESCALATION_PRIORITY_ICON[activePriorityKey]
+    : SlidersHorizontal;
+
   return (
     <div className="flex flex-col gap-3">
       {/* Top row: search + priority chips + date range */}
-      <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
-        <div className="relative lg:max-w-xs lg:flex-1">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:flex-wrap">
+        <div className="relative w-full sm:max-w-sm sm:flex-1 xl:max-w-xs">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search by subject, sender, or content..."
@@ -189,8 +209,74 @@ const EscalationFiltersBar: FC = () => {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 lg:ml-auto">
-          {/* Priority chips. "All" reads as the implicit-off state. */}
+        {/* Compact priority dropdown — visible below xl where the chip strip
+            would otherwise crowd the search input. */}
+        <div className="flex items-center gap-1.5 sm:ml-auto xl:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "h-8 gap-1.5",
+                  escalationPriority &&
+                    "border-primary/40 bg-primary/5 text-primary",
+                )}
+              >
+                <ActivePriorityIcon className="h-3.5 w-3.5" />
+                <span>{activePriorityLabel ?? "All priorities"}</span>
+                <ChevronDown className="h-3 w-3 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-44">
+              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                Filter by priority
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={() => onChangePriority(null)}>
+                <span className="flex flex-1 items-center gap-2">
+                  <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>All priorities</span>
+                </span>
+                {escalationPriority === null && (
+                  <Check className="ml-2 h-3.5 w-3.5 text-primary" />
+                )}
+              </DropdownMenuItem>
+              {PRIORITY_ORDER.map((priority) => {
+                const key = priority as keyof typeof ESCALATION_PRIORITY_LABEL;
+                const Icon = ESCALATION_PRIORITY_ICON[key];
+                const isActive = escalationPriority === priority;
+                return (
+                  <DropdownMenuItem
+                    key={priority}
+                    onSelect={() =>
+                      onChangePriority(isActive ? null : priority)
+                    }
+                  >
+                    <span className="flex flex-1 items-center gap-2">
+                      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span>{ESCALATION_PRIORITY_LABEL[key]}</span>
+                    </span>
+                    {isActive && (
+                      <Check className="ml-2 h-3.5 w-3.5 text-primary" />
+                    )}
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DateRangeDropdown
+            dateLabel={dateLabel}
+            onSelectDatePreset={onSelectDatePreset}
+            onClearDate={clearDate}
+          />
+        </div>
+
+        {/* Power-user priority chip strip — only at xl+ where the row has the
+            horizontal budget to render all 5 chips alongside the search input
+            and the date button without wrapping. */}
+        <div className="hidden xl:ml-auto xl:flex xl:flex-wrap xl:items-center xl:gap-1.5">
           <PriorityChip
             label="All priorities"
             isActive={escalationPriority === null}
@@ -198,10 +284,6 @@ const EscalationFiltersBar: FC = () => {
             family={null}
           />
           {PRIORITY_ORDER.map((priority) => {
-            // PRIORITY_ORDER is statically typed to the four real priorities,
-            // but TS widens the index expression to `EscalationPriority`
-            // (which includes ALL) when used to look up into our maps. Narrow
-            // explicitly via the local map key type.
             const key = priority as keyof typeof ESCALATION_PRIORITY_LABEL;
             const Icon = ESCALATION_PRIORITY_ICON[key];
             return (
@@ -220,44 +302,11 @@ const EscalationFiltersBar: FC = () => {
             );
           })}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className={cn(
-                  "ml-1 h-8 gap-1.5",
-                  dateLabel && "border-primary/40 bg-primary/5 text-primary",
-                )}
-              >
-                <Calendar className="h-3.5 w-3.5" />
-                <span>{dateLabel ?? "Any time"}</span>
-                <ChevronDown className="h-3 w-3 opacity-60" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-44">
-              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                Filter by created date
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {DATE_PRESETS.map((preset) => (
-                <DropdownMenuItem
-                  key={preset.id}
-                  onSelect={() => onSelectDatePreset(preset)}
-                >
-                  {preset.label}
-                </DropdownMenuItem>
-              ))}
-              {dateLabel && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={clearDate}>
-                    Clear date filter
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DateRangeDropdown
+            dateLabel={dateLabel}
+            onSelectDatePreset={onSelectDatePreset}
+            onClearDate={clearDate}
+          />
         </div>
       </div>
 
@@ -343,6 +392,57 @@ const PriorityChip: FC<PriorityChipProps> = ({
     </button>
   );
 };
+
+type DateRangeDropdownProps = {
+  dateLabel: string | null;
+  onSelectDatePreset: (preset: DatePreset) => void;
+  onClearDate: () => void;
+};
+
+const DateRangeDropdown: FC<DateRangeDropdownProps> = ({
+  dateLabel,
+  onSelectDatePreset,
+  onClearDate,
+}) => (
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button
+        variant="outline"
+        size="sm"
+        className={cn(
+          "h-8 gap-1.5",
+          dateLabel && "border-primary/40 bg-primary/5 text-primary",
+        )}
+      >
+        <Calendar className="h-3.5 w-3.5" />
+        <span>{dateLabel ?? "Any time"}</span>
+        <ChevronDown className="h-3 w-3 opacity-60" />
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end" className="w-44">
+      <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+        Filter by created date
+      </DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      {DATE_PRESETS.map((preset) => (
+        <DropdownMenuItem
+          key={preset.id}
+          onSelect={() => onSelectDatePreset(preset)}
+        >
+          {preset.label}
+        </DropdownMenuItem>
+      ))}
+      {dateLabel && (
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={onClearDate}>
+            Clear date filter
+          </DropdownMenuItem>
+        </>
+      )}
+    </DropdownMenuContent>
+  </DropdownMenu>
+);
 
 type ActiveFilterChipProps = {
   label: string;

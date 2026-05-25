@@ -115,10 +115,14 @@ const EscalationEmailCard = (escalation: EscalationType) => {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-start gap-2">
-          <p className="min-w-0 flex-1 truncate text-sm font-medium text-foreground capitalize">
+          {/* Full subject is preserved across all widths — never truncated.
+              `break-words` handles long unbroken tokens, and the tight
+              `leading-snug` keeps multi-line subjects from inflating the
+              card height too aggressively. */}
+          <p className="min-w-0 flex-1 break-words text-sm font-medium leading-snug text-foreground capitalize">
             {email?.subject || "(No subject)"}
           </p>
-          <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
+          <span className="shrink-0 pt-0.5 text-[11px] text-muted-foreground tabular-nums">
             {formatRelativeTime(createdAt)}
           </span>
         </div>
@@ -132,7 +136,7 @@ const EscalationEmailCard = (escalation: EscalationType) => {
           )}
         </p>
 
-        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+        <div className="mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1">
           <Badge
             variant="outline"
             className={cn(
@@ -155,7 +159,7 @@ const EscalationEmailCard = (escalation: EscalationType) => {
           {hasConfidence && (
             <span
               className={cn(
-                "inline-flex items-center gap-1 text-[10px] font-medium tabular-nums",
+                "inline-flex shrink-0 items-center gap-1 text-[10px] font-medium tabular-nums",
                 getConfidenceTone(confidence),
               )}
               title={`AI confidence ${confidence}%`}
