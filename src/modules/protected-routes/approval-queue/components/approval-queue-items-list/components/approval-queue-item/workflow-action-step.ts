@@ -213,4 +213,19 @@ export const getWorkflowActionStepLabel = (
 
 export const getWorkflowActionStepDescription = (
   action: ApprovalQueueWorkflowAction,
-): ReactNode => action.description;
+): ReactNode => {
+  // For the action that is currently awaiting approval, the same
+  // `actionDetails` copy is surfaced one block below the stepper inside
+  // the orange "Awaiting your approval" panel under "What this action
+  // will do" — co-located with the Approve / Reject buttons so the
+  // context sits next to the decision (Fitts's Law + proximity).
+  // Repeating the description here too made the same sentence appear
+  // twice within ~80px of itself, so we omit it from the stepper for
+  // pending-approval steps and let the orange panel be the single
+  // source of truth. Other statuses keep their stepper descriptions
+  // because they don't render the orange panel.
+  if (action.status === ApprovalQueueWorkflowActionStatus.PENDING_APPROVAL) {
+    return null;
+  }
+  return action.actionDetails?.trim() || null;
+};
