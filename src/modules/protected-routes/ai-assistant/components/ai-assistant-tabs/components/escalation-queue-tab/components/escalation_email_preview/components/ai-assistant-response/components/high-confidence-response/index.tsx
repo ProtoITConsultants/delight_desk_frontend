@@ -51,8 +51,10 @@ const HighConfidenceResponse: FC<EscalationType> = ({
       </div>
 
       {/* Action bar — primary Send + signature toggle live together to
-          keep the "ready to send?" decisions close to each other. */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+          keep the "ready to send?" decisions close to each other. On <sm
+          the bar stacks: secondary actions on top, then the signature
+          toggle and a full-width Send so it's reachable with one thumb. */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <Checkbox
             id={`signature-${id}`}
@@ -69,7 +71,7 @@ const HighConfidenceResponse: FC<EscalationType> = ({
           </label>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           <Button
             type="button"
             variant="ghost"
@@ -112,7 +114,7 @@ const HighConfidenceResponse: FC<EscalationType> = ({
             size="sm"
             onClick={onSend}
             disabled={isPending || !draft.trim()}
-            className={cn("h-8 gap-1 px-3 text-xs")}
+            className={cn("ml-auto h-8 gap-1 px-3 text-xs sm:ml-0")}
           >
             {isPending ? (
               <Loader2 className="h-3 w-3 animate-spin" />

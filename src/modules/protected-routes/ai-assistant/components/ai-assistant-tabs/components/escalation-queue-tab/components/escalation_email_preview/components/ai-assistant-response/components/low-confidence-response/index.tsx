@@ -122,7 +122,7 @@ const LowConfidenceResponse: FC<EscalationType> = ({ id }) => {
             placeholder="Write your response to the customer..."
           />
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <SignatureToggle
               id={`signature-manual-${id}`}
               checked={manualSignature}
@@ -132,7 +132,7 @@ const LowConfidenceResponse: FC<EscalationType> = ({ id }) => {
               size="sm"
               onClick={handleSendManual}
               disabled={isSending || !manualText.trim()}
-              className="h-8 gap-1 px-3 text-xs"
+              className="h-8 w-full gap-1 px-3 text-xs sm:w-auto"
             >
               {isSending ? (
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -212,7 +212,7 @@ const LowConfidenceResponse: FC<EscalationType> = ({ id }) => {
                 className="min-h-[140px] resize-y border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
                 placeholder="AI response will appear here..."
               />
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3">
+              <div className="flex flex-col gap-3 border-t pt-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <SignatureToggle
                   id={`signature-ai-${id}`}
                   checked={aiSignature}
@@ -222,7 +222,7 @@ const LowConfidenceResponse: FC<EscalationType> = ({ id }) => {
                   size="sm"
                   onClick={handleSendAi}
                   disabled={isSending || !editableAiResponse.trim()}
-                  className="h-8 gap-1 px-3 text-xs"
+                  className="h-8 w-full gap-1 px-3 text-xs sm:w-auto"
                 >
                   {isSending ? (
                     <Loader2 className="h-3 w-3 animate-spin" />

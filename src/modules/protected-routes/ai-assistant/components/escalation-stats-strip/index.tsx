@@ -129,7 +129,7 @@ const StatTile: FC<StatTileProps> = ({
         "group relative flex h-full flex-col gap-2 overflow-hidden rounded-lg border bg-card p-3 text-left shadow-sm transition-colors",
         "hover:border-primary/40 hover:bg-muted/40",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "last:col-span-2 sm:last:col-span-1",
+        "last:col-span-2 sm:last:col-span-1 lg:last:col-span-1",
         isActive && "border-primary/40 bg-primary/5",
         heroEngaged && "border-orange-200/80 bg-orange-50/40",
         heroEngaged && isActive && "border-orange-300 bg-orange-50",
@@ -200,11 +200,11 @@ const EscalationStatsStrip: FC = () => {
 
   if (isStatsPending || !counts) {
     return (
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {TILES.map((tile) => (
           <Skeleton
             key={tile.key}
-            className="h-[88px] last:col-span-2 sm:last:col-span-1"
+            className="h-[88px] last:col-span-2 sm:last:col-span-1 lg:last:col-span-1"
           />
         ))}
       </div>
@@ -248,7 +248,7 @@ const EscalationStatsStrip: FC = () => {
 
   return (
     <div
-      className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-5"
+      className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5"
       role="group"
       aria-label="Escalation queue summary"
     >

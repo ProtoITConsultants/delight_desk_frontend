@@ -21,14 +21,16 @@ const AiAssistantTabs = () => {
           className="inline-flex h-7 items-center gap-1.5 rounded-sm px-3 text-xs font-medium cursor-pointer data-[state=active]:bg-background data-[state=active]:shadow-sm"
         >
           <LayoutList className="h-3.5 w-3.5" />
-          Escalation Queue
+          <span className="sm:hidden">Queue</span>
+          <span className="hidden sm:inline">Escalation Queue</span>
         </TabsTrigger>
         <TabsTrigger
           value="email-signature"
           className="inline-flex h-7 items-center gap-1.5 rounded-sm px-3 text-xs font-medium cursor-pointer data-[state=active]:bg-background data-[state=active]:shadow-sm"
         >
           <Signature className="h-3.5 w-3.5" />
-          Email Signature
+          <span className="sm:hidden">Signature</span>
+          <span className="hidden sm:inline">Email Signature</span>
         </TabsTrigger>
       </TabsList>
       <TabsContent value="escalation-queue">

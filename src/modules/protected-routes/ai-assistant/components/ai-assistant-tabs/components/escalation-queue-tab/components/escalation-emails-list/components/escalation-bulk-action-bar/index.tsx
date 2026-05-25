@@ -34,14 +34,28 @@ const EscalationBulkActionBar: FC = () => {
     updateEscalationStatus({ type: "bulk", escalationIds: ids, status });
 
   return (
-    <div className="flex flex-col gap-2 border-b border-primary/20 bg-primary/5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center gap-2 text-sm">
-        {isPending && (
-          <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-        )}
-        <span className="font-medium text-foreground">
-          {count} selected
-        </span>
+    <div className="flex flex-col gap-2 border-b border-primary/20 bg-primary/5 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+      <div className="flex items-center justify-between gap-2 text-sm">
+        <div className="flex items-center gap-2">
+          {isPending && (
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+          )}
+          <span className="font-medium text-foreground">
+            {count} selected
+          </span>
+        </div>
+        {/* Clear button sits next to the count on small screens so the
+            primary status buttons get the full second row. */}
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={isPending}
+          onClick={() => setSelectedEmailsForBulkAction(new Set())}
+          className="h-7 px-2 text-xs sm:hidden"
+          aria-label="Clear selection"
+        >
+          <X className="h-3.5 w-3.5" />
+        </Button>
       </div>
       <div className="flex flex-wrap items-center gap-1.5">
         {escalationStatus !== EscalationStatus.PENDING && (
@@ -50,7 +64,7 @@ const EscalationBulkActionBar: FC = () => {
             variant="outline"
             disabled={isPending}
             onClick={() => apply(EscalationStatus.PENDING)}
-            className="h-7 gap-1 px-2 text-xs"
+            className="h-8 flex-1 gap-1 px-2 text-xs sm:h-7 sm:flex-none"
           >
             <RotateCcw className="h-3 w-3" />
             Pending
@@ -62,7 +76,7 @@ const EscalationBulkActionBar: FC = () => {
             variant="outline"
             disabled={isPending}
             onClick={() => apply(EscalationStatus.IN_PROGRESS)}
-            className="h-7 gap-1 px-2 text-xs"
+            className="h-8 flex-1 gap-1 px-2 text-xs sm:h-7 sm:flex-none"
           >
             <Clock className="h-3 w-3" />
             In Progress
@@ -73,7 +87,7 @@ const EscalationBulkActionBar: FC = () => {
             size="sm"
             disabled={isPending}
             onClick={() => apply(EscalationStatus.RESOLVED)}
-            className="h-7 gap-1 px-2 text-xs"
+            className="h-8 flex-1 gap-1 px-2 text-xs sm:h-7 sm:flex-none"
           >
             <CheckCircle2 className="h-3 w-3" />
             Resolve
@@ -84,7 +98,7 @@ const EscalationBulkActionBar: FC = () => {
           variant="ghost"
           disabled={isPending}
           onClick={() => setSelectedEmailsForBulkAction(new Set())}
-          className="h-7 gap-1 px-2 text-xs"
+          className="hidden h-7 gap-1 px-2 text-xs sm:inline-flex"
           aria-label="Clear selection"
         >
           <X className="h-3 w-3" />
