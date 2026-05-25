@@ -1,34 +1,21 @@
-import {
-  EscalationPriority,
-  EscalationStatus,
-} from "@/modules/protected-routes/ai-assistant/types/ai-assistant-header";
 import type { AiAssistantStreamEscalationsUpdatedEvent } from "@/services/ai-assistant/utils/escalation-stream";
 import AI_ASSISTANT_ENDPOINTS from "@/services/ai-assistant/utils/constants";
 import { NAV_BADGE_COUNTS_QUERY_KEY } from "@/hooks/services/dashboard/use-nav-badge-counts";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 /**
- * One EventSource to `/escalations/stream` with `withCredentials: true`.
+ * One `EventSource` to `/escalations/stream` with `withCredentials: true`.
  * Only the named SSE event `escalations_updated` invalidates the escalation list + stats
  * (not `connected` or `heartbeat`). Browser will reconnect; close on unmount.
+ *
+ * Invalidates with prefix match so any active escalation-list/escalation-stats query
+ * (regardless of filters) gets refetched. Queries that aren't observed by any
+ * mounted component are simply marked stale and refetch lazily — no extra
+ * HTTP requests are made on pages that don't render this data.
  */
-export function useEscalationStreamSync({
-  searchQuery,
-  escalationStatus,
-  escalationPriority,
-}: {
-  searchQuery: string;
-  escalationStatus: EscalationStatus | null;
-  escalationPriority: EscalationPriority | null;
-}) {
+export function useEscalationStreamSync() {
   const queryClient = useQueryClient();
-  const searchQueryRef = useRef(searchQuery);
-  const escalationStatusRef = useRef(escalationStatus);
-  const escalationPriorityRef = useRef(escalationPriority);
-  searchQueryRef.current = searchQuery;
-  escalationStatusRef.current = escalationStatus;
-  escalationPriorityRef.current = escalationPriority;
 
   useEffect(() => {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -56,14 +43,7 @@ export function useEscalationStreamSync({
         return;
       }
 
-      void queryClient.invalidateQueries({
-        queryKey: [
-          "escalation-list",
-          searchQueryRef.current,
-          escalationStatusRef.current,
-          escalationPriorityRef.current,
-        ],
-      });
+      void queryClient.invalidateQueries({ queryKey: ["escalation-list"] });
       void queryClient.invalidateQueries({ queryKey: ["escalation-stats"] });
       void queryClient.invalidateQueries({
         queryKey: [...NAV_BADGE_COUNTS_QUERY_KEY],

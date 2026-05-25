@@ -1,6 +1,5 @@
 "use client";
 
-import { useEscalationStreamSync } from "@/hooks/services/ai-assistant/use-escalation-stream-sync";
 import { api } from "@/lib/api";
 import { FEEDBACK_DIALOG_DATA_TYPE } from "@/modules/protected-routes/ai-assistant/components/ai-assistant-tabs/components/escalation-queue-tab/components/escalation-emails-list/utils/types/escalation-email-context";
 import {
@@ -18,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 import {
   createContext,
   FC,
+  Suspense,
   useContext,
   useEffect,
   useMemo,
@@ -124,6 +124,16 @@ export const useAiAssistant = (): AiAssistantContentType => {
 export const AiAssistantProvider: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  return (
+    <Suspense fallback={null}>
+      <AiAssistantProviderInner>{children}</AiAssistantProviderInner>
+    </Suspense>
+  );
+};
+
+const AiAssistantProviderInner: FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const searchParams = useSearchParams();
   const selectedEscalationFromUrl =
     searchParams.get("escalationId") ?? searchParams.get("email");
@@ -148,11 +158,6 @@ export const AiAssistantProvider: FC<{ children: React.ReactNode }> = ({
       isOpen: false,
       emailId: "",
     });
-  useEscalationStreamSync({
-    searchQuery,
-    escalationStatus,
-    escalationPriority,
-  });
 
   const {
     escalationList,

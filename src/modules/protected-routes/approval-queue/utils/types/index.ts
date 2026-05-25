@@ -33,9 +33,8 @@ export type ApprovalQueueStats = {
 
 export interface ApprovalQueueWorkflowAction {
   id: string;
-  name: string;
-  description: string;
-  actionDetails: string;
+  name: string | null;
+  actionDetails: string | null;
   status: ApprovalQueueWorkflowActionStatus;
   step: string;
   createdAt: string;
