@@ -140,21 +140,13 @@ const StatTile: FC<StatTileProps> = ({
         // column from sm upwards.
         "last:col-span-2 sm:last:col-span-1",
         isActive && "border-primary/40 bg-primary/5",
-        // Hero-only structural treatment: top accent strip + tinted card
-        // background + border tint. These are the three signals that keep
-        // the Awaiting tile dominant now that every tile has a color
-        // identity of its own.
+        // Hero-only structural treatment: tinted card background + border
+        // tint. This keeps the Awaiting tile dominant now that every tile
+        // has a color identity of its own.
         heroEngaged && "border-orange-200/80 bg-orange-50/40",
         heroEngaged && isActive && "border-orange-300 bg-orange-50",
       )}
     >
-      {heroEngaged && (
-        <span
-          className="absolute inset-x-0 top-0 h-0.5 bg-orange-500"
-          aria-hidden
-        />
-      )}
-
       {/* Top row: label leads, icon trails. The label is the small
           contextual title ("what am I looking at?") and the icon is a
           quiet accent — together they form one semantic unit (Gestalt

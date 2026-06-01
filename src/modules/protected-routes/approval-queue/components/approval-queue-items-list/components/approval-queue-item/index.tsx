@@ -163,13 +163,6 @@ export const ApprovalQueueItem: FC<ApprovalQueueItemData> = ({
         isAwaitingApproval && "ring-1 ring-orange-200/70",
       )}
     >
-      {isAwaitingApproval && (
-        <div
-          className={cn("h-1 w-full", pendingApprovalStyles.accentBar)}
-          aria-hidden
-        />
-      )}
-
       <Collapsible
         open={isActionsOpen}
         onOpenChange={handleActionsOpenChange}

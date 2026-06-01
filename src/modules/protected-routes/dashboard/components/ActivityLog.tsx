@@ -125,6 +125,10 @@ const ItemCard: FC<ActivityLogItem> = ({
     : null;
 
   const occurredAt = useMemo(() => new Date(timestamp), [timestamp]);
+  const normalizedMessage = message.trim().toLowerCase();
+  const normalizedActionName = actionName.trim().toLowerCase();
+  const shouldShowMessage =
+    normalizedMessage.length > 0 && normalizedMessage !== normalizedActionName;
 
   return (
     <div
@@ -188,7 +192,9 @@ const ItemCard: FC<ActivityLogItem> = ({
         {actionName ? (
           <p className="text-sm font-medium text-gray-800">{actionName}</p>
         ) : null}
-        <p className="break-words text-sm text-gray-900">{message}</p>
+        {shouldShowMessage ? (
+          <p className="break-words text-sm text-gray-900">{message}</p>
+        ) : null}
         <p className="mt-1 inline-flex items-center gap-1 text-xs text-gray-500">
           <Mail className="h-3 w-3" aria-hidden />
           <span className="break-all">{customerEmail}</span>
