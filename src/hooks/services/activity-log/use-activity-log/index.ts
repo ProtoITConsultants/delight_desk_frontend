@@ -7,6 +7,17 @@ type UseActivityLogOptions = {
   enabled?: boolean;
 };
 
+const dedupeById = <T extends { id: string }>(items: T[]): T[] => {
+  const seen = new Set<string>();
+  const output: T[] = [];
+  for (const item of items) {
+    if (seen.has(item.id)) continue;
+    seen.add(item.id);
+    output.push(item);
+  }
+  return output;
+};
+
 export const useActivityLog = ({
   limit = 10,
   enabled = true,
@@ -33,10 +44,10 @@ export const useActivityLog = ({
     enabled,
   });
 
-  const activityLogs = useMemo(
-    () => data?.pages.flatMap((p) => p.data) ?? [],
-    [data?.pages],
-  );
+  const activityLogs = useMemo(() => {
+    const flat = data?.pages.flatMap((p) => p.data) ?? [];
+    return dedupeById(flat);
+  }, [data?.pages]);
 
   return {
     activityLogs,
