@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
+import QueryProvider from "@/providers/query-provider";
+import "@mantine/core/styles.css";
+import { MantineProvider } from "@mantine/core";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,8 +32,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} antialiased`}>{children}</body>
+    <html lang="en" data-scroll-behavior="smooth">
+      <body className={`${inter.variable} antialiased`}>
+        <QueryProvider>
+          <MantineProvider>{children}</MantineProvider>
+        </QueryProvider>
+        <Toaster richColors theme="light" duration={3000} />
+      </body>
     </html>
   );
 }

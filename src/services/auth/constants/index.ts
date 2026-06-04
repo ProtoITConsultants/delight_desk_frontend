@@ -1,0 +1,8 @@
+const AUTHENTICATE_USER = "/users/me";
+const AUTHENTICATE_ADMIN = "/users/verify-admin";
+
+const AUTHENTICATION_ENDPOINTS = {
+  AUTHENTICATE_USER,
+  AUTHENTICATE_ADMIN,
+};
+export default AUTHENTICATION_ENDPOINTS;

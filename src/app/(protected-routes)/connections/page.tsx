@@ -1,10 +1,120 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
+
+import { useEffect, useState } from "react";
 import ConnectionCard from "@/modules/protected-routes/connections-page/components/connection-card";
 import ConnectionsHeader from "@/modules/protected-routes/connections-page/components/Header";
-import { Store, Mail } from "lucide-react";
+import ShipStationConnectionalModal from "@/modules/protected-routes/connections-page/components/modals/ShipStationConnectionalModal";
+import { Store, Mail, Info } from "lucide-react";
+import WooCommerceConnectionModal from "@/modules/protected-routes/connections-page/components/modals/WooCommerceConnectionModal";
+import ManageConnectionModal from "@/modules/protected-routes/connections-page/components/modals/ManageConnectionModal";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { api } from "@/lib/api";
+import { isConnectionStatusConnected } from "@/services/connections/utils/get-connection-details";
+import { useDisconnectWooCommerceStore } from "@/hooks/services/connections/woocommerce/disconnect-store/use-disconnect-woocommerce-store";
+import {
+  ConnectionsDialogsProvider,
+  useConnectionsDialogs,
+} from "@/providers/connections/connections-dialogs-provider";
+import ShipBobConnectionalModal from "@/modules/protected-routes/connections-page/components/modals/ShipBobConnectionalModal copy";
+import { clearWooCommerceOAuthAttempt } from "@/modules/protected-routes/connections-page/utils/woocommerce-oauth-attempt-storage";
 
-const ConnectionsPage = () => {
+type emailConnectionModalType = {
+  isModalOpen: boolean;
+  type: "gmail" | "outlook" | null;
+};
+
+const ConnectionsPageContent = () => {
+  // Hooks
+  const queryClient = useQueryClient();
+  const { disconnectWooCommerceStore, isRemovingWooCommerceStore } =
+    useDisconnectWooCommerceStore();
+  const {
+    wooCommerceDialog,
+    setWooCommerceDialog,
+    shipstationDialog,
+    setShipstationDialog,
+    shipbobDialogOpen,
+    setShipbobDialogOpen,
+  } = useConnectionsDialogs();
+
+  // Local States
+
+  const [manageEmailConnectionDialog, setManageEmailConnectionDialog] =
+    useState<emailConnectionModalType>({
+      isModalOpen: false,
+      type: null,
+    });
+
+  // Get User Connections - Query
+  const {
+    data: connectionsData,
+    isError,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["connections"],
+    queryFn: () => {
+      return api.user_connections.getUserConnections();
+    },
+  });
+
+  useEffect(() => {
+    if (connectionsData?.wooCommerceConnection) {
+      clearWooCommerceOAuthAttempt();
+    }
+  }, [connectionsData?.wooCommerceConnection]);
+
+  if (isError) {
+    toast.error("Error fetching connections", {
+      description: error.message || "",
+    });
+  }
+
+  // Disconnect Gmail
+  const disconnectGmailMutation = useMutation({
+    mutationFn: () => api.user_connections.disconnectGmailAccount(),
+    onSuccess: () => {
+      toast.success("Account Disconnected!", {
+        description: "Gmail account disconnected successfully!",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["connections"],
+      });
+      setManageEmailConnectionDialog({
+        isModalOpen: false,
+        type: null,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to disconnect account!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
+
+  // Disconnect Outlook
+  const disconnectOutlookMutation = useMutation({
+    mutationFn: () => api.user_connections.disconnectOutlookAccount(),
+    onSuccess: () => {
+      toast.success("Account Disconnected!", {
+        description: "Outlook account disconnected successfully!",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["connections"],
+      });
+      setManageEmailConnectionDialog({
+        isModalOpen: false,
+        type: null,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to disconnect account!", {
+        description: error.message || "Something went wrong",
+      });
+    },
+  });
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
@@ -25,9 +135,22 @@ const ConnectionsPage = () => {
               <Store className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
           }
-          connectionEstablished={true}
-          onCreateConnection={() => {}}
-          onManageConnection={() => {}}
+          connectionEstablished={
+            connectionsData?.wooCommerceConnection ? true : false
+          }
+          onCreateConnection={() =>
+            setWooCommerceDialog({
+              isModalOpen: true,
+              type: "create-connection",
+            })
+          }
+          onManageConnection={() => {
+            setWooCommerceDialog({
+              isModalOpen: true,
+              type: "manage-connection",
+            });
+          }}
+          isFetchingDetails={isPending}
         />
       </ConnectionCard.Root>
       {/* Email Connections */}
@@ -45,10 +168,19 @@ const ConnectionsPage = () => {
               <Mail className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
           }
-          connectionEstablished={true}
-          onCreateConnection={() => {}}
-          onManageConnection={() => {}}
-        />{" "}
+          connectionEstablished={
+            connectionsData?.gmailConnection ? true : false
+          }
+          onCreateConnection={() => api.user_connections.addGmailConnection()}
+          onManageConnection={() => {
+            setManageEmailConnectionDialog({
+              isModalOpen: true,
+              type: "gmail",
+            });
+          }}
+          isFetchingDetails={isPending}
+          disabled={connectionsData?.outlookConnection ? true : false}
+        />
         {/* Outlook Connection */}
         <ConnectionCard.Item
           title="Outlook"
@@ -58,9 +190,18 @@ const ConnectionsPage = () => {
               <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
           }
-          connectionEstablished={false}
-          onCreateConnection={() => {}}
-          onManageConnection={() => {}}
+          connectionEstablished={
+            connectionsData?.outlookConnection ? true : false
+          }
+          onCreateConnection={() => api.user_connections.addOutlookConnection()}
+          onManageConnection={() => {
+            setManageEmailConnectionDialog({
+              isModalOpen: true,
+              type: "outlook",
+            });
+          }}
+          isFetchingDetails={isPending}
+          disabled={connectionsData?.gmailConnection ? true : false}
         />
       </ConnectionCard.Root>
       {/* Fulfillment Integration */}
@@ -88,42 +229,174 @@ const ConnectionsPage = () => {
               </svg>
             </div>
           }
-          connectionEstablished={false}
-          onCreateConnection={() => {}}
+          connectionEstablished={isConnectionStatusConnected(
+            connectionsData?.shipbobConnection
+          )}
+          onCreateConnection={() => setShipbobDialogOpen(true)}
           onManageConnection={() => {}}
+          isFetchingDetails={isPending}
+          hideActionWhenConnected
         />
-        {/* Placeholder for future 3PL integrations */}
-        <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 opacity-60">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-500 dark:text-gray-400">
-                  More 3PLs
-                </h3>
-                <p className="text-sm text-gray-400 dark:text-gray-500">
-                  Coming Soon
-                </p>
-              </div>
+        {/* Shipstation Connection */}
+        <ConnectionCard.Item
+          title="Shipstation"
+          description="Shipping Platform"
+          icon={
+            <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center">
+              <svg
+                className="w-5 h-5 text-orange-600 dark:text-orange-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+              </svg>
             </div>
-            <Badge
-              variant="secondary"
-              className="bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full"
-            >
-              Coming Soon
-            </Badge>
+          }
+          connectionEstablished={isConnectionStatusConnected(
+            connectionsData?.shipstationConnection
+          )}
+          onCreateConnection={() =>
+            setShipstationDialog({
+              isModalOpen: true,
+              type: "create-connection",
+            })
+          }
+          onManageConnection={() =>
+            setWooCommerceDialog({
+              isModalOpen: true,
+              type: "manage-connection",
+            })
+          }
+          isFetchingDetails={isPending}
+          hideActionWhenConnected
+        />
+
+        {/* Callout for users without ShipBob/Shipstation */}
+        <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 col-span-2">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+            </div>
+            <div>
+              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                Don&apos;t use ShipBob or Shipstation?
+              </h4>
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                You can still make full use of all AI agents! You&apos;ll see
+                configuration options in the settings for each individual agent
+                to customize their behavior for your fulfillment process.
+              </p>
+            </div>
           </div>
         </div>
       </ConnectionCard.Root>
+
+      {/* Connection Modals */}
+      {/* WooCommerce Connection - Modal */}
+      <WooCommerceConnectionModal
+        isModalOpen={
+          wooCommerceDialog.isModalOpen &&
+          wooCommerceDialog.type === "create-connection"
+        }
+        isWooCommerceConnected={Boolean(
+          connectionsData?.wooCommerceConnection,
+        )}
+        onCloseModal={() =>
+          setWooCommerceDialog({
+            isModalOpen: false,
+            type: "",
+          })
+        }
+      />
+      {/* ShipStation Connection - Modal */}
+      <ShipStationConnectionalModal
+        showShipstationDialog={
+          shipstationDialog.isModalOpen &&
+          shipstationDialog.type === "create-connection"
+        }
+        onCloseModal={() =>
+          setShipstationDialog({
+            isModalOpen: false,
+            type: "",
+          })
+        }
+      />
+      {/* ShipBob Connection - Modal */}
+      <ShipBobConnectionalModal
+        showShipBobDialog={shipbobDialogOpen}
+        onCloseModal={() => setShipbobDialogOpen(false)}
+      />
+
+      {/* Manage Connections Modal */}
+      <ManageConnectionModal
+        isModalOpen={
+          manageEmailConnectionDialog.isModalOpen &&
+          manageEmailConnectionDialog.type === "gmail"
+        }
+        onCloseModal={() =>
+          setManageEmailConnectionDialog({
+            isModalOpen: false,
+            type: null,
+          })
+        }
+        type="gmail"
+        status={
+          connectionsData?.gmailConnection?.status === "connected"
+            ? "active"
+            : "inactive"
+        }
+        email={connectionsData?.gmailConnection?.email}
+        onDisconnectAccount={() => disconnectGmailMutation.mutate()}
+        isDisconnecting={disconnectGmailMutation.isPending}
+      />
+      <ManageConnectionModal
+        isModalOpen={
+          manageEmailConnectionDialog.isModalOpen &&
+          manageEmailConnectionDialog.type === "outlook"
+        }
+        onCloseModal={() =>
+          setManageEmailConnectionDialog({
+            isModalOpen: false,
+            type: null,
+          })
+        }
+        type="outlook"
+        status={
+          connectionsData?.outlookConnection?.status === "connected"
+            ? "active"
+            : "inactive"
+        }
+        email={connectionsData?.outlookConnection?.email}
+        onDisconnectAccount={() => disconnectOutlookMutation.mutate()}
+        isDisconnecting={disconnectOutlookMutation.isPending}
+      />
+      {/* For Now I would have two separate Modals for each connection */}
+      <ManageConnectionModal
+        isModalOpen={
+          wooCommerceDialog.isModalOpen &&
+          wooCommerceDialog.type === "manage-connection"
+        }
+        onCloseModal={() =>
+          setWooCommerceDialog({
+            isModalOpen: false,
+            type: "",
+          })
+        }
+        type="wooCommerce"
+        status="active"
+        storeURL={connectionsData?.wooCommerceConnection?.storeUrl || "N/A"}
+        onDisconnectAccount={() => disconnectWooCommerceStore()}
+        isDisconnecting={isRemovingWooCommerceStore}
+      />
     </div>
+  );
+};
+
+const ConnectionsPage = () => {
+  return (
+    <ConnectionsDialogsProvider>
+      <ConnectionsPageContent />
+    </ConnectionsDialogsProvider>
   );
 };
 

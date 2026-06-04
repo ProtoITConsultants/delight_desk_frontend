@@ -29,10 +29,18 @@ const LandingPageFooter = () => {
           <a href="#contact" className="hover:text-white transition-colors">
             About
           </a>
-          <Link href="/privacy" className="hover:text-white transition-colors">
+          <Link
+            href="/privacy-policy"
+            prefetch
+            className="hover:text-white transition-colors"
+          >
             Privacy
           </Link>
-          <Link href="/terms" className="hover:text-white transition-colors">
+          <Link
+            href="/terms-of-service"
+            prefetch
+            className="hover:text-white transition-colors"
+          >
             Terms of Service
           </Link>
         </div>

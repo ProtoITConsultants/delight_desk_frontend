@@ -1,4 +1,5 @@
 import HeroSectionBg from "@/assets/images/HeroSectionBg";
+import { AI_ASSISTANT_ICON } from "@/constants/product-icons";
 import {
   ArrowRight,
   Brain,
@@ -32,7 +33,7 @@ const HeroSection = () => {
             {/* AI Assistant Badge - Mobile Only */}
             <div className="mt-12 mb-5 lg:hidden">
               <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-xl rounded-full px-4 py-2 border border-white/20 glass-pulse">
-                <Brain className="w-4 h-4 text-purple-400" />
+                <AI_ASSISTANT_ICON className="w-4 h-4 text-purple-400" />
                 <span className="text-sm font-medium text-white/90">
                   AI Assistant
                 </span>

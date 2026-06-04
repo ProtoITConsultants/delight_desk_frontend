@@ -7,15 +7,10 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-} from "../ui/dropdown-menu";
 import Image from "next/image";
 import SIDEBAR_CONTENT from "@/constants/sidebar";
 import Link from "next/link";
@@ -26,10 +21,52 @@ import {
 } from "../ui/collapsible";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import {
+  formatNavBadgeCount,
+  useNavBadgeCounts,
+} from "@/hooks/services/dashboard/use-nav-badge-counts";
+
+const AI_AGENT_BASE_PATHS = [
+  "/wismo-agent",
+  "/subscription-agent",
+  "/product-agent",
+  "/returns-agent",
+  "/promo-code-agent",
+  "/address-change-agent",
+  "/order-cancellation-agent",
+] as const;
+
+const getNavBadgeCount = (
+  href: string,
+  counts:
+    | {
+        approvalQueuePendingApproval: number;
+        aiAssistantPending: number;
+      }
+    | undefined,
+) => {
+  if (!counts) return 0;
+
+  if (href === "/approval-queue") {
+    return counts.approvalQueuePendingApproval;
+  }
+
+  if (href === "/ai-assistant") {
+    return counts.aiAssistantPending;
+  }
+
+  return 0;
+};
 
 export function AppSidebar() {
   // Hook
   const pathname = usePathname();
+  const { data: navBadgeCounts } = useNavBadgeCounts();
+
+  const isAiAgentsActive = AI_AGENT_BASE_PATHS.some(
+    (p) => pathname === p || (pathname != null && pathname.startsWith(`${p}/`)),
+  );
 
   return (
     <Sidebar>
@@ -48,13 +85,7 @@ export function AppSidebar() {
           <SidebarMenu>
             {SIDEBAR_CONTENT.PRIMARY_NAVIGATION.map((item) => {
               const isActive = pathname === item.href;
-              const isAiAgentsActive =
-                pathname === "/wismo-agent" ||
-                pathname === "/subscription-agent" ||
-                pathname === "/product-agent" ||
-                pathname === "/promo-code-agent" ||
-                pathname === "/address-change" ||
-                pathname === "/order-cancellations";
+              const badgeCount = getNavBadgeCount(item.href, navBadgeCounts);
               return item.name === "AI Agents" ? (
                 <Collapsible key={item.name} className="group/collapsible">
                   <SidebarMenuItem>
@@ -62,9 +93,9 @@ export function AppSidebar() {
                       <SidebarMenuButton
                         className={cn(
                           isAiAgentsActive
-                            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
+                            ? "text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                          "w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]"
+                          "w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]",
                         )}
                       >
                         <span className="flex items-center w-full">
@@ -86,13 +117,27 @@ export function AppSidebar() {
                               isSubItemActive
                                 ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
                                 : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                              "group flex items-center px-2 py-2 text-sm rounded-md border border-transparent cursor-pointer"
+                              "group flex items-center px-2 py-2 text-sm rounded-md border border-transparent cursor-pointer",
                             )}
                           >
-                            <Link href={subItem.href}>
-                              <div className="flex items-center w-full">
-                                <subItem.icon className="mr-2 h-4 w-4" />
-                                {subItem.name}
+                            <Link
+                              href={subItem.href}
+                              className="w-full min-w-0"
+                            >
+                              <div className="flex items-center w-full min-w-0 gap-1">
+                                <subItem.icon className="mr-0 h-4 w-4 shrink-0" />
+                                <span className="min-w-0 flex-1 text-left line-clamp-1">
+                                  {subItem.name}
+                                </span>
+                                {subItem.comingSoon ? (
+                                  <Badge
+                                    variant="default"
+                                    className="ml-auto shrink-0 text-[8px] leading-none px-1 py-0.5 font-medium"
+                                    aria-label="Coming soon"
+                                  >
+                                    Soon
+                                  </Badge>
+                                ) : null}
                               </div>
                             </Link>
                           </SidebarMenuButton>
@@ -109,16 +154,35 @@ export function AppSidebar() {
                       isActive
                         ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/10 hover:text-primary"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]"
+                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md border border-transparent cursor-pointer h-[38px]",
+                      {
+                        "opacity-50 cursor-not-allowed": item.isDisabled,
+                      },
                     )}
+                    disabled={true}
                   >
-                    <Link href={item.href}>
+                    {item.isDisabled ? (
                       <span className="flex items-center w-full">
                         <item.icon className="mr-2 h-4 w-4" />
                         {item.name}
                       </span>
-                    </Link>
+                    ) : (
+                      <Link href={item.href}>
+                        <span className="flex items-center w-full">
+                          <item.icon className="mr-2 h-4 w-4" />
+                          {item.name}
+                        </span>
+                      </Link>
+                    )}
                   </SidebarMenuButton>
+                  {!item.isDisabled && badgeCount > 0 ? (
+                    <SidebarMenuBadge
+                      className="bg-orange-500 text-white"
+                      aria-label={`${badgeCount} pending`}
+                    >
+                      {formatNavBadgeCount(badgeCount)}
+                    </SidebarMenuBadge>
+                  ) : null}
                 </SidebarMenuItem>
               );
             })}
@@ -128,7 +192,7 @@ export function AppSidebar() {
       <SidebarFooter className="px-4 pb-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200 h-[38px]">
                   <div className="flex items-center">
@@ -154,7 +218,17 @@ export function AppSidebar() {
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
+
+            <Link
+              href="/connections"
+              className="w-full group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 h-[38px]"
+            >
+              <div className="flex items-center w-full cursor-pointer">
+                <Settings className="mr-3 h-4 w-4 text-gray-400" />
+                Connections
+              </div>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

@@ -1,0 +1,7 @@
+const SEND_USER_INQUIRY_URL = "/contact";
+
+const CONTACT_US_FORM = {
+  SEND_USER_INQUIRY_URL,
+};
+
+export default CONTACT_US_FORM;

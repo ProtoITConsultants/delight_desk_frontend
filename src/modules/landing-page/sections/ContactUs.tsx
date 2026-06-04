@@ -1,5 +1,5 @@
 import { Mail } from "lucide-react";
-import ContactUsForm from "../components/ContactUsForm";
+import ContactUsForm from "@/modules/core/components/contact-us-form";
 
 const ContactUs = () => {
   return (
@@ -30,7 +30,14 @@ const ContactUs = () => {
           </div>
 
           {/* Contact Form - Centered */}
-          <ContactUsForm />
+          <div className="max-w-2xl mx-auto">
+            <div className="ds-surface-elevated rounded-2xl ds-card-padding">
+              <ContactUsForm
+                formType="landing-page"
+                submitButtonClassName="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium py-3 hover:cursor-pointer"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>

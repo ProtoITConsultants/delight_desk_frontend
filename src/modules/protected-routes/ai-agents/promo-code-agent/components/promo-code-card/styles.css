@@ -1,0 +1,35 @@
+/* .header-container {
+  flex-direction: row;
+}
+.header-actions {
+  width: auto;
+} */
+
+@media (max-width: 640px) {
+  .header-container {
+    flex-direction: column;
+  }
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-container {
+    flex-direction: column;
+  }
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 1440px) {
+  .header-container {
+    flex-direction: row;
+  }
+  .header-actions {
+    width: fit-content;
+  }
+}

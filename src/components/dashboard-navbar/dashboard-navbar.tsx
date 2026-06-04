@@ -4,15 +4,33 @@ import { Button } from "@/components/ui/button";
 import { Menu, User, Shield, LogOut, HelpCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import AuthAPIs from "@/modules/auth/api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useUserAuth } from "@/providers/auth/user-auth/user-auth-provider";
+import { Skeleton } from "../ui/skeleton";
 
 const DashboardNavbar = () => {
   // Toggle Sidebar as Drawer
   const { toggleSidebar } = useSidebar();
+  const router = useRouter();
+  const { userData, isAuthenticating } = useUserAuth();
 
-  const isAdmin = true;
-
-  // TODO: Add Logout Mutation
-  const handleLogout = () => {};
+  const logout = useMutation({
+    mutationFn: AuthAPIs.logout,
+    onSuccess: () => {
+      toast.success("Logout successful!", {
+        description: "Redirecting...",
+      });
+      router.replace("/login");
+    },
+    onError: () => {
+      toast.error("Logout failed!", {
+        description: "Please try again.",
+      });
+    },
+  });
 
   return (
     <nav className="sticky top-0 z-10 flex-shrink-0">
@@ -21,7 +39,7 @@ const DashboardNavbar = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="h-full px-4 border-r border-gray-200 text-gray-500 lg:hidden hover:bg-gray-100"
+          className="h-full my-auto px-4 border-r border-gray-200 text-gray-500 lg:hidden hover:bg-gray-100 rounded-none"
           onClick={toggleSidebar}
         >
           <Menu className="h-6 w-6" />
@@ -37,6 +55,8 @@ const DashboardNavbar = () => {
               alt="Logo"
               height={32}
               width={120}
+              className="h-8 w-[120px]"
+              priority
             />
           </div>
 
@@ -46,19 +66,23 @@ const DashboardNavbar = () => {
           {/* Right side navigation */}
           <div className="flex items-center gap-1">
             {/* Admin Button - Only visible to specific admin users */}
-            {isAdmin && (
-              <>
-                <Link
-                  href="/admin"
-                  className="flex items-center gap-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 h-9 rounded-md font-medium text-sm"
-                >
-                  <Shield className="h-4 w-4" />
-                  <span className="hidden sm:inline">Admin</span>
-                </Link>
+            {isAuthenticating ? (
+              <Skeleton className="w-20 h-9 rounded-md" />
+            ) : (
+              userData?.role === "admin" && (
+                <>
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 h-9 rounded-md font-medium text-sm"
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span className="hidden sm:inline">Admin</span>
+                  </Link>
 
-                {/* Separator */}
-                <div className="w-px h-6 bg-gray-300 mx-1"></div>
-              </>
+                  {/* Separator */}
+                  <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                </>
+              )
             )}
 
             {/* Get Help Button */}
@@ -84,7 +108,7 @@ const DashboardNavbar = () => {
               variant="ghost"
               size="sm"
               className="flex items-center gap-2 text-gray-600 hover:text-red-600 hover:bg-red-50 px-3 h-9 hover:cursor-pointer rounded-md font-medium text-sm"
-              onClick={handleLogout}
+              onClick={() => logout.mutate()}
             >
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Logout</span>
